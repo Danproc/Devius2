@@ -84,8 +84,8 @@ export function CardPreview({
       className="w-full max-w-4xl mx-auto"
       style={{ ...themeStyles, ...themeFontFamily } as React.CSSProperties}
     >
-      {/* Main Card Container */}
-      <Card className="overflow-hidden glass-card border-white/10 shadow-2xl devcard-card-hover">
+      {/* Main Card Container - flat design, NO glassmorphism */}
+      <Card className="overflow-hidden bg-[#04080f] border border-[#121824] rounded-3xl">
         <div className="p-6 md:p-8 space-y-8">
           {/* Profile Section */}
           <ProfileSection
@@ -102,12 +102,12 @@ export function CardPreview({
           {/* Tech Stack */}
           {techStack && techStack.length > 0 && (
             <div className="flex flex-col gap-3">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-[#5b6a7f] uppercase tracking-wide">
                 Tech Stack
               </h2>
               <div className="flex flex-wrap gap-2">
                 {techStack.map((tech) => (
-                  <Badge key={tech} variant="secondary" className="text-sm">
+                  <Badge key={tech} variant="secondary" className="text-sm bg-devcard-green/10 text-devcard-green border-devcard-green/20">
                     {tech}
                   </Badge>
                 ))}
@@ -128,7 +128,7 @@ export function CardPreview({
 
           {/* View Count Footer */}
           {viewCount !== undefined && (
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4 border-t border-white/10">
+            <div className="flex items-center justify-center gap-2 text-sm text-[#5b6a7f] pt-4 border-t border-[#121824]">
               <Eye className="size-4" />
               <span>
                 {viewCount.toLocaleString()}{' '}
@@ -141,7 +141,7 @@ export function CardPreview({
 
       {/* Powered By Footer */}
       <div className="mt-6 text-center">
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-[#5b6a7f]">
           Powered by{' '}
           <a
             href="/"

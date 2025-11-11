@@ -49,7 +49,7 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">Featured Repositories</h2>
+        <h2 className="text-xl font-bold text-[#dde3ed]">Featured Repositories</h2>
         <a
           href={`https://github.com/${githubUsername}?tab=repositories`}
           target="_blank"
@@ -68,24 +68,24 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
             href={repo.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 p-5 rounded-xl border border-white/10 bg-white/5 hover:border-devcard-green/50 hover:bg-white/10 hover:shadow-lg hover:shadow-devcard-green/10 transition-all duration-300 hover:-translate-y-1"
+            className="group flex flex-col gap-3 p-5 rounded-xl border border-[#121824] bg-[#04080f] hover:border-devcard-green/50 hover:bg-white/5 transition-all duration-200 hover:-translate-y-0.5"
           >
             {/* Repo Header */}
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base truncate text-foreground group-hover:text-devcard-green transition-colors">
+                <h3 className="font-semibold text-base truncate text-[#dde3ed] group-hover:text-devcard-green transition-colors">
                   {repo.name}
                 </h3>
-                <p className="text-xs text-muted-foreground truncate font-mono">
+                <p className="text-xs text-[#5b6a7f] truncate font-mono">
                   {repo.full_name}
                 </p>
               </div>
-              <ExternalLink className="size-4 text-muted-foreground group-hover:text-devcard-green shrink-0 transition-colors" />
+              <ExternalLink className="size-4 text-[#5b6a7f] group-hover:text-devcard-green shrink-0 transition-colors" />
             </div>
 
             {/* Description */}
             {repo.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+              <p className="text-sm text-[#5b6a7f] line-clamp-2 leading-relaxed">
                 {repo.description}
               </p>
             )}
@@ -103,7 +103,7 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
                   </Badge>
                 ))}
                 {repo.topics.length > 3 && (
-                  <Badge variant="outline" className="text-xs px-2 py-0.5 border-white/20">
+                  <Badge variant="outline" className="text-xs px-2 py-0.5 border-[#121824] text-[#5b6a7f]">
                     +{repo.topics.length - 3}
                   </Badge>
                 )}
@@ -111,7 +111,7 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
             )}
 
             {/* Stats and Language */}
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-4 text-xs text-[#5b6a7f]">
               {repo.language && (
                 <div className="flex items-center gap-1.5">
                   <span

@@ -67,9 +67,9 @@ export function ProfileSection({
 
   return (
     <div className="flex flex-col items-center gap-4 text-center">
-      {/* Avatar with green ring */}
+      {/* Avatar - clean circular, NO green ring */}
       <div className="relative">
-        <Avatar className="size-32 md:size-40 ring-4 ring-devcard-green/40 ring-offset-4 ring-offset-background shadow-lg">
+        <Avatar className="size-32 md:size-40">
           <AvatarImage src={avatarUrl} alt={displayName || githubUsername} />
           <AvatarFallback className="text-3xl md:text-4xl bg-devcard-green/10 text-devcard-green">
             {initials}
@@ -79,7 +79,7 @@ export function ProfileSection({
 
       {/* Name and Username */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground devcard-text-shadow">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#dde3ed]">
           {displayName || githubUsername}
         </h1>
         {displayName && (
@@ -87,7 +87,7 @@ export function ProfileSection({
             href={`https://github.com/${githubUsername}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-devcard-green transition-colors text-base font-mono"
+            className="text-[#5b6a7f] hover:text-devcard-green transition-colors text-base font-mono"
           >
             @{githubUsername}
           </a>
@@ -101,13 +101,13 @@ export function ProfileSection({
 
       {/* Bio */}
       {customBio && (
-        <p className="text-muted-foreground max-w-md leading-relaxed text-base">
+        <p className="text-[#5b6a7f] max-w-md leading-relaxed text-base">
           {customBio}
         </p>
       )}
 
       {/* Location and Social Links */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
         {location && (
           <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
             <MapPin className="size-4" />
