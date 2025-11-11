@@ -64,13 +64,14 @@ export const techStackSchema = z
  * Social Links Validation Schema
  * - All fields are optional
  * - Must be valid URLs when provided
+ * - Allows empty strings
  */
 export const socialLinksSchema = z
   .object({
-    twitter: z.string().url('Twitter must be a valid URL').optional(),
-    linkedin: z.string().url('LinkedIn must be a valid URL').optional(),
-    website: z.string().url('Website must be a valid URL').optional(),
-    portfolio: z.string().url('Portfolio must be a valid URL').optional(),
+    twitter: z.union([z.string().url('Twitter must be a valid URL'), z.literal('')]).optional(),
+    linkedin: z.union([z.string().url('LinkedIn must be a valid URL'), z.literal('')]).optional(),
+    website: z.union([z.string().url('Website must be a valid URL'), z.literal('')]).optional(),
+    portfolio: z.union([z.string().url('Portfolio must be a valid URL'), z.literal('')]).optional(),
   })
   .strict()
   .optional();

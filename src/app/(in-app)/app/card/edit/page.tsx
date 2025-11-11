@@ -121,6 +121,7 @@ export default function CardEditorPage() {
 
   const form = useForm<DevCardUpdateInput>({
     resolver: zodResolver(devCardUpdateSchema),
+    mode: 'onChange', // Enable validation on change
     defaultValues: {
       display_name: "",
       custom_bio: "",
@@ -161,6 +162,9 @@ export default function CardEditorPage() {
 
   const watchedValues = form.watch();
   const watchedStatus = form.watch("availability_status");
+
+  // Debounced values for preview to improve performance
+  const deferredPreviewValues = React.useDeferredValue(watchedValues);
 
   const onSubmit = async (data: DevCardUpdateInput) => {
     setIsSaving(true);
@@ -690,8 +694,8 @@ export default function CardEditorPage() {
                 </Link>
                 <Button
                   type="submit"
-                  disabled={isSaving}
-                  className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-medium min-w-[120px]"
+                  disabled={isSaving || !form.formState.isValid}
+                  className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-medium min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? (
                     <>
@@ -720,16 +724,16 @@ export default function CardEditorPage() {
           </div>
           <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-background p-6 max-h-[calc(100vh-200px)] overflow-y-auto">
             <CardPreview
-              displayName={watchedValues.display_name || null}
+              displayName={deferredPreviewValues.display_name || null}
               githubUsername={devcard.github_username}
               avatarUrl={devcard.avatar_url}
-              customBio={watchedValues.custom_bio || null}
-              location={watchedValues.location || null}
-              availabilityStatus={watchedValues.availability_status || null}
-              availabilityMessage={watchedValues.availability_message || null}
-              socialLinks={watchedValues.social_links || null}
+              customBio={deferredPreviewValues.custom_bio || null}
+              location={deferredPreviewValues.location || null}
+              availabilityStatus={deferredPreviewValues.availability_status || null}
+              availabilityMessage={deferredPreviewValues.availability_message || null}
+              socialLinks={deferredPreviewValues.social_links || null}
               githubStats={devcard.github_stats}
-              techStack={watchedValues.tech_stack || null}
+              techStack={deferredPreviewValues.tech_stack || null}
               featuredRepos={[]}
               viewCount={devcard.view_count}
               theme={devcard.theme}
