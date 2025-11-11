@@ -193,22 +193,24 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     : null;
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <CardPreview
-        displayName={devcard.display_name}
-        githubUsername={devcard.github_username}
-        avatarUrl={devcard.avatar_url}
-        customBio={devcard.custom_bio}
-        location={devcard.location}
-        availabilityStatus={devcard.availability_status}
-        availabilityMessage={devcard.availability_message}
-        socialLinks={devcard.social_links}
-        githubStats={githubStats}
-        techStack={devcard.tech_stack as string[] | null}
-        featuredRepos={featuredRepos}
-        viewCount={devcard.view_count + 1}
-        theme={devcard.theme}
-      />
+    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 devcard-gradient-bg animate-fade-in">
+      <div className="animate-slide-up">
+        <CardPreview
+          displayName={devcard.display_name}
+          githubUsername={devcard.github_username}
+          avatarUrl={devcard.avatar_url}
+          customBio={devcard.custom_bio}
+          location={devcard.location}
+          availabilityStatus={devcard.availability_status}
+          availabilityMessage={devcard.availability_message}
+          socialLinks={devcard.social_links}
+          githubStats={githubStats}
+          techStack={devcard.tech_stack as string[] | null}
+          featuredRepos={featuredRepos}
+          viewCount={devcard.view_count + 1}
+          theme={devcard.theme}
+        />
+      </div>
     </main>
   );
 }

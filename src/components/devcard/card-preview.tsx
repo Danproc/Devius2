@@ -85,7 +85,7 @@ export function CardPreview({
       style={{ ...themeStyles, ...themeFontFamily } as React.CSSProperties}
     >
       {/* Main Card Container */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden glass-card border-white/10 shadow-2xl devcard-card-hover">
         <div className="p-6 md:p-8 space-y-8">
           {/* Profile Section */}
           <ProfileSection
@@ -128,7 +128,7 @@ export function CardPreview({
 
           {/* View Count Footer */}
           {viewCount !== undefined && (
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4 border-t border-border">
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4 border-t border-white/10">
               <Eye className="size-4" />
               <span>
                 {viewCount.toLocaleString()}{' '}
@@ -145,7 +145,7 @@ export function CardPreview({
           Powered by{' '}
           <a
             href="/"
-            className="font-medium hover:text-foreground transition-colors"
+            className="font-medium text-devcard-green hover:brightness-110 transition-all"
           >
             Devius
           </a>
