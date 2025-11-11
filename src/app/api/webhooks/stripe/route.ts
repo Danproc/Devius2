@@ -13,6 +13,8 @@ import { addCredits } from "@/lib/credits/recalculate";
 import { type CreditType } from "@/lib/credits/credits";
 import { creditTypeSchema } from "@/lib/credits/config";
 import { allocatePlanCredits } from "@/lib/credits/allocatePlanCredits";
+// DevCard Premium Subscriptions (T112)
+import { handleWebhookEvent as handleDevCardWebhook } from "@/lib/stripe/webhooks";
 
 class StripeWebhookHandler {
   private data: Stripe.Event.Data;
@@ -444,6 +446,21 @@ async function handler(req: NextRequest) {
         default:
           // Unhandled event type
           break;
+      }
+
+      // Also handle DevCard premium subscription events (T112)
+      // This ensures premium status is updated for DevCard features
+      const devCardEvents = [
+        'checkout.session.completed',
+        'customer.subscription.updated',
+        'customer.subscription.deleted',
+        'invoice.payment_failed',
+        'invoice.payment_succeeded',
+      ];
+
+      if (devCardEvents.includes(eventType)) {
+        const event = { type: eventType, data: data } as Stripe.Event;
+        await handleDevCardWebhook(event);
       }
     } catch (error) {
       if (error instanceof APIError) {

@@ -1,7 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Globe, Github, Instagram } from 'lucide-react';
+import { MapPin, Globe, Github, Instagram, Crown } from 'lucide-react';
 
 interface ProfileSectionProps {
   displayName: string | null;
@@ -73,10 +73,11 @@ export function ProfileSection({
 
   return (
     <div className="relative flex flex-col items-center gap-6 text-center">
-      {/* Premium Badge - top right */}
+      {/* Premium Badge - top right (T115) */}
       {isPremium && (
         <div className="absolute -top-2 right-0">
-          <Badge className="bg-devcard-green text-[#04080f] hover:bg-devcard-green/90 font-semibold px-4 py-1.5 text-sm">
+          <Badge className="bg-yellow-500 text-black hover:bg-yellow-600 font-semibold px-4 py-1.5 text-sm flex items-center gap-1">
+            <Crown className="h-3 w-3" />
             Premium
           </Badge>
         </div>
