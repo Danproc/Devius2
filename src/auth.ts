@@ -89,41 +89,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ user, account, profile }) {
       // Check if sign-in is enabled
       if (process.env.NEXT_PUBLIC_SIGNIN_ENABLED !== "true") {
         return false;
       }
 
       // Handle GitHub OAuth - store GitHub data and create DevCard
-      if (account?.provider === "github" && profile) {
+      if (account?.provider === "github" && profile && user?.id) {
+        console.log("🔵 GitHub sign-in detected for", (profile as any).login);
+        console.log("User ID:", user.id);
+
         try {
           const githubProfile = profile as any;
-          const userId = account.userId;
+          const userId = user.id;
 
-          if (userId && githubProfile.id && githubProfile.login) {
-            // Update user with GitHub data
-            await db
-              .update(users)
-              .set({
-                github_id: githubProfile.id,
-                github_username: githubProfile.login,
-              })
-              .where(eq(users.id, userId));
+          // Update user with GitHub data
+          await db
+            .update(users)
+            .set({
+              github_id: githubProfile.id,
+              github_username: githubProfile.login,
+            })
+            .where(eq(users.id, userId));
 
-            // Create DevCard for this user
-            const { createDevCard } = await import("./lib/devcard/generate");
-            try {
-              const result = await createDevCard(userId);
-              console.log(`✅ DevCard created for ${githubProfile.login} at /${result.devcard.url_slug}`);
-            } catch (err) {
-              console.error("Failed to create DevCard:", err);
-              // Don't block sign-in if DevCard creation fails
-            }
+          console.log("✅ GitHub data stored for", githubProfile.login);
+
+          // Create DevCard for this user
+          const { createDevCard } = await import("./lib/devcard/generate");
+          try {
+            console.log("🔵 Creating DevCard for", githubProfile.login);
+            const result = await createDevCard(userId);
+            console.log(`✅ DevCard created at /${result.devcard.url_slug}`);
+          } catch (err) {
+            console.error("❌ Failed to create DevCard:", err);
+            // Don't block sign-in if DevCard creation fails
           }
         } catch (error) {
-          console.error("Error storing GitHub data:", error);
-          // Don't block sign-in if GitHub data storage fails
+          console.error("❌ Error in GitHub OAuth callback:", error);
         }
       }
 

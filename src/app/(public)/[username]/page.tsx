@@ -15,8 +15,8 @@ interface PageProps {
   }>;
 }
 
-// Edge runtime for optimal performance
-export const runtime = 'edge';
+// Note: Cannot use edge runtime because postgres-js driver requires Node.js 'net' module
+// Using Node.js runtime with ISR for caching
 
 // Incremental Static Regeneration (ISR) - revalidate every 3600 seconds (1 hour)
 export const revalidate = 3600;
