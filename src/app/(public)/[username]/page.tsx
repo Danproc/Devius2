@@ -12,6 +12,7 @@ import { ConnectButton } from '@/components/devcard/connect-button';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
+import { trackCardView } from '@/lib/analytics/track';
 
 interface PageProps {
   params: Promise<{
@@ -216,16 +217,25 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     }
   }
 
-  // Increment view count (async, non-blocking)
+  // Increment view count and track analytics (async, non-blocking)
   // Note: This runs outside cache to ensure views are counted
-  db.update(devcards)
-    .set({
-      view_count: devcard.view_count + 1,
+  Promise.all([
+    db.update(devcards)
+      .set({
+        view_count: devcard.view_count + 1,
+      })
+      .where(eq(devcards.id, devcard.id))
+      .catch((error) => {
+        console.error('Failed to increment view count:', error);
+      }),
+    trackCardView(
+      devcard.github_username,
+      devcard.id,
+      headersList
+    ).catch((error) => {
+      console.error('Failed to track card view:', error);
     })
-    .where(eq(devcards.id, devcard.id))
-    .catch((error) => {
-      console.error('Failed to increment view count:', error);
-    });
+  ]);
 
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
