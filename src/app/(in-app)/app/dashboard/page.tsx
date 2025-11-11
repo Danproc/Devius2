@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardPreview } from "@/components/devcard/card-preview";
+import { ShareButtonWrapper } from "@/components/sharing/share-button-wrapper";
 import { Copy, CheckCircle2, ExternalLink, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
@@ -196,6 +197,16 @@ export default function DashboardPage() {
                   </>
                 )}
               </Button>
+              <ShareButtonWrapper
+                username={devcard.url_slug}
+                displayName={devcard.display_name || devcard.github_username}
+                customBio={devcard.custom_bio || undefined}
+                avatarUrl={devcard.avatar_url}
+                variant="outline"
+                size="icon"
+                className="border-devcard-green/30 hover:bg-devcard-green/10"
+                showLabel={false}
+              />
               <Button
                 asChild
                 variant="outline"
