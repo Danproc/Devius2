@@ -36,37 +36,37 @@ Project uses Next.js App Router structure:
 
 ---
 
-## Phase 2: Foundational (Blocking Prerequisites)
+## Phase 2: Foundational (Blocking Prerequisites) - 13/15 COMPLETE
 
 **Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-### Database Schema Foundation
+### Database Schema Foundation ✓ COMPLETE
 
-- [ ] T007 Extend src/db/schema/user.ts with GitHub fields (github_id, github_username, is_premium, premium_expires_at)
-- [ ] T008 [P] Create src/db/schema/devcard.ts with devcards table definition per data-model.md
-- [ ] T009 [P] Create src/db/schema/github-cache.ts with github_cache table definition per data-model.md
-- [ ] T010 [P] Create src/db/schema/connections.ts with connections and blocked_users tables per data-model.md
-- [ ] T011 [P] Create src/db/schema/notifications.ts with notifications table per data-model.md
-- [ ] T012 [P] Create src/db/schema/analytics.ts with analytics_events and analytics_daily tables per data-model.md
-- [ ] T013 Extend src/db/schema/plans.ts with DevCard features field (custom_themes, custom_domain, etc.)
+- [x] T007 Extend src/db/schema/user.ts with GitHub fields (github_id, github_username, is_premium, premium_expires_at)
+- [x] T008 [P] Create src/db/schema/devcard.ts with devcards table definition per data-model.md
+- [x] T009 [P] Create src/db/schema/github-cache.ts with github_cache table definition per data-model.md
+- [x] T010 [P] Create src/db/schema/connections.ts with connections and blocked_users tables per data-model.md
+- [x] T011 [P] Create src/db/schema/notifications.ts with notifications table per data-model.md
+- [x] T012 [P] Create src/db/schema/analytics.ts with analytics_events and analytics_daily tables per data-model.md
+- [x] T013 Extend src/db/schema/plans.ts with DevCard features field (custom_themes, custom_domain, etc.)
 - [ ] T014 Generate Drizzle migration with pnpm drizzle-kit generate
 - [ ] T015 Apply database migration with pnpm drizzle-kit push
 
-### TypeScript Types
+### TypeScript Types ✓ COMPLETE
 
-- [ ] T016 [P] Create src/types/devcard.ts with DevCard, DevCardUpdate, and Theme types
-- [ ] T017 [P] Create src/types/github.ts with GitHubProfile, GitHubRepo, GitHubStats types
-- [ ] T018 [P] Create src/types/analytics.ts with AnalyticsEvent and AnalyticsSummary types
+- [x] T016 [P] Create src/types/devcard.ts with DevCard, DevCardUpdate, and Theme types
+- [x] T017 [P] Create src/types/github.ts with GitHubProfile, GitHubRepo, GitHubStats types
+- [x] T018 [P] Create src/types/analytics.ts with AnalyticsEvent and AnalyticsSummary types
 
-### Core Authentication Setup
+### Core Authentication Setup ✓ COMPLETE
 
-- [ ] T019 Update src/auth.ts to add GitHub OAuth provider configuration with required scopes (read:user, user:email, public_repo)
-- [ ] T020 Add GitHub OAuth callback handlers in src/auth.ts for DevCard creation on sign-in
-- [ ] T021 Create .env.local template with required environment variables (GITHUB_ID, GITHUB_SECRET, etc.)
+- [x] T019 Update src/auth.ts to add GitHub OAuth provider configuration with required scopes (read:user, user:email, public_repo)
+- [x] T020 Add GitHub OAuth callback handlers in src/auth.ts for DevCard creation on sign-in
+- [x] T021 Create .env.local template with required environment variables (GITHUB_ID, GITHUB_SECRET, etc.)
 
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
+**Checkpoint**: Foundation ready (pending DB migrations) - user story implementation can begin
 
 ---
 
