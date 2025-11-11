@@ -4,6 +4,8 @@ import { syncGitHubData } from "./sync-github-data";
 import { dailyGitHubSync } from "./daily-github-sync";
 import { aggregateAnalytics } from "./aggregate-analytics";
 import { cleanupAnalytics } from "./cleanup-analytics";
+// Premium subscription functions (T123)
+import { checkSubscriptionExpiry } from "./check-subscription-expiry";
 
 export type InngestEvents = {
   // TIP: Add your events here, where key is the event name and value is the event data format
@@ -28,4 +30,6 @@ export const functions = [
   dailyGitHubSync,
   aggregateAnalytics,
   cleanupAnalytics,
+  // Premium subscription functions (T123)
+  checkSubscriptionExpiry,
 ];

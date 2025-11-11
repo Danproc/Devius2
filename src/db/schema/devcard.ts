@@ -54,6 +54,21 @@ export const devcards = pgTable('devcards', {
     font?: string;
   }>(),
 
+  // Organization Profile (Premium - T118)
+  organization_profile: jsonb('organization_profile').$type<{
+    name?: string;
+    description?: string;
+    website?: string;
+    members?: Array<{
+      github_username: string;
+      role: string;
+      display_name?: string;
+    }>;
+    company_size?: string;
+    industry?: string;
+    founded_year?: number;
+  }>(),
+
   // Metadata
   view_count: integer('view_count').default(0).notNull(),
   last_github_sync: timestamp('last_github_sync', { mode: 'date' }),
