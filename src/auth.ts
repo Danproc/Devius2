@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { type EmailConfig } from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
@@ -88,8 +89,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
-    async signIn() {
-      return process.env.NEXT_PUBLIC_SIGNIN_ENABLED === "true";
+    async signIn({ account, profile }) {
+      // Check if sign-in is enabled
+      if (process.env.NEXT_PUBLIC_SIGNIN_ENABLED !== "true") {
+        return false;
+      }
+
+      // Handle GitHub OAuth - store GitHub data in user table
+      if (account?.provider === "github" && profile) {
+        try {
+          const githubProfile = profile as any;
+          const userId = account.userId;
+
+          if (userId && githubProfile.id && githubProfile.login) {
+            // Update user with GitHub data
+            await db
+              .update(users)
+              .set({
+                github_id: githubProfile.id,
+                github_username: githubProfile.login,
+              })
+              .where(eq(users.id, userId));
+          }
+        } catch (error) {
+          console.error("Error storing GitHub data:", error);
+          // Don't block sign-in if GitHub data storage fails
+        }
+      }
+
+      return true;
     },
     async session({ session, token }) {
       if (token.sub) {
@@ -103,10 +131,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
       // If user object is available (after sign in), check if impersonation is happening
       if (user && "impersonatedBy" in user) {
         token.impersonatedBy = user.impersonatedBy;
+      }
+
+      // Store GitHub account info for DevCard creation
+      if (account?.provider === "github" && profile) {
+        const githubProfile = profile as any;
+        token.githubId = githubProfile.id;
+        token.githubUsername = githubProfile.login;
       }
 
       // NOTE: Do not add anything else to the token, except for the sub
@@ -116,6 +151,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         sub: token.sub,
         email: token.email,
         impersonatedBy: token.impersonatedBy,
+        githubId: token.githubId,
+        githubUsername: token.githubUsername,
         iat: token.iat,
         exp: token.exp,
         jti: token.jti,
@@ -126,6 +163,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    // GitHub OAuth for DevCard V2
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
+      authorization: {
+        params: {
+          scope: 'read:user user:email public_repo',
+        },
+      },
       allowDangerousEmailAccountLinking: true,
     }),
     emailProvider,
