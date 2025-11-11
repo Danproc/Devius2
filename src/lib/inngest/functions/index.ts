@@ -1,5 +1,7 @@
 import { helloWorld } from "./hello-world";
 import { expireCredits } from "./expire-credits";
+import { syncGitHubData } from "./sync-github-data";
+import { dailyGitHubSync } from "./daily-github-sync";
 
 export type InngestEvents = {
   // TIP: Add your events here, where key is the event name and value is the event data format
@@ -8,7 +10,13 @@ export type InngestEvents = {
       email: string;
     };
   };
+  "devcard/sync.github": {
+    data: {
+      userId: string;
+      devCardId: string;
+    };
+  };
 };
 
 // TIP: Add your functions here, failing this will result in function not being registered
-export const functions = [helloWorld, expireCredits];
+export const functions = [helloWorld, expireCredits, syncGitHubData, dailyGitHubSync];
