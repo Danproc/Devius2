@@ -59,6 +59,15 @@ export const plans = pgTable("plans", {
   onetimeLemonSqueezyVariantId: text("onetimeLemonSqueezyVariantId"),
   onetimeDodoProductId: text("onetimeDodoProductId"),
   onetimePaypalPlanId: text("onetimePaypalPlanId"), // Not Required, Added for standardization
-  
+
   quotas: jsonb("quotas").$type<Quotas>(),
+
+  // DevCard Features (DevCard V2)
+  features: jsonb('features').$type<{
+    custom_themes?: boolean;
+    custom_domain?: boolean;
+    advanced_analytics?: boolean;
+    priority_support?: boolean;
+    organization_profiles?: boolean;
+  }>(),
 });

@@ -30,6 +30,14 @@ export const users = pgTable("app_user", {
 
   credits: jsonb("credits").$type<CreditRecord>().default({}),
 
+  // GitHub Integration (DevCard V2)
+  github_id: integer("github_id").unique(),
+  github_username: text("github_username").unique(),
+
+  // DevCard Premium
+  is_premium: boolean("is_premium").default(false).notNull(),
+  premium_expires_at: timestamp("premium_expires_at", { mode: "date" }),
+
   stripeCustomerId: text("stripeCustomerId"),
   stripeSubscriptionId: text("stripeSubscriptionId"),
   lemonSqueezyCustomerId: text("lemonSqueezyCustomerId"),
