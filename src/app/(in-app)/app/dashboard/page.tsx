@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardPreview } from "@/components/devcard/card-preview";
 import { ShareButtonWrapper } from "@/components/sharing/share-button-wrapper";
-import { Copy, CheckCircle2, ExternalLink, RefreshCw } from "lucide-react";
+import { Copy, CheckCircle2, ExternalLink, RefreshCw, Users } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 
@@ -222,7 +223,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Views</CardDescription>
@@ -246,6 +247,25 @@ export default function DashboardPage() {
             <CardDescription>Username</CardDescription>
             <CardTitle className="text-2xl truncate">@{devcard.github_username}</CardTitle>
           </CardHeader>
+        </Card>
+        <Card className="border-devcard-green/20 bg-gradient-to-br from-background to-devcard-green/5">
+          <CardHeader className="pb-2">
+            <CardDescription>Network</CardDescription>
+            <CardTitle className="text-lg">Connect with developers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="w-full border-devcard-green/30 hover:bg-devcard-green/10 hover:border-devcard-green/50"
+            >
+              <Link href="/app/network">
+                <Users className="mr-2 h-4 w-4" />
+                My Network
+              </Link>
+            </Button>
+          </CardContent>
         </Card>
       </div>
 
