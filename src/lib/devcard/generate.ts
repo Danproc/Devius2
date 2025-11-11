@@ -123,15 +123,6 @@ export async function createDevCard(
     .where(eq(devcards.user_id, userId))
     .limit(1);
 
-  if (existingCard) {
-    // Return existing card without modifying
-    return {
-      devcard: existingCard,
-      isNew: false,
-      url: `/card/${existingCard.url_slug}`,
-    };
-  }
-
   // Fetch GitHub data if not provided
   let profile: GitHubProfile;
   let repositories: GitHubRepo[];
@@ -154,6 +145,22 @@ export async function createDevCard(
 
   // Simplify repositories for storage
   const simplifiedRepos = simplifyRepositories(repositories, 10);
+
+  // Cache GitHub data for performance (even for existing cards)
+  await Promise.all([
+    cacheGitHubProfile(userId, profile),
+    cacheGitHubRepos(userId, simplifiedRepos),
+    cacheGitHubStats(userId, stats),
+  ]);
+
+  // If card already exists, return it (but data has been cached above)
+  if (existingCard) {
+    return {
+      devcard: existingCard,
+      isNew: false,
+      url: `/card/${existingCard.url_slug}`,
+    };
+  }
 
   // Extract top repositories (top 3 by stars)
   const featuredRepos = simplifiedRepos
@@ -226,13 +233,6 @@ export async function createDevCard(
       github_username: profile.login,
     })
     .where(eq(users.id, userId));
-
-  // Cache GitHub data for performance
-  await Promise.all([
-    cacheGitHubProfile(userId, profile),
-    cacheGitHubRepos(userId, simplifiedRepos),
-    cacheGitHubStats(userId, stats),
-  ]);
 
   return {
     devcard: newCard,

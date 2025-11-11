@@ -92,16 +92,14 @@ export function ProfileSection({
         </Avatar>
       </div>
 
-      {/* Name with Ranking Badge */}
-      <div className="flex items-center gap-3">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#dde3ed]">
+      {/* Name with Member ID Badge */}
+      <div className="flex items-center justify-center gap-3">
+        <h1 className="text-4xl font-medium text-[#dde3ed]">
           {displayName || githubUsername}
         </h1>
-        {ranking && (
-          <span className="text-3xl md:text-4xl font-bold text-[#5b6a7f]">
-            #{ranking}
-          </span>
-        )}
+        <span className="text-2xl font-medium text-[#5b6a7f]">
+          #{ranking || 1}
+        </span>
       </div>
 
       {/* Bio */}
