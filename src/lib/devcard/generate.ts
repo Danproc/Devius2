@@ -146,15 +146,15 @@ export async function createDevCard(
   // Simplify repositories for storage
   const simplifiedRepos = simplifyRepositories(repositories, 10);
 
-  // Cache GitHub data for performance (even for existing cards)
-  await Promise.all([
-    cacheGitHubProfile(userId, profile),
-    cacheGitHubRepos(userId, simplifiedRepos),
-    cacheGitHubStats(userId, stats),
-  ]);
-
-  // If card already exists, return it (but data has been cached above)
+  // If card already exists, cache and return it
   if (existingCard) {
+    // Cache GitHub data with devcard.id as key (not userId!)
+    await Promise.all([
+      cacheGitHubProfile(existingCard.id, profile),
+      cacheGitHubRepos(existingCard.id, simplifiedRepos),
+      cacheGitHubStats(existingCard.id, stats),
+    ]);
+
     return {
       devcard: existingCard,
       isNew: false,
@@ -233,6 +233,13 @@ export async function createDevCard(
       github_username: profile.login,
     })
     .where(eq(users.id, userId));
+
+  // Cache GitHub data with devcard.id as key for newly created card
+  await Promise.all([
+    cacheGitHubProfile(newCard.id, profile),
+    cacheGitHubRepos(newCard.id, simplifiedRepos),
+    cacheGitHubStats(newCard.id, stats),
+  ]);
 
   return {
     devcard: newCard,
