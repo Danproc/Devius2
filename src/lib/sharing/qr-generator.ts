@@ -3,6 +3,7 @@
  *
  * Generates QR codes for DevCard profiles using the qrcode library.
  * Supports various sizes and formats for different sharing contexts.
+ * Includes Vercel KV caching with 7-day TTL.
  */
 
 import QRCode from 'qrcode';
@@ -196,6 +197,178 @@ export function isValidDevCardURL(url: string): boolean {
       urlObj.pathname.split('/').filter(Boolean).length === 1
     );
   } catch {
+    return false;
+  }
+}
+
+/**
+ * QR Code Caching with Vercel KV
+ *
+ * Cache QR codes to reduce generation overhead and improve performance.
+ * Uses 7-day TTL as specified in requirements.
+ */
+
+// Cache key prefix
+const QR_CACHE_PREFIX = 'qr:';
+
+// Cache TTL: 7 days (in seconds)
+const QR_CACHE_TTL = 60 * 60 * 24 * 7; // 7 days
+
+/**
+ * Check if Vercel KV is available
+ */
+function isKVAvailable(): boolean {
+  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+/**
+ * Get KV client instance
+ */
+async function getKVClient() {
+  if (!isKVAvailable()) {
+    return null;
+  }
+
+  try {
+    const { kv } = await import('@vercel/kv');
+    return kv;
+  } catch (error) {
+    console.error('Failed to load @vercel/kv:', error);
+    return null;
+  }
+}
+
+/**
+ * Generate cache key for QR code
+ *
+ * @param username - DevCard username
+ * @param size - QR code size
+ * @returns Cache key string
+ */
+function generateQRCacheKey(username: string, size: number): string {
+  return `${QR_CACHE_PREFIX}${username}:${size}`;
+}
+
+/**
+ * Cache QR code result
+ *
+ * @param username - DevCard username
+ * @param size - QR code size
+ * @param result - QR code generation result
+ * @returns True if cached successfully
+ */
+export async function cacheQRCode(
+  username: string,
+  size: number,
+  result: QRCodeResult
+): Promise<boolean> {
+  try {
+    const kv = await getKVClient();
+    if (!kv) {
+      console.warn('Vercel KV not available, skipping QR code caching');
+      return false;
+    }
+
+    const key = generateQRCacheKey(username, size);
+    await kv.setex(key, QR_CACHE_TTL, JSON.stringify(result));
+    return true;
+  } catch (error) {
+    console.error('Failed to cache QR code:', error);
+    return false;
+  }
+}
+
+/**
+ * Get cached QR code
+ *
+ * @param username - DevCard username
+ * @param size - QR code size
+ * @returns Cached QR code result or null if not found
+ */
+export async function getCachedQRCode(
+  username: string,
+  size: number
+): Promise<QRCodeResult | null> {
+  try {
+    const kv = await getKVClient();
+    if (!kv) {
+      return null;
+    }
+
+    const key = generateQRCacheKey(username, size);
+    const cached = await kv.get(key);
+
+    if (cached) {
+      return typeof cached === 'string' ? JSON.parse(cached) : (cached as QRCodeResult);
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Failed to get cached QR code:', error);
+    return null;
+  }
+}
+
+/**
+ * Generate QR code with caching
+ *
+ * This is the main function to use for QR code generation in API endpoints.
+ * It checks the cache first and generates a new QR code only if needed.
+ *
+ * @param username - DevCard username
+ * @param options - QR code generation options
+ * @returns Promise resolving to QR code data URL and original URL
+ *
+ * @example
+ * ```ts
+ * const result = await generateQRWithCache('danproctor', { size: 400 });
+ * // Returns cached result if available, otherwise generates new QR code
+ * ```
+ */
+export async function generateQRWithCache(
+  username: string,
+  options: QRCodeOptions = {}
+): Promise<QRCodeResult> {
+  const size = validateSize(options.size || 400);
+
+  // Try to get from cache first
+  const cached = await getCachedQRCode(username, size);
+  if (cached) {
+    return cached;
+  }
+
+  // Generate new QR code
+  const result = await generateDevCardQR(username, options);
+
+  // Cache the result (fire and forget)
+  cacheQRCode(username, size, result).catch((error) => {
+    console.error('Failed to cache QR code (non-blocking):', error);
+  });
+
+  return result;
+}
+
+/**
+ * Invalidate cached QR code for a username
+ *
+ * @param username - DevCard username
+ * @returns True if invalidated successfully
+ */
+export async function invalidateQRCache(username: string): Promise<boolean> {
+  try {
+    const kv = await getKVClient();
+    if (!kv) {
+      return false;
+    }
+
+    // Invalidate common sizes
+    const commonSizes = [200, 400, 800, 1000];
+    const keys = commonSizes.map((size) => generateQRCacheKey(username, size));
+
+    await Promise.all(keys.map((key) => kv.del(key)));
+    return true;
+  } catch (error) {
+    console.error('Failed to invalidate QR cache:', error);
     return false;
   }
 }
