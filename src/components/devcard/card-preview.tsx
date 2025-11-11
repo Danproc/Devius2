@@ -7,6 +7,43 @@ import { ConnectedDevelopers } from './connected-developers';
 import { TopLanguages } from './top-languages';
 import { Eye } from 'lucide-react';
 
+// Language colors mapping
+const LANGUAGE_COLORS: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#f7df1e',
+  PHP: '#777bb4',
+  Python: '#3776ab',
+  Shell: '#89e051',
+  'C++': '#00599c',
+  Java: '#b07219',
+  Go: '#00add8',
+  Rust: '#dea584',
+  Ruby: '#701516',
+};
+
+// Calculate language statistics from repositories
+function calculateLanguages(repos?: Repository[]) {
+  if (!repos || repos.length === 0) return undefined;
+
+  const langCounts: Record<string, number> = {};
+  repos.forEach(repo => {
+    if (repo.language) {
+      langCounts[repo.language] = (langCounts[repo.language] || 0) + 1;
+    }
+  });
+
+  const total = Object.values(langCounts).reduce((a, b) => a + b, 0);
+
+  return Object.entries(langCounts)
+    .map(([name, count]) => ({
+      name,
+      percentage: parseFloat(((count / total) * 100).toFixed(1)),
+      color: LANGUAGE_COLORS[name] || '#808080'
+    }))
+    .sort((a, b) => b.percentage - a.percentage)
+    .slice(0, 5);
+}
+
 interface GitHubStats {
   public_repos: number;
   followers: number;
@@ -137,7 +174,7 @@ export function CardPreview({
           </div>
 
           {/* Top Languages Section */}
-          <TopLanguages />
+          <TopLanguages languages={calculateLanguages(featuredRepos)} />
         </div>
       </Card>
 
