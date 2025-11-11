@@ -141,6 +141,9 @@ importers:
       '@upstash/ratelimit':
         specifier: ^2.0.7
         version: 2.0.7(@upstash/redis@1.35.6)
+      '@vercel/kv':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@vercel/og':
         specifier: ^0.6.8
         version: 0.6.8
@@ -173,7 +176,7 @@ importers:
         version: 16.5.0
       drizzle-orm:
         specifier: ^0.38.4
-        version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.13)(@types/react@19.2.2)(pg@8.14.1)(react@19.2.0)
+        version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.13)(@types/react@19.2.2)(pg@8.14.1)(postgres@3.4.7)(react@19.2.0)
       embla-carousel-auto-scroll:
         specifier: ^8.6.0
         version: 8.6.0(embla-carousel@8.6.0)
@@ -240,6 +243,9 @@ importers:
       pg:
         specifier: ^8.14.1
         version: 8.14.1
+      postgres:
+        specifier: ^3.4.7
+        version: 3.4.7
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -3362,6 +3368,10 @@ packages:
   '@upstash/redis@1.35.6':
     resolution: {integrity: sha512-aSEIGJgJ7XUfTYvhQcQbq835re7e/BXjs8Janq6Pvr6LlmTZnyqwT97RziZLO/8AVUL037RLXqqiQC6kCt+5pA==}
 
+  '@vercel/kv@3.0.0':
+    resolution: {integrity: sha512-pKT8fRnfyYk2MgvyB6fn6ipJPCdfZwiKDdw7vB+HL50rjboEBHDVBEcnwfkEpVSp2AjNtoaOUH7zG+bVC/rvSg==}
+    engines: {node: '>=14.6'}
+
   '@vercel/og@0.6.8':
     resolution: {integrity: sha512-e4kQK9mP8ntpo3dACWirGod/hHv4qO5JMj9a/0a2AZto7b4persj5YP7t1Er372gTtYFTYxNhMx34jRvHooglw==}
     engines: {node: '>=16'}
@@ -5923,6 +5933,10 @@ packages:
 
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
+
+  postgres@3.4.7:
+    resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
+    engines: {node: '>=12'}
 
   preact-render-to-string@5.2.3:
     resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
@@ -10253,6 +10267,10 @@ snapshots:
     dependencies:
       uncrypto: 0.1.3
 
+  '@vercel/kv@3.0.0':
+    dependencies:
+      '@upstash/redis': 1.35.6
+
   '@vercel/og@0.6.8':
     dependencies:
       '@resvg/resvg-wasm': 2.4.0
@@ -10894,12 +10912,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.13)(@types/react@19.2.2)(pg@8.14.1)(react@19.2.0):
+  drizzle-orm@0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.13)(@types/react@19.2.2)(pg@8.14.1)(postgres@3.4.7)(react@19.2.0):
     optionalDependencies:
       '@neondatabase/serverless': 0.10.4
       '@types/pg': 8.11.13
       '@types/react': 19.2.2
       pg: 8.14.1
+      postgres: 3.4.7
       react: 19.2.0
 
   dunder-proto@1.0.1:
@@ -13270,6 +13289,8 @@ snapshots:
   postgres-interval@3.0.0: {}
 
   postgres-range@1.1.4: {}
+
+  postgres@3.4.7: {}
 
   preact-render-to-string@5.2.3(preact@10.11.3):
     dependencies:
