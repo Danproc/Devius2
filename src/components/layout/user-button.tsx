@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import useUser from "@/lib/users/useUser";
 import Link from "next/link";
 import {
@@ -16,10 +17,41 @@ import {
   LogOut,
   UserIcon,
   Ticket,
+  Users,
+  Inbox,
 } from "lucide-react";
+import useSWR from "swr";
+
+interface ConnectionRequestData {
+  direction: "received" | "sent";
+}
+
+interface RequestsResponse {
+  requests: ConnectionRequestData[];
+}
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  return res.json();
+};
 
 export function UserButton() {
   const { user } = useUser();
+
+  // Fetch pending connection requests
+  const { data } = useSWR<RequestsResponse>(
+    "/api/connections/requests?status=pending",
+    fetcher,
+    {
+      refreshInterval: 30000, // Refresh every 30 seconds
+      revalidateOnFocus: true,
+    }
+  );
+
+  const pendingRequestsCount = data?.requests.filter(
+    (r) => r.direction === "received"
+  ).length || 0;
 
   const getInitials = (name: string) => {
     return name
@@ -62,6 +94,29 @@ export function UserButton() {
             Dashboard
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/network" className="cursor-pointer">
+            <Users className="mr-2 h-4 w-4" />
+            My Network
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/network/requests" className="cursor-pointer flex items-center justify-between">
+            <span className="flex items-center">
+              <Inbox className="mr-2 h-4 w-4" />
+              Connection Requests
+            </span>
+            {pendingRequestsCount > 0 && (
+              <Badge
+                variant="default"
+                className="ml-2 bg-devcard-green text-black font-semibold"
+              >
+                {pendingRequestsCount}
+              </Badge>
+            )}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/app/plan" className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />
