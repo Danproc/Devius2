@@ -36,105 +36,63 @@ const languageColors: Record<string, string> = {
 
 export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps) {
   if (!repositories || repositories.length === 0) {
-    return (
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-foreground">Featured Repositories</h2>
-        <p className="text-sm text-muted-foreground">
-          No featured repositories selected yet.
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#dde3ed]">Featured Repositories</h2>
-        <a
-          href={`https://github.com/${githubUsername}?tab=repositories`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-devcard-green hover:brightness-110 transition-all inline-flex items-center gap-1"
+    <>
+      {repositories.map((repo) => (
+        <div
+          key={repo.full_name}
+          className="bg-[#04080f] border border-[#121824] rounded-3xl p-6"
         >
-          View all
-          <ExternalLink className="size-3" />
-        </a>
-      </div>
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-medium text-[#dde3ed]">
+                {repo.name}
+              </h3>
+              <div className="flex items-center gap-3 text-sm text-[#5b6a7f] mt-1">
+                {repo.language && (
+                  <div className="flex items-center gap-1">
+                    <span
+                      className="size-2 rounded-full"
+                      style={{
+                        backgroundColor: languageColors[repo.language] || '#00FF88',
+                      }}
+                    />
+                    <span>{repo.language}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1">
+                  <Star className="size-3 fill-current" />
+                  <span>{repo.stargazers_count}</span>
+                </div>
+              </div>
+            </div>
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#1cf491] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#1cf491]/90 transition-colors"
+            >
+              Visit Repo
+            </a>
+          </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {repositories.map((repo) => (
+          <p className="text-[#5b6a7f] leading-relaxed mb-6">
+            {repo.description || 'No description available'}
+          </p>
+
           <a
-            key={repo.full_name}
             href={repo.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col gap-3 p-5 rounded-xl border border-[#121824] bg-[#04080f] hover:border-devcard-green/50 hover:bg-white/5 transition-all duration-200 hover:-translate-y-0.5"
+            className="block w-full bg-[#1cf491] text-black py-3 rounded-full font-medium text-center hover:bg-[#1cf491]/90 transition-colors"
           >
-            {/* Repo Header */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base truncate text-[#dde3ed] group-hover:text-devcard-green transition-colors">
-                  {repo.name}
-                </h3>
-                <p className="text-xs text-[#5b6a7f] truncate font-mono">
-                  {repo.full_name}
-                </p>
-              </div>
-              <ExternalLink className="size-4 text-[#5b6a7f] group-hover:text-devcard-green shrink-0 transition-colors" />
-            </div>
-
-            {/* Description */}
-            {repo.description && (
-              <p className="text-sm text-[#5b6a7f] line-clamp-2 leading-relaxed">
-                {repo.description}
-              </p>
-            )}
-
-            {/* Topics */}
-            {repo.topics && repo.topics.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {repo.topics.slice(0, 3).map((topic) => (
-                  <Badge
-                    key={topic}
-                    variant="secondary"
-                    className="text-xs px-2 py-0.5 bg-devcard-green/10 text-devcard-green border-devcard-green/20"
-                  >
-                    {topic}
-                  </Badge>
-                ))}
-                {repo.topics.length > 3 && (
-                  <Badge variant="outline" className="text-xs px-2 py-0.5 border-[#121824] text-[#5b6a7f]">
-                    +{repo.topics.length - 3}
-                  </Badge>
-                )}
-              </div>
-            )}
-
-            {/* Stats and Language */}
-            <div className="flex items-center gap-4 text-xs text-[#5b6a7f]">
-              {repo.language && (
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="size-3 rounded-full"
-                    style={{
-                      backgroundColor: languageColors[repo.language] || '#00FF88',
-                    }}
-                  />
-                  <span className="font-medium">{repo.language}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1">
-                <Star className="size-3 fill-current" />
-                <span>{repo.stargazers_count.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <GitFork className="size-3" />
-                <span>{repo.forks_count.toLocaleString()}</span>
-              </div>
-            </div>
+            View Project
           </a>
-        ))}
-      </div>
-    </div>
+        </div>
+      ))}
+    </>
   );
 }
