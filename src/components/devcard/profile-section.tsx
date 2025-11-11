@@ -160,7 +160,7 @@ export function ProfileSection({
 
       {/* Connect Button */}
       <Button
-        className="w-full bg-devcard-green hover:bg-devcard-green/90 text-[#04080f] font-semibold text-base py-6 rounded-full"
+        className="w-full bg-[#1cf491] hover:bg-[#19e085] text-[#04080f] font-semibold text-base py-6 rounded-full"
         size="lg"
       >
         Connect with {displayName?.split(' ')[0] || githubUsername}
