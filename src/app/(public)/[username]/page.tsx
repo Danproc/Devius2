@@ -193,7 +193,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     : null;
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 devcard-gradient-bg animate-fade-in">
+    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f] animate-fade-in">
       <div className="animate-slide-up">
         <CardPreview
           displayName={devcard.display_name}

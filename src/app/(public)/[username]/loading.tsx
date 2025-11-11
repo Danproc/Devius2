@@ -3,13 +3,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Loading() {
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 devcard-gradient-bg">
+    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f]">
       <div className="w-full max-w-4xl mx-auto animate-fade-in">
-        <Card className="overflow-hidden glass-card border-white/10 shadow-2xl">
+        <Card className="overflow-hidden bg-[#04080f] border border-[#121824] rounded-3xl">
           <div className="p-6 md:p-8 space-y-8">
-            {/* Profile Section Skeleton */}
+            {/* Profile Section Skeleton - NO green ring */}
             <div className="flex flex-col items-center gap-4 text-center">
-              <Skeleton className="size-32 md:size-40 rounded-full animate-pulse ring-4 ring-devcard-green/20" />
+              <Skeleton className="size-32 md:size-40 rounded-full animate-pulse" />
               <div className="flex flex-col gap-2 w-full items-center">
                 <Skeleton className="h-10 w-48 animate-pulse" />
                 <Skeleton className="h-5 w-32 animate-pulse" />
@@ -37,7 +37,7 @@ export default function Loading() {
               <Skeleton className="h-6 w-40 animate-pulse" />
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-white/10 bg-white/5">
+                  <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-[#121824] bg-[#04080f]">
                     <Skeleton className="size-5 animate-pulse" />
                     <Skeleton className="h-8 w-16 animate-pulse" />
                     <Skeleton className="h-3 w-20 animate-pulse" />
@@ -51,7 +51,7 @@ export default function Loading() {
               <Skeleton className="h-6 w-48 animate-pulse" />
               <div className="grid gap-4 md:grid-cols-2">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="p-5 rounded-xl border border-white/10 bg-white/5 space-y-3">
+                  <div key={i} className="p-5 rounded-xl border border-[#121824] bg-[#04080f] space-y-3">
                     <Skeleton className="h-6 w-3/4 animate-pulse" />
                     <Skeleton className="h-4 w-full animate-pulse" />
                     <Skeleton className="h-4 w-full animate-pulse" />
