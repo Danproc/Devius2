@@ -96,12 +96,12 @@ Project uses Next.js App Router structure:
 - [x] T031 [P] [US1] Create src/lib/inngest/functions/daily-github-sync.ts with dailyGitHubSync cron job (2 AM UTC)
 - [x] T032 [US1] Update src/lib/inngest/functions/index.ts to export new Inngest functions
 
-### API Endpoints
+### API Endpoints ✓ COMPLETE
 
-- [ ] T033 [P] [US1] Create src/app/api/github/sync/route.ts for POST /api/github/sync (manual GitHub data refresh)
-- [ ] T034 [P] [US1] Create src/app/api/github/repos/route.ts for GET /api/github/repos (fetch user repositories)
-- [ ] T035 [P] [US1] Create src/app/api/cards/[username]/route.ts for GET /api/cards/{username} (public DevCard retrieval)
-- [ ] T036 [P] [US1] Create src/app/api/cards/me/route.ts for GET and PATCH /api/cards/me (authenticated user DevCard operations)
+- [x] T033 [P] [US1] Create src/app/api/github/sync/route.ts for POST /api/github/sync (manual GitHub data refresh)
+- [x] T034 [P] [US1] Create src/app/api/github/repos/route.ts for GET /api/github/repos (fetch user repositories)
+- [x] T035 [P] [US1] Create src/app/api/cards/[username]/route.ts for GET /api/cards/{username} (public DevCard retrieval)
+- [x] T036 [P] [US1] Create src/app/api/cards/me/route.ts for GET and PATCH /api/cards/me (authenticated user DevCard operations)
 
 ### Public DevCard Page
 
