@@ -90,11 +90,11 @@ Project uses Next.js App Router structure:
 - [x] T028 [P] [US1] Create src/lib/devcard/url-utils.ts with generateCardUrl function (handles username conflicts with nanoid)
 - [x] T029 [US1] Update src/lib/users/onUserCreate.ts to trigger DevCard creation and GitHub sync on user signup
 
-### Background Jobs (Inngest)
+### Background Jobs (Inngest) ✓ COMPLETE
 
-- [ ] T030 [P] [US1] Create src/lib/inngest/functions/sync-github-data.ts with syncGitHubData function triggered by github/sync.requested event
-- [ ] T031 [P] [US1] Create src/lib/inngest/functions/daily-github-sync.ts with dailyGitHubSync cron job (2 AM UTC)
-- [ ] T032 [US1] Update src/lib/inngest/functions/index.ts to export new Inngest functions
+- [x] T030 [P] [US1] Create src/lib/inngest/functions/sync-github-data.ts with syncGitHubData function triggered by github/sync.requested event
+- [x] T031 [P] [US1] Create src/lib/inngest/functions/daily-github-sync.ts with dailyGitHubSync cron job (2 AM UTC)
+- [x] T032 [US1] Update src/lib/inngest/functions/index.ts to export new Inngest functions
 
 ### API Endpoints
 
