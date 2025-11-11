@@ -95,7 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false;
       }
 
-      // Handle GitHub OAuth - store GitHub data in user table
+      // Handle GitHub OAuth - store GitHub data and create DevCard
       if (account?.provider === "github" && profile) {
         try {
           const githubProfile = profile as any;
@@ -110,6 +110,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 github_username: githubProfile.login,
               })
               .where(eq(users.id, userId));
+
+            // Create DevCard for this user
+            const { createDevCard } = await import("./lib/devcard/generate");
+            try {
+              const result = await createDevCard(userId);
+              console.log(`✅ DevCard created for ${githubProfile.login} at /${result.devcard.url_slug}`);
+            } catch (err) {
+              console.error("Failed to create DevCard:", err);
+              // Don't block sign-in if DevCard creation fails
+            }
           }
         } catch (error) {
           console.error("Error storing GitHub data:", error);
