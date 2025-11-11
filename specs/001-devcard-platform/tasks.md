@@ -112,12 +112,12 @@ Project uses Next.js App Router structure:
 - [x] T041 [P] [US1] Create src/components/devcard/stats-display.tsx component for GitHub statistics display
 - [x] T042 [US1] Implement edge runtime and caching headers in [username]/page.tsx (Cache-Control: public, s-maxage=3600)
 
-### Dashboard & OAuth Flow
+### Dashboard & OAuth Flow ✓ COMPLETE
 
-- [ ] T043 [US1] Create src/app/(in-app)/app/dashboard/page.tsx with user dashboard showing DevCard preview and shareable URL
-- [ ] T044 [US1] Update existing sign-in page to add "Connect with GitHub" button with NextAuth.js GitHub provider
+- [x] T043 [US1] Create src/app/(in-app)/app/dashboard/page.tsx with user dashboard showing DevCard preview and shareable URL
+- [x] T044 [US1] Update existing sign-in page to add "Connect with GitHub" button with NextAuth.js GitHub provider
 
-**Checkpoint**: At this point, User Story 1 should be fully functional - users can sign up with GitHub, auto-generate DevCard, and view it via public URL
+**Checkpoint**: ✅ USER STORY 1 COMPLETE! Users can sign up with GitHub, auto-generate DevCard, and view it via public URL
 
 ---
 
