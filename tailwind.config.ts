@@ -8,10 +8,12 @@ export default {
         heading: ["var(--font-public-sans)", "sans-serif"],
       },
       colors: {
-        // DevCard V2 Design System Colors
-        "devcard-green": "#00FF88",
-        "devcard-dark": "#0A0E14",
-        "devcard-card": "rgba(15, 23, 42, 0.7)", // Dark with transparency
+        // DevCard V2 Design System - Exact Colors
+        "devcard-green": "#1cf491",
+        "devcard-base": "#04080f",
+        "devcard-heading": "#dde3ed",
+        "devcard-text": "#5b6a7f",
+        "devcard-border": "#121824",
       },
       borderRadius: {
         lg: "var(--radius)",

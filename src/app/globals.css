@@ -164,45 +164,44 @@
   }
 }
 
-/* DevCard V2 Design System Utilities */
+/* DevCard V2 Design System Utilities - Exact Design */
 @layer utilities {
-  .glass-card {
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .devcard-bg {
+    background: #04080f;
   }
 
-  .glass-card-light {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+  .devcard-card-bg {
+    background: #04080f;
+    border: 1px solid #121824;
   }
 
-  .devcard-gradient-bg {
-    background: linear-gradient(135deg, #0A0E14 0%, #1a1f2e 100%);
+  .devcard-text-heading {
+    color: #dde3ed;
   }
 
+  .devcard-text-body {
+    color: #5b6a7f;
+  }
+
+  .devcard-green-text {
+    color: #1cf491;
+  }
+
+  .devcard-green-bg {
+    background: #1cf491;
+  }
+
+  .devcard-border {
+    border-color: #121824;
+  }
+
+  /* Remove hover glow effects - keep it clean */
   .devcard-card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease-in-out;
   }
 
   .devcard-card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15);
-  }
-
-  .devcard-green-ring {
-    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.4);
-  }
-
-  .devcard-green-glow {
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-  }
-
-  .devcard-text-shadow {
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
   }
 
   .language-bar {
