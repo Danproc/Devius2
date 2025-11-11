@@ -6,6 +6,7 @@ import { render } from '@react-email/components';
 import sendMail from '@/lib/email/sendMail';
 import { appConfig } from '@/lib/config';
 import ConnectionRequestEmail from '@/emails/ConnectionRequest';
+import ConnectionAcceptedEmail from '@/emails/ConnectionAccepted';
 
 export type ConnectionNotificationType =
   | 'connection_request'
@@ -188,8 +189,26 @@ export async function notifyConnectionAccepted(
       card_url: cardUrl,
     });
 
-    // Optionally send email (can be disabled based on user preferences)
-    // For now, we'll just create the in-app notification
+    // Send email notification
+    if (requester[0].email) {
+      try {
+        const emailHtml = await render(
+          ConnectionAcceptedEmail({
+            accepterName,
+            cardUrl,
+          })
+        );
+
+        await sendMail(
+          requester[0].email,
+          `${accepterName} accepted your connection request on DevCard`,
+          emailHtml
+        );
+      } catch (emailError) {
+        console.error('Error sending connection accepted email:', emailError);
+        // Don't fail the entire operation if email fails
+      }
+    }
 
     return { success: true };
   } catch (error) {
