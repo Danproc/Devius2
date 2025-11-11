@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
+import { headers } from 'next/headers';
 import { getDevCardBySlug } from '@/lib/devcard';
+import { getDevCardByCustomDomain } from '@/lib/devcard/domain-verification';
 import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
 import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
@@ -22,8 +24,8 @@ interface PageProps {
 // Incremental Static Regeneration (ISR) - revalidate every 3600 seconds (1 hour)
 export const revalidate = 3600;
 
-// Prefer static rendering with ISR
-export const dynamic = 'force-static';
+// Use dynamic rendering to support custom domains via headers
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 /**
@@ -124,7 +126,22 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { username } = await params;
-  const devcard = await getCachedDevCard(username);
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+
+  let devcard;
+
+  // Check if this is a custom domain request
+  const isCustomDomain = !host.includes('localhost') &&
+                         !host.includes('vercel.app') &&
+                         !host.includes('devius.com') &&
+                         host.includes('.');
+
+  if (isCustomDomain) {
+    devcard = await getDevCardByCustomDomain(host);
+  } else {
+    devcard = await getCachedDevCard(username);
+  }
 
   if (!devcard) {
     return {
@@ -158,13 +175,44 @@ export async function generateMetadata({
 
 export default async function PublicDevCardPage({ params }: PageProps) {
   const { username } = await params;
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
 
-  // Fetch DevCard using cached function
-  const devcard = await getCachedDevCard(username);
+  let devcard;
 
-  // Return 404 if DevCard not found or not public
-  if (!devcard) {
-    notFound();
+  // Check if this is a custom domain request
+  // Custom domains won't have common platform domains
+  const isCustomDomain = !host.includes('localhost') &&
+                         !host.includes('vercel.app') &&
+                         !host.includes('devius.com') &&
+                         host.includes('.');
+
+  if (isCustomDomain) {
+    console.log('🔍 Custom domain detected:', host);
+
+    // Try to fetch DevCard by custom domain
+    devcard = await getDevCardByCustomDomain(host);
+
+    if (!devcard) {
+      console.log('❌ No DevCard found for custom domain:', host);
+      notFound();
+    }
+
+    // Verify the domain is verified
+    if (!devcard.custom_domain_verified) {
+      console.log('⚠️ Custom domain not verified:', host);
+      notFound();
+    }
+
+    console.log('✅ DevCard found for custom domain:', devcard.url_slug);
+  } else {
+    // Standard username-based routing
+    devcard = await getCachedDevCard(username);
+
+    // Return 404 if DevCard not found or not public
+    if (!devcard) {
+      notFound();
+    }
   }
 
   // Increment view count (async, non-blocking)

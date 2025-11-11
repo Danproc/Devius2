@@ -21,3 +21,12 @@ export {
   isUrlSlugAvailable,
   normalizeUsername,
 } from './url-utils';
+
+// Domain Verification
+export {
+  verifyDomainOwnership,
+  normalizeDomain,
+  isDomainAvailable,
+  updateCustomDomain,
+  getDevCardByCustomDomain,
+} from './domain-verification';
