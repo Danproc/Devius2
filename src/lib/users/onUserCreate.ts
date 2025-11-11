@@ -10,6 +10,7 @@ import { enableCredits, onRegisterCredits } from "../credits/config";
 import { type CreditType } from "../credits/credits";
 import { addCredits } from "../credits/recalculate";
 import { addDays } from "date-fns";
+import { createDevCard } from "../devcard/generate";
 
 const onUserCreate = async (newUser: {
   id: string;
@@ -58,6 +59,25 @@ const onUserCreate = async (newUser: {
     })
   );
   await sendMail(newUser.email!, `Welcome to ${appConfig.projectName}`, html);
+
+  // Create DevCard if user signed up with GitHub
+  try {
+    // Fetch user data to check if they have GitHub connected
+    const [userData] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, newUser.id))
+      .limit(1);
+
+    if (userData?.github_id && userData?.github_username) {
+      // User has GitHub connected, create their DevCard
+      const result = await createDevCard(newUser.id);
+      console.log(`DevCard created for user ${newUser.id} at ${result.url}`);
+    }
+  } catch (error) {
+    // Log error but don't fail user creation
+    console.error('Failed to create DevCard on user signup:', error);
+  }
 };
 
 export default onUserCreate;
