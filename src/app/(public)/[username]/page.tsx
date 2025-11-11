@@ -70,14 +70,17 @@ const getCachedGitHubData = cache(
 const getCachedFeaturedRepos = cache(
   unstable_cache(
     async (githubUsername: string, featuredRepoNames: string[]) => {
+      console.log('🔍 getCachedFeaturedRepos called with:', { githubUsername, featuredRepoNames });
+
       if (!featuredRepoNames || featuredRepoNames.length === 0) {
+        console.log('❌ No featured repo names provided');
         return [];
       }
 
       try {
-        const allRepos = await fetchPublicRepositories(githubUsername, {
-          maxRepos: 100,
-        });
+        console.log('🔍 Fetching public repos for', githubUsername);
+        const allRepos = await fetchPublicRepositories(githubUsername, 100); // Pass number, not object!
+        console.log('📦 Fetched', allRepos.length, 'public repos');
 
         const repos = allRepos
           .filter((repo) => featuredRepoNames.includes(repo.full_name))
@@ -92,6 +95,8 @@ const getCachedFeaturedRepos = cache(
             topics: repo.topics || [],
           }));
 
+        console.log('✅ Filtered to', repos.length, 'featured repos');
+
         // Sort by the order in featured_repos array
         repos.sort((a, b) => {
           const aIndex = featuredRepoNames.indexOf(a.full_name);
@@ -101,7 +106,7 @@ const getCachedFeaturedRepos = cache(
 
         return repos;
       } catch (error) {
-        console.error('Failed to fetch featured repositories:', error);
+        console.error('❌ Failed to fetch featured repositories:', error);
         return [];
       }
     },
@@ -173,6 +178,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     });
 
   // Parallel data fetching for optimal performance
+  console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
   const [cachedData, featuredRepos] = await Promise.all([
     getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
@@ -180,6 +186,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       (devcard.featured_repos as string[]) || []
     ),
   ]);
+  console.log('📊 Cached data result:', cachedData ? 'FOUND' : 'NULL');
+  console.log('📦 Featured repos count:', featuredRepos?.length || 0);
 
   // Build GitHub stats object
   const githubStats = cachedData
