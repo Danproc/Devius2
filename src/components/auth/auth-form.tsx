@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { FaGoogle, FaSpinner } from "react-icons/fa";
+import { FaGoogle, FaSpinner, FaGithub } from "react-icons/fa";
 import { toast } from "sonner";
 import { appConfig } from "@/lib/config";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth.schema";
@@ -64,6 +64,20 @@ export function AuthForm({ className, callbackUrl, ...props }: AuthFormProps) {
       handleImpersonation(impersonateToken);
     }
   }, [searchParams, handleImpersonation]);
+
+  const handleGitHubSignIn = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("github", {
+        callbackUrl: callbackUrl || searchParams?.get("callbackUrl") || "/app",
+      });
+    } catch (error) {
+      console.error("Authentication error:", error);
+      toast.error("Failed to connect with GitHub");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -130,105 +144,29 @@ export function AuthForm({ className, callbackUrl, ...props }: AuthFormProps) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="text-center mb-4">
+        <p className="text-sm text-muted-foreground">
+          DevCard requires GitHub to auto-generate your developer card
+        </p>
+      </div>
+
       <Button
-        variant="outline"
         type="button"
         disabled={isLoading}
-        onClick={handleGoogleSignIn}
-        className="w-full py-6"
+        onClick={handleGitHubSignIn}
+        className="w-full py-6 bg-[#00FF88] hover:bg-[#00DD77] text-black border-0 font-semibold"
       >
         {isLoading ? (
           <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <FaGoogle className="mr-2 h-4 w-4" />
+          <FaGithub className="mr-2 h-5 w-5" />
         )}
-        Continue with Google
+        Connect with GitHub
       </Button>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with {showPasswordAuth ? "password" : "email"}
-          </span>
-        </div>
-      </div>
-
-      {showPasswordAuth ? (
-        <form onSubmit={handleSubmit(handlePasswordSignIn)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email address</Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
-              {...register("email")}
-              className="w-full py-6"
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/reset-password"
-                className="text-xs text-primary hover:text-primary/90 underline underline-offset-4"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input
-              id="password"
-              placeholder="Enter your password"
-              type="password"
-              autoComplete="current-password"
-              disabled={isLoading}
-              {...register("password")}
-              className="w-full py-6"
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
-
-          <Button type="submit" disabled={isLoading} className="w-full py-6">
-            {isLoading && <FaSpinner className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
-          </Button>
-        </form>
-      ) : (
-        <form onSubmit={handleEmailSignIn} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email address</Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full py-6"
-            />
-          </div>
-          <Button type="submit" disabled={isLoading} className="w-full py-6">
-            {isLoading && <FaSpinner className="mr-2 h-4 w-4 animate-spin" />}
-            Continue with Email
-          </Button>
-        </form>
-      )}
+      <p className="text-xs text-center text-muted-foreground">
+        By connecting, you authorize DevCard to access your public GitHub profile, repositories, and stats
+      </p>
     </div>
   );
 }
