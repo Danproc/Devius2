@@ -161,10 +161,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Shareable URL Card */}
-      <Card className="border-[#00FF88]/20 bg-gradient-to-br from-background to-[#00FF88]/5">
+      <Card className="border-devcard-green/20 bg-gradient-to-br from-background to-devcard-green/5 shadow-lg shadow-devcard-green/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[#00FF88]" />
+            <CheckCircle2 className="h-5 w-5 text-devcard-green" />
             Your DevCard is Live!
           </CardTitle>
           <CardDescription>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
               <Button
                 onClick={handleCopyUrl}
                 variant={copied ? "secondary" : "default"}
-                className="min-w-[100px]"
+                className="min-w-[100px] bg-devcard-green hover:bg-devcard-green/90 text-black font-medium"
               >
                 {copied ? (
                   <>
@@ -199,6 +199,7 @@ export default function DashboardPage() {
               <Button
                 asChild
                 variant="outline"
+                className="border-devcard-green/30 hover:bg-devcard-green/10"
               >
                 <a href={shareableUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
@@ -222,7 +223,7 @@ export default function DashboardPage() {
             <CardDescription>Status</CardDescription>
             <CardTitle className="text-3xl capitalize">
               {devcard.is_public ? (
-                <span className="text-[#00FF88]">Public</span>
+                <span className="text-devcard-green">Public</span>
               ) : (
                 <span className="text-muted-foreground">Private</span>
               )}
