@@ -1,6 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Globe, Linkedin, Twitter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Globe, Github, Instagram } from 'lucide-react';
 
 interface ProfileSectionProps {
   displayName: string | null;
@@ -15,7 +16,10 @@ interface ProfileSectionProps {
     linkedin?: string;
     website?: string;
     portfolio?: string;
+    instagram?: string;
   } | null;
+  ranking?: number;
+  isPremium?: boolean;
 }
 
 export function ProfileSection({
@@ -27,6 +31,8 @@ export function ProfileSection({
   availabilityStatus,
   availabilityMessage,
   socialLinks,
+  ranking,
+  isPremium = false,
 }: ProfileSectionProps) {
   const getAvailabilityBadge = () => {
     if (!availabilityStatus) return null;
@@ -66,9 +72,18 @@ export function ProfileSection({
     .slice(0, 2);
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <div className="relative flex flex-col items-center gap-6 text-center">
+      {/* Premium Badge - top right */}
+      {isPremium && (
+        <div className="absolute -top-2 right-0">
+          <Badge className="bg-devcard-green text-[#04080f] hover:bg-devcard-green/90 font-semibold px-4 py-1.5 text-sm">
+            Premium
+          </Badge>
+        </div>
+      )}
+
       {/* Avatar - clean circular, NO green ring */}
-      <div className="relative">
+      <div className="relative mt-4">
         <Avatar className="size-32 md:size-40">
           <AvatarImage src={avatarUrl} alt={displayName || githubUsername} />
           <AvatarFallback className="text-3xl md:text-4xl bg-devcard-green/10 text-devcard-green">
@@ -77,92 +92,81 @@ export function ProfileSection({
         </Avatar>
       </div>
 
-      {/* Name and Username */}
-      <div className="flex flex-col gap-2">
+      {/* Name with Ranking Badge */}
+      <div className="flex items-center gap-3">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#dde3ed]">
           {displayName || githubUsername}
         </h1>
-        {displayName && (
-          <a
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#5b6a7f] hover:text-devcard-green transition-colors text-base font-mono"
-          >
-            @{githubUsername}
-          </a>
+        {ranking && (
+          <span className="text-3xl md:text-4xl font-bold text-[#5b6a7f]">
+            #{ranking}
+          </span>
         )}
       </div>
 
-      {/* Availability Badge */}
-      {availabilityStatus && (
-        <div className="flex justify-center">{getAvailabilityBadge()}</div>
-      )}
-
       {/* Bio */}
       {customBio && (
-        <p className="text-[#5b6a7f] max-w-md leading-relaxed text-base">
+        <p className="text-[#5b6a7f] max-w-md leading-relaxed text-base px-4">
           {customBio}
         </p>
       )}
 
-      {/* Location and Social Links */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
-        {location && (
-          <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
-            <MapPin className="size-4" />
-            <span>{location}</span>
+      {/* Location and Social Links - Two Rows */}
+      <div className="flex flex-col gap-2">
+        {/* First Row: Location, GitHub, Instagram */}
+        <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
+          {location && (
+            <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
+              <MapPin className="size-4" />
+              <span>{location}</span>
+            </div>
+          )}
+
+          <a
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+          >
+            <Github className="size-4" />
+            <span>@{githubUsername}</span>
+          </a>
+
+          {socialLinks?.instagram && (
+            <a
+              href={`https://instagram.com/${socialLinks.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+            >
+              <Instagram className="size-4" />
+              <span>@{socialLinks.instagram}</span>
+            </a>
+          )}
+        </div>
+
+        {/* Second Row: Website */}
+        {socialLinks?.website && (
+          <div className="flex items-center justify-center gap-1.5 text-sm text-[#5b6a7f] hover:text-devcard-green transition-colors">
+            <Globe className="size-4" />
+            <a
+              href={socialLinks.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {socialLinks.website.replace(/^https?:\/\//, '')}
+            </a>
           </div>
         )}
-
-        {socialLinks?.website && (
-          <a
-            href={socialLinks.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-          >
-            <Globe className="size-4" />
-            <span>Website</span>
-          </a>
-        )}
-
-        {socialLinks?.portfolio && (
-          <a
-            href={socialLinks.portfolio}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-          >
-            <Globe className="size-4" />
-            <span>Portfolio</span>
-          </a>
-        )}
-
-        {socialLinks?.twitter && (
-          <a
-            href={`https://twitter.com/${socialLinks.twitter}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-          >
-            <Twitter className="size-4" />
-            <span>Twitter</span>
-          </a>
-        )}
-
-        {socialLinks?.linkedin && (
-          <a
-            href={socialLinks.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-          >
-            <Linkedin className="size-4" />
-            <span>LinkedIn</span>
-          </a>
-        )}
       </div>
+
+      {/* Connect Button */}
+      <Button
+        className="w-full bg-devcard-green hover:bg-devcard-green/90 text-[#04080f] font-semibold text-base py-6 rounded-full"
+        size="lg"
+      >
+        Connect with {displayName?.split(' ')[0] || githubUsername}
+      </Button>
     </div>
   );
 }

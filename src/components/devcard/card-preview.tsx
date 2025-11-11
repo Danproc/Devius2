@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { ProfileSection } from './profile-section';
 import { StatsDisplay } from './stats-display';
 import { RepoShowcase } from './repo-showcase';
+import { ConnectedDevelopers } from './connected-developers';
+import { TopLanguages } from './top-languages';
 import { Eye } from 'lucide-react';
 
 interface GitHubStats {
@@ -37,11 +39,14 @@ interface CardPreviewProps {
     linkedin?: string;
     website?: string;
     portfolio?: string;
+    instagram?: string;
   } | null;
   githubStats: GitHubStats | null;
   techStack?: string[] | null;
   featuredRepos?: Repository[];
   viewCount?: number;
+  ranking?: number;
+  isPremium?: boolean;
   theme?: {
     name: string;
     colors?: {
@@ -66,6 +71,8 @@ export function CardPreview({
   techStack,
   featuredRepos = [],
   viewCount,
+  ranking,
+  isPremium = false,
   theme,
 }: CardPreviewProps) {
   // Apply theme colors if provided
@@ -87,7 +94,7 @@ export function CardPreview({
       {/* Main Card Container - flat design, NO glassmorphism */}
       <Card className="overflow-hidden bg-[#04080f] border border-[#121824] rounded-3xl">
         <div className="p-6 md:p-8 space-y-8">
-          {/* Profile Section */}
+          {/* Profile Section - with avatar, name, bio, location, social links, and connect button */}
           <ProfileSection
             displayName={displayName}
             githubUsername={githubUsername}
@@ -97,7 +104,23 @@ export function CardPreview({
             availabilityStatus={availabilityStatus}
             availabilityMessage={availabilityMessage}
             socialLinks={socialLinks}
+            ranking={ranking}
+            isPremium={isPremium}
           />
+
+          {/* Connected Developers */}
+          <ConnectedDevelopers />
+
+          {/* Top Languages */}
+          <TopLanguages />
+
+          {/* Featured Repositories */}
+          {featuredRepos && featuredRepos.length > 0 && (
+            <RepoShowcase
+              repositories={featuredRepos}
+              githubUsername={githubUsername}
+            />
+          )}
 
           {/* Tech Stack */}
           {techStack && techStack.length > 0 && (
@@ -117,14 +140,6 @@ export function CardPreview({
 
           {/* GitHub Statistics */}
           <StatsDisplay stats={githubStats} githubUsername={githubUsername} />
-
-          {/* Featured Repositories */}
-          {featuredRepos && featuredRepos.length > 0 && (
-            <RepoShowcase
-              repositories={featuredRepos}
-              githubUsername={githubUsername}
-            />
-          )}
 
           {/* View Count Footer */}
           {viewCount !== undefined && (
