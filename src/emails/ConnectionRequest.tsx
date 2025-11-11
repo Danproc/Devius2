@@ -22,49 +22,79 @@ export default function ConnectionRequestEmail({
   return (
     <Html>
       <Layout
-        previewText={`${requesterName} wants to connect with you on ${appConfig.projectName}`}
+        previewText={`${requesterName} wants to connect with you on DevCard`}
       >
-        <Text className="text-xl font-semibold mb-4">
-          New Connection Request
+        <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#111827' }}>
+          🤝 New Connection Request
         </Text>
 
-        <Text>
-          <strong>{requesterName}</strong> wants to connect with you on{' '}
-          {appConfig.projectName}!
+        <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#374151', marginBottom: '16px' }}>
+          <strong>{requesterName}</strong> wants to connect with you on DevCard!
         </Text>
 
         {message && (
-          <Container className="bg-gray-50 p-4 rounded-lg my-4 border-l-4 border-primary">
-            <Text className="text-sm text-gray-600 mb-1">Message:</Text>
-            <Text className="text-base">{message}</Text>
+          <Container style={{
+            backgroundColor: '#f3f4f6',
+            padding: '16px',
+            borderRadius: '8px',
+            marginTop: '16px',
+            marginBottom: '16px',
+            borderLeft: '4px solid #1cf491'
+          }}>
+            <Text style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>
+              Message:
+            </Text>
+            <Text style={{ fontSize: '16px', color: '#111827', marginBottom: '0' }}>
+              {message}
+            </Text>
           </Container>
         )}
 
-        <Container className="my-6">
-          <Text className="mb-2">View their DevCard to learn more:</Text>
+        <Container style={{ marginTop: '24px', marginBottom: '24px' }}>
+          <Text style={{ fontSize: '16px', marginBottom: '12px', color: '#374151' }}>
+            View their DevCard to learn more about them:
+          </Text>
           <Button
             href={cardUrl}
-            className="bg-gray-100 text-gray-800 rounded-md py-2 px-4 mb-3 inline-block"
+            style={{
+              backgroundColor: '#f3f4f6',
+              color: '#111827',
+              borderRadius: '6px',
+              padding: '10px 16px',
+              textDecoration: 'none',
+              display: 'inline-block',
+              marginBottom: '12px',
+              fontWeight: '500'
+            }}
           >
-            View {requesterName}&apos;s DevCard
+            View {requesterName}&apos;s DevCard →
           </Button>
         </Container>
 
-        <Text className="mt-6 mb-4">
+        <Text style={{ fontSize: '16px', marginTop: '24px', marginBottom: '16px', color: '#374151' }}>
           Ready to respond to this connection request?
         </Text>
 
         <Button
           href={actionUrl}
-          className="bg-primary text-primary-foreground rounded-md py-3 px-6 font-semibold"
+          style={{
+            backgroundColor: '#1cf491',
+            color: '#000000',
+            borderRadius: '6px',
+            padding: '12px 24px',
+            textDecoration: 'none',
+            display: 'inline-block',
+            fontWeight: '600',
+            fontSize: '16px'
+          }}
         >
           View Connection Requests
         </Button>
 
-        <Text className="mt-6 text-muted text-sm">
+        <Text style={{ marginTop: '24px', color: '#9ca3af', fontSize: '14px', lineHeight: '20px' }}>
           You&apos;re receiving this email because {requesterName} wants to
-          connect with you on {appConfig.projectName}. If you don&apos;t want
-          to connect, you can simply ignore this email.
+          connect with you on DevCard. If you don&apos;t want to connect, you
+          can simply ignore this email or decline the request.
         </Text>
       </Layout>
     </Html>

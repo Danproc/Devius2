@@ -8,6 +8,7 @@ import { getDevCardByCustomDomain } from '@/lib/devcard/domain-verification';
 import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
 import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
+import { ConnectButton } from '@/components/devcard/connect-button';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
@@ -252,8 +253,13 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f] animate-fade-in">
       <div className="animate-slide-up">
-        {/* Share Button - Positioned at top right */}
-        <div className="w-full max-w-2xl mx-auto mb-4 flex justify-end">
+        {/* Action Buttons - Positioned at top right */}
+        <div className="w-full max-w-2xl mx-auto mb-4 flex justify-end gap-3">
+          <ConnectButton
+            targetUserId={devcard.user_id}
+            targetUsername={devcard.display_name || devcard.github_username}
+            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold"
+          />
           <ShareButtonWrapper
             username={devcard.url_slug}
             displayName={devcard.display_name || devcard.github_username}
