@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import withAuthRequired from '@/lib/auth/withAuthRequired';
 import { getDevCard } from '@/lib/devcard';
 import { getCachedGitHubUserData } from '@/lib/github';
+import { validateDevCardUpdate } from '@/lib/devcard/customize';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
@@ -108,7 +109,30 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
     // Parse request body
     const body = await req.json();
 
-    // Validate and extract allowed fields
+    // Validate update data using Zod schema
+    const validation = validateDevCardUpdate(body);
+
+    if (!validation.success) {
+      // Extract validation errors
+      const errors = validation.error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          message: errors[0]?.message || 'Invalid input data',
+          errors,
+        },
+        { status: 400 }
+      );
+    }
+
+    const validatedData = validation.data;
+
+    // Check if there's anything to update
+    const updateData: any = {};
     const allowedFields = [
       'display_name',
       'custom_bio',
@@ -119,64 +143,14 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
       'availability_status',
       'availability_message',
       'theme',
-    ];
-
-    const updateData: any = {};
+    ] as const;
 
     for (const field of allowedFields) {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field];
+      if (validatedData[field] !== undefined) {
+        updateData[field] = validatedData[field];
       }
     }
 
-    // Validate custom_bio length
-    if (updateData.custom_bio && updateData.custom_bio.length > 500) {
-      return NextResponse.json(
-        {
-          error: 'Validation failed',
-          message: 'Custom bio must be 500 characters or less',
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate availability_status
-    if (updateData.availability_status) {
-      const validStatuses = ['open', 'available', 'not-available', 'custom'];
-      if (!validStatuses.includes(updateData.availability_status)) {
-        return NextResponse.json(
-          {
-            error: 'Validation failed',
-            message: 'Invalid availability status',
-          },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Validate featured_repos array length
-    if (updateData.featured_repos && updateData.featured_repos.length > 6) {
-      return NextResponse.json(
-        {
-          error: 'Validation failed',
-          message: 'You can feature a maximum of 6 repositories',
-        },
-        { status: 400 }
-      );
-    }
-
-    // Validate tech_stack array length
-    if (updateData.tech_stack && updateData.tech_stack.length > 20) {
-      return NextResponse.json(
-        {
-          error: 'Validation failed',
-          message: 'Tech stack can contain a maximum of 20 items',
-        },
-        { status: 400 }
-      );
-    }
-
-    // Check if there's anything to update
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         {
@@ -234,6 +208,17 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
     return NextResponse.json(response);
   } catch (error: any) {
     console.error('DevCard update error:', error);
+
+    // Handle JSON parsing errors
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        {
+          error: 'Invalid request',
+          message: 'Invalid JSON in request body',
+        },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json(
       {
