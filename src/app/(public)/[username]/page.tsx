@@ -5,6 +5,7 @@ import { cache } from 'react';
 import { getDevCardBySlug } from '@/lib/devcard';
 import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
+import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
@@ -203,6 +204,18 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f] animate-fade-in">
       <div className="animate-slide-up">
+        {/* Share Button - Positioned at top right */}
+        <div className="w-full max-w-2xl mx-auto mb-4 flex justify-end">
+          <ShareButtonWrapper
+            username={devcard.url_slug}
+            displayName={devcard.display_name || devcard.github_username}
+            customBio={devcard.custom_bio || undefined}
+            avatarUrl={devcard.avatar_url}
+            variant="outline"
+            className="bg-[#121824] border-[#1e2838] hover:bg-[#1e2838] text-white"
+          />
+        </div>
+
         <CardPreview
           displayName={devcard.display_name}
           githubUsername={devcard.github_username}
