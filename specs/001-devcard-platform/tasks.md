@@ -84,11 +84,11 @@ Project uses Next.js App Router structure:
 - [x] T025 [P] [US1] Create src/lib/github/calculate-stats.ts to calculate total stars and contribution stats
 - [x] T026 [US1] Create src/lib/github/cache.ts with Redis (Vercel KV) caching functions (getCachedProfile, setCachedProfile, invalidateCache)
 
-### DevCard Business Logic
+### DevCard Business Logic ✓ COMPLETE
 
-- [ ] T027 [P] [US1] Create src/lib/devcard/generate.ts with createDevCard function that auto-generates card from GitHub data
-- [ ] T028 [P] [US1] Create src/lib/devcard/url-utils.ts with generateCardUrl function (handles username conflicts with nanoid)
-- [ ] T029 [US1] Update src/lib/users/onUserCreate.ts to trigger DevCard creation and GitHub sync on user signup
+- [x] T027 [P] [US1] Create src/lib/devcard/generate.ts with createDevCard function that auto-generates card from GitHub data
+- [x] T028 [P] [US1] Create src/lib/devcard/url-utils.ts with generateCardUrl function (handles username conflicts with nanoid)
+- [x] T029 [US1] Update src/lib/users/onUserCreate.ts to trigger DevCard creation and GitHub sync on user signup
 
 ### Background Jobs (Inngest)
 
