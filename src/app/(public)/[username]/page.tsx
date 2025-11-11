@@ -174,7 +174,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   // Parallel data fetching for optimal performance
   const [cachedData, featuredRepos] = await Promise.all([
-    getCachedGitHubData(devcard.user_id),
+    getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
       devcard.github_username,
       (devcard.featured_repos as string[]) || []
