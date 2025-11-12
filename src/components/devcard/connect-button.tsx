@@ -48,10 +48,15 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
   // Check connection status and rate limits
   useEffect(() => {
     const checkStatus = async () => {
-      if (status === 'loading') return;
+      // Wait for session to finish loading
+      if (status === 'loading') {
+        return;
+      }
 
+      // If no session, just set loading to false - button will still render
       if (!session?.user) {
         setIsLoading(false);
+        setConnectionStatus({ isConnected: false, isPending: false, isOwnCard: false });
         return;
       }
 
@@ -89,6 +94,8 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
         }
       } catch (error) {
         console.error('Error checking connection status:', error);
+        // Set default state on error
+        setConnectionStatus({ isConnected: false, isPending: false, isOwnCard: false });
       } finally {
         setIsLoading(false);
       }
@@ -190,30 +197,71 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
     return `${hours}h`;
   };
 
-  // Don't show anything while loading or if user is not authenticated
-  if (isLoading || !session?.user || !connectionStatus) {
-    return null;
+  // Always render the button, but with different states
+
+  // Loading state - show a disabled button
+  if (isLoading) {
+    return (
+      <Button
+        disabled
+        variant="default"
+        className={className}
+      >
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        Loading...
+      </Button>
+    );
   }
 
-  // Don't show if viewing own card
-  if (connectionStatus.isOwnCard) {
-    return null;
+  // Not logged in - show connect button that redirects to sign-in
+  if (!session?.user) {
+    return (
+      <Button
+        onClick={() => {
+          toast.info('Sign in required', {
+            description: 'Please sign in to send a connection request.',
+          });
+          router.push('/sign-in?redirect=' + window.location.pathname);
+        }}
+        variant="default"
+        className={className}
+      >
+        Connect with {targetUsername}
+      </Button>
+    );
   }
 
-  // Show different states
-  if (connectionStatus.isPending) {
+  // Viewing own card - show connect button but disabled with tooltip
+  if (connectionStatus?.isOwnCard) {
+    return (
+      <Button
+        onClick={() => {
+          toast.info('This is your card', {
+            description: 'You cannot send a connection request to yourself.',
+          });
+        }}
+        variant="default"
+        className={className}
+      >
+        Connect with {targetUsername}
+      </Button>
+    );
+  }
+
+  // Show different states based on connection status
+  if (connectionStatus?.isPending) {
     return (
       <Button
         disabled
         variant="outline"
         className={className}
       >
-        Request Pending
+        Pending
       </Button>
     );
   }
 
-  if (connectionStatus.isConnected) {
+  if (connectionStatus?.isConnected) {
     return (
       <Button
         disabled
@@ -225,6 +273,7 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
     );
   }
 
+  // Default state - show connect button
   return (
     <>
       <Button
