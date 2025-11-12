@@ -38,6 +38,14 @@
   --sidebar-accent-foreground: oklch(0.4732 0.1247 46.2007);
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
   --sidebar-ring: oklch(0.7686 0.1647 70.0804);
+
+  /* DevCard Design System Colors */
+  --devcard-green: #1cf491;
+  --devcard-base: #04080f;
+  --devcard-heading: #dde3ed;
+  --devcard-text: #5b6a7f;
+  --devcard-border: #121824;
+
   --font-sans: Inter, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
@@ -87,6 +95,14 @@
   --sidebar-accent-foreground: oklch(0.9243 0.1151 95.7459);
   --sidebar-border: oklch(0.3715 0 0);
   --sidebar-ring: oklch(0.7686 0.1647 70.0804);
+
+  /* DevCard Design System Colors (same for dark mode) */
+  --devcard-green: #1cf491;
+  --devcard-base: #04080f;
+  --devcard-heading: #dde3ed;
+  --devcard-text: #5b6a7f;
+  --devcard-border: #121824;
+
   --font-sans: Inter, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
@@ -134,6 +150,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* DevCard Design System Colors */
+  --color-devcard-green: var(--devcard-green);
+  --color-devcard-base: var(--devcard-base);
+  --color-devcard-heading: var(--devcard-heading);
+  --color-devcard-text: var(--devcard-text);
+  --color-devcard-border: var(--devcard-border);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
