@@ -44,14 +44,14 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
       {repositories.map((repo) => (
         <div
           key={repo.full_name}
-          className="bg-[#04080f] border border-[#121824] rounded-3xl p-6"
+          className="bg-devcard-base border border-devcard-border rounded-3xl p-6"
         >
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h3 className="text-xl font-medium text-[#dde3ed]">
+              <h3 className="text-xl font-medium text-devcard-heading">
                 {repo.name}
               </h3>
-              <div className="flex items-center gap-3 text-sm text-[#5b6a7f] mt-1">
+              <div className="flex items-center gap-3 text-sm text-devcard-text mt-1">
                 {repo.language && (
                   <div className="flex items-center gap-1">
                     <span
@@ -73,13 +73,13 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
               href={repo.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#1cf491] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#1cf491]/90 transition-colors"
+              className="bg-devcard-green text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-devcard-green/90 transition-colors"
             >
               Visit Repo
             </a>
           </div>
 
-          <p className="text-[#5b6a7f] leading-relaxed mb-6">
+          <p className="text-devcard-text leading-relaxed mb-6">
             {repo.description || 'No description available'}
           </p>
 
@@ -87,7 +87,7 @@ export function RepoShowcase({ repositories, githubUsername }: RepoShowcaseProps
             href={repo.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full bg-[#1cf491] text-black py-3 rounded-full font-medium text-center hover:bg-[#1cf491]/90 transition-colors"
+            className="block w-full bg-devcard-green text-black py-3 rounded-full font-medium text-center hover:bg-devcard-green/90 transition-colors"
           >
             View Project
           </a>
