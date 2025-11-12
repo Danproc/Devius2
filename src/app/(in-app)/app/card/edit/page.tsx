@@ -160,7 +160,8 @@ export default function CardEditorPage() {
         availability_message: devcard.availability_message || "",
       });
     }
-  }, [devcard, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [devcard]);
 
   const watchedValues = form.watch();
   const watchedStatus = form.watch("availability_status");
