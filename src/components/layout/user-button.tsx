@@ -16,7 +16,6 @@ import {
   CreditCard,
   LogOut,
   UserIcon,
-  Ticket,
   Users,
   Inbox,
   Edit,
@@ -163,12 +162,6 @@ export function UserButton() {
           <Link href="/app/plan" className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />
             Manage Plan
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/app/redeem-ltd" className="cursor-pointer">
-            <Ticket className="mr-2 h-4 w-4" />
-            Redeem LTD Coupon
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

@@ -275,8 +275,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
             displayName={devcard.display_name || devcard.github_username}
             customBio={devcard.custom_bio || undefined}
             avatarUrl={devcard.avatar_url}
-            variant="outline"
-            className="bg-[#121824] border-[#1e2838] hover:bg-[#1e2838] text-white"
+            variant="default"
+            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold border-[#1cf491]"
           />
         </div>
 
