@@ -3,7 +3,7 @@ import withAuthRequired from '@/lib/auth/withAuthRequired';
 import { db } from '@/db';
 import { connections } from '@/db/schema/connections';
 import { users } from '@/db/schema/user';
-import { devcards } from '@/db/schema/devcards';
+import { devcards } from '@/db/schema/devcard';
 import { and, eq, or, sql, count } from 'drizzle-orm';
 
 /**
