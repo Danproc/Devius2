@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -76,16 +75,6 @@ interface DevCardData {
   updated_at: string;
 }
 
-interface GitHubRepo {
-  full_name: string;
-  name: string;
-  description: string | null;
-  html_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-}
-
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) {
@@ -114,13 +103,6 @@ export default function CardEditorPage() {
     fetcher
   );
 
-  const { data: reposData, isLoading: isLoadingRepos } = useSWR<{ repositories: GitHubRepo[] }>(
-    '/api/github/repos?sort=stars&limit=50',
-    fetcher
-  );
-
-  const repos = reposData?.repositories;
-
   const form = useForm<DevCardUpdateInput>({
     resolver: zodResolver(devCardUpdateSchema),
     mode: 'onChange', // Enable validation on change
@@ -134,7 +116,6 @@ export default function CardEditorPage() {
         website: "",
         portfolio: "",
       },
-      featured_repos: [],
       tech_stack: [],
       availability_status: "available",
       availability_message: "",
@@ -154,7 +135,6 @@ export default function CardEditorPage() {
           website: devcard.social_links?.website || "",
           portfolio: devcard.social_links?.portfolio || "",
         },
-        featured_repos: devcard.featured_repos || [],
         tech_stack: devcard.tech_stack || [],
         availability_status: devcard.availability_status || "available",
         availability_message: devcard.availability_message || "",
@@ -165,23 +145,9 @@ export default function CardEditorPage() {
 
   const watchedValues = form.watch();
   const watchedStatus = form.watch("availability_status");
-  const watchedFeaturedRepos = form.watch("featured_repos") || [];
 
   // Debounced values for preview to improve performance
   const deferredPreviewValues = React.useDeferredValue(watchedValues);
-
-  // Get actual repo objects for featured repos
-  const featuredRepoObjects = React.useMemo(() => {
-    if (!repos || !Array.isArray(repos) || !watchedFeaturedRepos.length) return [];
-    return repos
-      .filter((repo) => watchedFeaturedRepos.includes(repo.full_name))
-      .sort((a, b) => {
-        // Sort by the order in featured_repos array
-        const aIndex = watchedFeaturedRepos.indexOf(a.full_name);
-        const bIndex = watchedFeaturedRepos.indexOf(b.full_name);
-        return aIndex - bIndex;
-      });
-  }, [repos, watchedFeaturedRepos]);
 
   const onSubmit = async (data: DevCardUpdateInput) => {
     setIsSaving(true);
@@ -227,23 +193,6 @@ export default function CardEditorPage() {
       toast.error(error instanceof Error ? error.message : 'Failed to update DevCard');
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleToggleFeaturedRepo = (repoFullName: string) => {
-    const currentRepos = form.getValues("featured_repos") || [];
-
-    if (currentRepos.includes(repoFullName)) {
-      form.setValue(
-        "featured_repos",
-        currentRepos.filter((r: string) => r !== repoFullName)
-      );
-    } else {
-      if (currentRepos.length >= 6) {
-        toast.error("You can only feature up to 6 repositories");
-        return;
-      }
-      form.setValue("featured_repos", [...currentRepos, repoFullName]);
     }
   };
 
@@ -319,7 +268,6 @@ export default function CardEditorPage() {
     );
   }
 
-  const selectedRepos = form.watch("featured_repos") || [];
   const selectedTech = form.watch("tech_stack") || [];
 
   return (
@@ -561,66 +509,6 @@ export default function CardEditorPage() {
                 </CardContent>
               </Card>
 
-              {/* Featured Repositories Card */}
-              <Card className="bg-devcard-base border-devcard-border">
-                <CardHeader>
-                  <CardTitle>Featured Repositories</CardTitle>
-                  <CardDescription>
-                    Select up to 6 repositories to showcase ({selectedRepos.length}/6)
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoadingRepos ? (
-                    <div className="space-y-2">
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                      <Skeleton className="h-16 w-full" />
-                    </div>
-                  ) : repos && Array.isArray(repos) && repos.length > 0 ? (
-                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
-                      {repos.map((repo) => (
-                        <div
-                          key={repo.full_name}
-                          className="flex items-start gap-3 p-3 rounded-lg border border-devcard-border hover:bg-devcard-border/30 transition-colors cursor-pointer"
-                          onClick={() => handleToggleFeaturedRepo(repo.full_name)}
-                        >
-                          <Checkbox
-                            checked={selectedRepos.includes(repo.full_name)}
-                            onCheckedChange={() => handleToggleFeaturedRepo(repo.full_name)}
-                            className="mt-1"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium text-sm truncate">{repo.name}</p>
-                              {repo.language && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {repo.language}
-                                </Badge>
-                              )}
-                            </div>
-                            {repo.description && (
-                              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                {repo.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                              <span>⭐ {repo.stargazers_count}</span>
-                              <span>🍴 {repo.forks_count}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <Alert>
-                      <AlertDescription>
-                        No repositories found. Create some repositories on GitHub to feature them here.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                </CardContent>
-              </Card>
-
               {/* Tech Stack Card */}
               <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
@@ -760,7 +648,7 @@ export default function CardEditorPage() {
               socialLinks={deferredPreviewValues.social_links || null}
               githubStats={devcard.github_stats}
               techStack={deferredPreviewValues.tech_stack || null}
-              featuredRepos={featuredRepoObjects}
+              featuredRepos={[]}
               viewCount={devcard.view_count}
               theme={devcard.theme}
             />
