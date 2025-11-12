@@ -534,11 +534,9 @@ export default function ThemeCustomizationPage() {
                       <FormItem>
                         <FormLabel>Font</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="bg-[#04080f] border-[#121824]">
-                              <SelectValue placeholder="Select a font" />
-                            </SelectTrigger>
-                          </FormControl>
+                          <SelectTrigger className="bg-[#04080f] border-[#121824]">
+                            <SelectValue placeholder="Select a font" />
+                          </SelectTrigger>
                           <SelectContent>
                             {FONT_OPTIONS.map((font) => (
                               <SelectItem key={font.value} value={font.value}>

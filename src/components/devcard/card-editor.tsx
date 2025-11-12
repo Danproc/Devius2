@@ -323,11 +323,9 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
               <FormItem>
                 <FormLabel className="text-devcard-heading">Status</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value || "available"}>
-                  <FormControl>
-                    <SelectTrigger className="bg-devcard-base border-devcard-border text-devcard-heading">
-                      <SelectValue placeholder="Select your availability" />
-                    </SelectTrigger>
-                  </FormControl>
+                  <SelectTrigger className="bg-devcard-base border-devcard-border text-devcard-heading">
+                    <SelectValue placeholder="Select your availability" />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="open">Open to opportunities</SelectItem>
                     <SelectItem value="available">Available for collaboration</SelectItem>

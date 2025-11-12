@@ -518,11 +518,9 @@ export default function CardEditorPage() {
                           onValueChange={field.onChange}
                           value={field.value ?? "available"}
                         >
-                          <FormControl>
-                            <SelectTrigger className="bg-devcard-base border-devcard-border">
-                              <SelectValue placeholder="Select your availability" />
-                            </SelectTrigger>
-                          </FormControl>
+                          <SelectTrigger className="bg-devcard-base border-devcard-border">
+                            <SelectValue placeholder="Select your availability" />
+                          </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="open">Open to opportunities</SelectItem>
                             <SelectItem value="available">Available</SelectItem>
