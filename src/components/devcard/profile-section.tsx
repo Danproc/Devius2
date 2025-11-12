@@ -1,6 +1,5 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { MapPin, Globe, Github, Instagram, Crown } from 'lucide-react';
 
 interface ProfileSectionProps {
@@ -18,6 +17,7 @@ interface ProfileSectionProps {
     portfolio?: string;
     instagram?: string;
   } | null;
+  techStack?: string[] | null;
   ranking?: number;
   isPremium?: boolean;
 }
@@ -31,6 +31,7 @@ export function ProfileSection({
   availabilityStatus,
   availabilityMessage,
   socialLinks,
+  techStack,
   ranking,
   isPremium = false,
 }: ProfileSectionProps) {
@@ -110,6 +111,9 @@ export function ProfileSection({
         </p>
       )}
 
+      {/* Availability Status Badge */}
+      {getAvailabilityBadge()}
+
       {/* Location and Social Links - Two Rows */}
       <div className="flex flex-col gap-2">
         {/* First Row: Location, GitHub, Instagram */}
@@ -159,13 +163,23 @@ export function ProfileSection({
         )}
       </div>
 
-      {/* Connect Button */}
-      <Button
-        className="w-full bg-[#1cf491] hover:bg-[#19e085] text-[#04080f] font-semibold text-base py-6 rounded-full"
-        size="lg"
-      >
-        Connect with {displayName?.split(' ')[0] || githubUsername}
-      </Button>
+      {/* Tech Stack */}
+      {techStack && techStack.length > 0 && (
+        <div className="w-full">
+          <h3 className="text-sm font-medium text-[#dde3ed] mb-3">Tech Stack</h3>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {techStack.map((tech) => (
+              <Badge
+                key={tech}
+                variant="secondary"
+                className="bg-[#1cf491]/10 text-[#1cf491] border-[#1cf491]/20 hover:bg-[#1cf491]/20 transition-colors"
+              >
+                {tech}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

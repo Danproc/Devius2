@@ -141,6 +141,7 @@ export function CardPreview({
             availabilityStatus={availabilityStatus}
             availabilityMessage={availabilityMessage}
             socialLinks={socialLinks}
+            techStack={techStack}
             ranking={ranking}
             isPremium={isPremium}
           />
