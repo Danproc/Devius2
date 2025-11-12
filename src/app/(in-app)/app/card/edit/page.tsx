@@ -513,7 +513,7 @@ export default function CardEditorPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                        <Select onValueChange={field.onChange} value={field.value ?? "available"}>
                           <FormControl>
                             <SelectTrigger className="bg-[#04080f] border-[#121824]">
                               <SelectValue placeholder="Select your availability" />
