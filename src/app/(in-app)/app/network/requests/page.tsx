@@ -163,7 +163,7 @@ export default function ConnectionRequestsPage() {
           </AlertDescription>
         </Alert>
 
-        <Card>
+        <Card className="bg-[#04080f] border-[#121824]">
           <CardContent className="pt-6">
             <Button onClick={handleRefresh} variant="outline">
               <RefreshCw className="mr-2 h-4 w-4" />
@@ -227,7 +227,7 @@ export default function ConnectionRequestsPage() {
 
         {/* Received Requests Tab */}
         <TabsContent value="received" className="space-y-4 mt-6">
-          <Card>
+          <Card className="bg-[#04080f] border-[#121824]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Inbox className="h-5 w-5" />
@@ -289,7 +289,7 @@ export default function ConnectionRequestsPage() {
 
         {/* Sent Requests Tab */}
         <TabsContent value="sent" className="space-y-4 mt-6">
-          <Card>
+          <Card className="bg-[#04080f] border-[#121824]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Send className="h-5 w-5" />

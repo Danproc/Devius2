@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import withAuthRequired from '@/lib/auth/withAuthRequired';
 import { getDevCard } from '@/lib/devcard';
 import { getCachedGitHubUserData } from '@/lib/github';
@@ -170,6 +171,15 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
       .set(updateData)
       .where(eq(devcards.user_id, userId))
       .returning();
+
+    // Revalidate the public profile page cache
+    try {
+      revalidatePath(`/${updatedCard.url_slug}`);
+      revalidateTag('devcards');
+    } catch (error) {
+      console.error('Failed to revalidate cache:', error);
+      // Don't fail the request if revalidation fails
+    }
 
     // Fetch cached GitHub stats if available
     const cachedData = await getCachedGitHubUserData(userId);

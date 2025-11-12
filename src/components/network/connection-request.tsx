@@ -98,7 +98,7 @@ export function ConnectionRequest({
   };
 
   return (
-    <Card className="border-border/50 hover:border-devcard-green/30 transition-colors">
+    <Card className="bg-[#04080f] border-[#121824] hover:border-devcard-green/30 transition-colors">
       <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Avatar and Info */}
@@ -138,7 +138,7 @@ export function ConnectionRequest({
               </div>
 
               {message && (
-                <div className="mt-2 text-sm text-foreground bg-muted/50 rounded-md p-2 border border-border/50">
+                <div className="mt-2 text-sm text-foreground bg-[#121824]/50 rounded-md p-2 border border-[#121824]">
                   <p className="italic">"{message}"</p>
                 </div>
               )}
