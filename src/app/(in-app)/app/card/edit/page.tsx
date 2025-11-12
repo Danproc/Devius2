@@ -162,9 +162,23 @@ export default function CardEditorPage() {
 
   const watchedValues = form.watch();
   const watchedStatus = form.watch("availability_status");
+  const watchedFeaturedRepos = form.watch("featured_repos") || [];
 
   // Debounced values for preview to improve performance
   const deferredPreviewValues = React.useDeferredValue(watchedValues);
+
+  // Get actual repo objects for featured repos
+  const featuredRepoObjects = React.useMemo(() => {
+    if (!repos || !watchedFeaturedRepos.length) return [];
+    return repos
+      .filter((repo) => watchedFeaturedRepos.includes(repo.full_name))
+      .sort((a, b) => {
+        // Sort by the order in featured_repos array
+        const aIndex = watchedFeaturedRepos.indexOf(a.full_name);
+        const bIndex = watchedFeaturedRepos.indexOf(b.full_name);
+        return aIndex - bIndex;
+      });
+  }, [repos, watchedFeaturedRepos]);
 
   const onSubmit = async (data: DevCardUpdateInput) => {
     setIsSaving(true);
@@ -734,7 +748,7 @@ export default function CardEditorPage() {
               socialLinks={deferredPreviewValues.social_links || null}
               githubStats={devcard.github_stats}
               techStack={deferredPreviewValues.tech_stack || null}
-              featuredRepos={[]}
+              featuredRepos={featuredRepoObjects}
               viewCount={devcard.view_count}
               theme={devcard.theme}
             />

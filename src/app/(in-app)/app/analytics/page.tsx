@@ -23,8 +23,8 @@ export default function AnalyticsPage() {
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
-        <p className="text-gray-400">
+        <h1 className="text-3xl font-bold text-[#dde3ed] mb-2">Analytics Dashboard</h1>
+        <p className="text-[#5b6a7f]">
           Track your DevCard performance and engagement metrics
         </p>
       </div>

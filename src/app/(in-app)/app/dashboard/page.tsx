@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardPreview } from "@/components/devcard/card-preview";
 import { ShareButtonWrapper } from "@/components/sharing/share-button-wrapper";
-import { Copy, CheckCircle2, ExternalLink, RefreshCw, Users } from "lucide-react";
+import { Copy, CheckCircle2, ExternalLink, RefreshCw, Users, Edit } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 
@@ -273,15 +273,23 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Preview</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-xl font-semibold text-[#dde3ed]">Preview</h2>
+            <p className="text-sm text-[#5b6a7f]">
               This is how your DevCard appears to visitors
             </p>
           </div>
-          <Button onClick={handleRefresh} variant="outline" size="sm">
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-medium">
+              <Link href="/app/card/edit">
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Profile
+              </Link>
+            </Button>
+            <Button onClick={handleRefresh} variant="outline" size="sm">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Card Preview */}

@@ -87,7 +87,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-col h-screen gap-4">
+    <div className="flex flex-col h-screen gap-4 bg-[#04080f] text-[#dde3ed]">
       <AppHeader />
       <div className="grow p-4 sm:p-2 max-w-7xl mx-auto w-full">{children}</div>
       <Footer />
