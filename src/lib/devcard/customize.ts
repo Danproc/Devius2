@@ -79,6 +79,7 @@ export const socialLinksSchema = z
 /**
  * Availability Status Validation Schema
  * - Must be one of: 'open', 'available', 'not-available', 'custom'
+ * - Can also be null or undefined
  */
 export const availabilityStatusSchema = z
   .enum(AVAILABILITY_STATUSES, {
@@ -86,16 +87,18 @@ export const availabilityStatusSchema = z
       message: `Availability status must be one of: ${AVAILABILITY_STATUSES.join(', ')}`,
     }),
   })
+  .nullable()
   .optional();
 
 /**
  * Availability Message Validation Schema
- * - Optional string
+ * - Optional string or null
  * - Maximum 200 characters
  */
 export const availabilityMessageSchema = z
   .string()
   .max(200, 'Availability message must be 200 characters or less')
+  .nullable()
   .optional();
 
 /**
@@ -157,7 +160,7 @@ export const devCardUpdateSchema = z
   .refine(
     (data) => {
       // If availability_status is 'custom', availability_message should be provided
-      if (data.availability_status === 'custom' && !data.availability_message) {
+      if (data.availability_status === 'custom' && (!data.availability_message || data.availability_message.trim() === '')) {
         return false;
       }
       return true;

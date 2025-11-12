@@ -14,6 +14,7 @@ interface ShareButtonWrapperProps {
   size?: 'default' | 'sm' | 'lg' | 'icon';
   className?: string;
   showLabel?: boolean;
+  showWalletOptions?: boolean;
 }
 
 export function ShareButtonWrapper({
@@ -25,6 +26,7 @@ export function ShareButtonWrapper({
   size = 'default',
   className = '',
   showLabel = true,
+  showWalletOptions = true,
 }: ShareButtonWrapperProps) {
   const [open, setOpen] = useState(false);
 
@@ -47,6 +49,7 @@ export function ShareButtonWrapper({
         displayName={displayName}
         customBio={customBio}
         avatarUrl={avatarUrl}
+        showWalletOptions={showWalletOptions}
       />
     </>
   );

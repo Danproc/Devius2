@@ -93,6 +93,13 @@ interface CardPreviewProps {
     };
     font?: string;
   } | null;
+  connections?: {
+    count: number;
+    developers: Array<{
+      username: string;
+      avatarUrl: string;
+    }>;
+  };
 }
 
 export function CardPreview({
@@ -111,6 +118,7 @@ export function CardPreview({
   ranking,
   isPremium = false,
   theme,
+  connections,
 }: CardPreviewProps) {
   // Apply theme colors if provided
   const themeStyles = theme?.colors
@@ -148,7 +156,10 @@ export function CardPreview({
 
           {/* Connected Developers */}
           <div className="mt-8">
-            <ConnectedDevelopers />
+            <ConnectedDevelopers
+              count={connections?.count}
+              developers={connections?.developers}
+            />
           </div>
         </div>
       </Card>

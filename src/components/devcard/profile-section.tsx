@@ -114,96 +114,90 @@ export function ProfileSection({
       {/* Availability Status Badge */}
       {getAvailabilityBadge()}
 
-      {/* Location and Social Links */}
-      <div className="flex flex-col gap-3">
-        {/* Location and GitHub */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
-          {location && (
-            <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
-              <MapPin className="size-4" />
-              <span>{location}</span>
-            </div>
-          )}
+      {/* All Links in One Inline List */}
+      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
+        {/* Location */}
+        {location && (
+          <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
+            <MapPin className="size-4" />
+            <span>{location}</span>
+          </div>
+        )}
 
+        {/* GitHub */}
+        <a
+          href={`https://github.com/${githubUsername}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+        >
+          <Github className="size-4" />
+          <span>@{githubUsername}</span>
+        </a>
+
+        {/* Twitter */}
+        {socialLinks?.twitter && (
           <a
-            href={`https://github.com/${githubUsername}`}
+            href={socialLinks.twitter.startsWith('http') ? socialLinks.twitter : `https://twitter.com/${socialLinks.twitter}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
           >
-            <Github className="size-4" />
-            <span>@{githubUsername}</span>
+            <Twitter className="size-4" />
+            <span>Twitter</span>
           </a>
-        </div>
-
-        {/* Social Media Links */}
-        {(socialLinks?.twitter || socialLinks?.linkedin || socialLinks?.instagram) && (
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
-            {socialLinks?.twitter && (
-              <a
-                href={socialLinks.twitter.startsWith('http') ? socialLinks.twitter : `https://twitter.com/${socialLinks.twitter}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-              >
-                <Twitter className="size-4" />
-                <span>Twitter</span>
-              </a>
-            )}
-
-            {socialLinks?.linkedin && (
-              <a
-                href={socialLinks.linkedin.startsWith('http') ? socialLinks.linkedin : `https://linkedin.com/in/${socialLinks.linkedin}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-              >
-                <Linkedin className="size-4" />
-                <span>LinkedIn</span>
-              </a>
-            )}
-
-            {socialLinks?.instagram && (
-              <a
-                href={`https://instagram.com/${socialLinks.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-              >
-                <Instagram className="size-4" />
-                <span>Instagram</span>
-              </a>
-            )}
-          </div>
         )}
 
-        {/* Website and Portfolio Links */}
-        {(socialLinks?.website || socialLinks?.portfolio) && (
-          <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
-            {socialLinks?.website && (
-              <a
-                href={socialLinks.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-              >
-                <Globe className="size-4" />
-                <span>{socialLinks.website.replace(/^https?:\/\//, '')}</span>
-              </a>
-            )}
+        {/* LinkedIn */}
+        {socialLinks?.linkedin && (
+          <a
+            href={socialLinks.linkedin.startsWith('http') ? socialLinks.linkedin : `https://linkedin.com/in/${socialLinks.linkedin}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+          >
+            <Linkedin className="size-4" />
+            <span>LinkedIn</span>
+          </a>
+        )}
 
-            {socialLinks?.portfolio && (
-              <a
-                href={socialLinks.portfolio}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
-              >
-                <Briefcase className="size-4" />
-                <span>Portfolio</span>
-              </a>
-            )}
-          </div>
+        {/* Instagram */}
+        {socialLinks?.instagram && (
+          <a
+            href={`https://instagram.com/${socialLinks.instagram}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+          >
+            <Instagram className="size-4" />
+            <span>Instagram</span>
+          </a>
+        )}
+
+        {/* Website */}
+        {socialLinks?.website && (
+          <a
+            href={socialLinks.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+          >
+            <Globe className="size-4" />
+            <span>{socialLinks.website.replace(/^https?:\/\//, '')}</span>
+          </a>
+        )}
+
+        {/* Portfolio */}
+        {socialLinks?.portfolio && (
+          <a
+            href={socialLinks.portfolio}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-devcard-green transition-colors"
+          >
+            <Briefcase className="size-4" />
+            <span>Portfolio</span>
+          </a>
         )}
       </div>
 
