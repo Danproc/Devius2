@@ -19,6 +19,11 @@ import {
   Ticket,
   Users,
   Inbox,
+  Edit,
+  BarChart3,
+  Settings,
+  Palette,
+  Globe,
 } from "lucide-react";
 import useSWR from "swr";
 
@@ -89,11 +94,24 @@ export function UserButton() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/app" className="cursor-pointer">
+          <Link href="/app/dashboard" className="cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4" />
             Dashboard
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/card/edit" className="cursor-pointer">
+            <Edit className="mr-2 h-4 w-4" />
+            Edit Card
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/analytics" className="cursor-pointer">
+            <BarChart3 className="mr-2 h-4 w-4" />
+            Analytics
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/app/network" className="cursor-pointer">
             <Users className="mr-2 h-4 w-4" />
@@ -117,23 +135,40 @@ export function UserButton() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        {/* Settings submenu for premium features */}
+        {user?.is_premium && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/app/settings/theme" className="cursor-pointer">
+                <Palette className="mr-2 h-4 w-4" />
+                Theme
+                <Badge variant="secondary" className="ml-auto bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-xs">
+                  Premium
+                </Badge>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/app/settings/domain" className="cursor-pointer">
+                <Globe className="mr-2 h-4 w-4" />
+                Domain
+                <Badge variant="secondary" className="ml-auto bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-xs">
+                  Premium
+                </Badge>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem asChild>
           <Link href="/app/plan" className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />
             Manage Plan
           </Link>
         </DropdownMenuItem>
-
         <DropdownMenuItem asChild>
           <Link href="/app/redeem-ltd" className="cursor-pointer">
             <Ticket className="mr-2 h-4 w-4" />
             Redeem LTD Coupon
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/app/profile" className="cursor-pointer">
-            <UserIcon className="mr-2 h-4 w-4" />
-            Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
