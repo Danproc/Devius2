@@ -125,20 +125,20 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-5 w-96" />
+          <Skeleton className="h-10 w-64 bg-devcard-base/30" />
+          <Skeleton className="h-5 w-96 bg-devcard-base/30" />
         </div>
-        <Card>
+        <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader>
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-6 w-48 bg-devcard-base/30" />
+            <Skeleton className="h-4 w-full bg-devcard-base/30" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full bg-devcard-base/30" />
           </CardContent>
         </Card>
         <div className="space-y-4">
-          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full bg-devcard-base/30" />
         </div>
       </div>
     );
@@ -148,8 +148,8 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Dashboard</h1>
+          <p className="text-devcard-text">
             Manage your DevCard and view your shareable profile
           </p>
         </div>
@@ -160,15 +160,15 @@ export default function DashboardPage() {
           </AlertDescription>
         </Alert>
 
-        <Card>
+        <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader>
-            <CardTitle>No DevCard Found</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-devcard-heading">No DevCard Found</CardTitle>
+            <CardDescription className="text-devcard-text">
               It looks like you haven't created a DevCard yet. Your DevCard should have been automatically created when you signed in with GitHub.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleRefresh} variant="outline">
+            <Button onClick={handleRefresh} variant="outline" className="border-devcard-border hover:bg-devcard-border/50 text-devcard-heading">
               <RefreshCw className="mr-2 h-4 w-4" />
               Retry
             </Button>
@@ -182,27 +182,27 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Your DevCard Dashboard</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your DevCard Dashboard</h1>
+        <p className="text-devcard-text">
           Your developer profile is live! Share it with the world.
         </p>
       </div>
 
       {/* Shareable URL Card */}
-      <Card className="border-devcard-green/20 bg-gradient-to-br from-background to-devcard-green/5 shadow-lg shadow-devcard-green/5">
+      <Card className="border-devcard-green/20 bg-gradient-to-br from-devcard-base/50 to-devcard-green/5 shadow-lg shadow-devcard-green/5">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-devcard-heading">
             <CheckCircle2 className="h-5 w-5 text-devcard-green" />
             Your DevCard is Live!
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-devcard-text">
             Share this URL to showcase your developer profile and projects
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-lg bg-muted border border-border">
-              <code className="text-sm font-mono flex-1 truncate">
+            <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-lg bg-devcard-base/30 border border-devcard-border">
+              <code className="text-sm font-mono flex-1 truncate text-devcard-heading">
                 {shareableUrl}
               </code>
             </div>
@@ -250,41 +250,41 @@ export default function DashboardPage() {
 
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader className="pb-2">
-            <CardDescription>Views</CardDescription>
-            <CardTitle className="text-3xl">{devcard.view_count.toLocaleString()}</CardTitle>
+            <CardDescription className="text-devcard-text">Views</CardDescription>
+            <CardTitle className="text-3xl text-devcard-heading">{devcard.view_count.toLocaleString()}</CardTitle>
           </CardHeader>
         </Card>
-        <Card>
+        <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader className="pb-2">
-            <CardDescription>Status</CardDescription>
+            <CardDescription className="text-devcard-text">Status</CardDescription>
             <CardTitle className="text-3xl capitalize">
               {devcard.is_public ? (
                 <span className="text-devcard-green">Public</span>
               ) : (
-                <span className="text-muted-foreground">Private</span>
+                <span className="text-devcard-text">Private</span>
               )}
             </CardTitle>
           </CardHeader>
         </Card>
-        <Card>
+        <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader className="pb-2">
-            <CardDescription>Username</CardDescription>
-            <CardTitle className="text-2xl truncate">@{devcard.github_username}</CardTitle>
+            <CardDescription className="text-devcard-text">Username</CardDescription>
+            <CardTitle className="text-2xl truncate text-devcard-heading">@{devcard.github_username}</CardTitle>
           </CardHeader>
         </Card>
-        <Card className="border-devcard-green/20 bg-gradient-to-br from-background to-devcard-green/5">
+        <Card className="border-devcard-green/20 bg-gradient-to-br from-devcard-base/50 to-devcard-green/5">
           <CardHeader className="pb-2">
-            <CardDescription>Network</CardDescription>
-            <CardTitle className="text-lg">Connect with developers</CardTitle>
+            <CardDescription className="text-devcard-text">Network</CardDescription>
+            <CardTitle className="text-lg text-devcard-heading">Connect with developers</CardTitle>
           </CardHeader>
           <CardContent>
             <Button
               asChild
               variant="outline"
               size="sm"
-              className="w-full border-devcard-green/30 hover:bg-devcard-green/10 hover:border-devcard-green/50"
+              className="w-full border-devcard-green/30 hover:bg-devcard-green/10 hover:border-devcard-green/50 text-devcard-heading"
             >
               <Link href="/app/network">
                 <Users className="mr-2 h-4 w-4" />
@@ -311,7 +311,7 @@ export default function DashboardPage() {
                 Edit Profile
               </Link>
             </Button>
-            <Button onClick={handleRefresh} variant="outline" size="sm">
+            <Button onClick={handleRefresh} variant="outline" size="sm" className="border-devcard-border hover:bg-devcard-border/50 text-devcard-heading">
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
             </Button>
@@ -319,7 +319,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Card Preview */}
-        <div className="rounded-lg border border-border/50 bg-gradient-to-br from-muted/30 to-background p-6">
+        <div className="rounded-lg border border-devcard-border bg-gradient-to-br from-devcard-base/30 to-devcard-base/10 p-6">
           <CardPreview
             displayName={devcard.display_name}
             githubUsername={devcard.github_username}
@@ -339,11 +339,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Additional Actions */}
-      <Card className="border-dashed">
+      <Card className="border-dashed border-devcard-border bg-devcard-base/20">
         <CardHeader>
-          <CardTitle className="text-sm">Next Steps</CardTitle>
+          <CardTitle className="text-sm text-devcard-heading">Next Steps</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
+        <CardContent className="text-sm text-devcard-text space-y-2">
           <ul className="list-disc list-inside space-y-1">
             <li>Customize your DevCard profile and featured repositories</li>
             <li>Share your unique URL on social media and portfolios</li>
