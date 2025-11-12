@@ -1,5 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { ConnectButton } from './connect-button';
 import { MapPin, Globe, Github, Instagram, Crown, Twitter, Linkedin, Briefcase } from 'lucide-react';
 
 interface ProfileSectionProps {
@@ -20,6 +21,8 @@ interface ProfileSectionProps {
   techStack?: string[] | null;
   ranking?: number;
   isPremium?: boolean;
+  targetUserId?: string;
+  targetUsername?: string;
 }
 
 export function ProfileSection({
@@ -34,6 +37,8 @@ export function ProfileSection({
   techStack,
   ranking,
   isPremium = false,
+  targetUserId,
+  targetUsername,
 }: ProfileSectionProps) {
   const getAvailabilityBadge = () => {
     if (!availabilityStatus) return null;
@@ -96,17 +101,17 @@ export function ProfileSection({
 
       {/* Name with Member ID Badge */}
       <div className="flex items-center justify-center gap-3">
-        <h1 className="text-4xl font-medium text-[#dde3ed]">
+        <h1 className="text-4xl font-medium text-devcard-heading">
           {displayName || githubUsername}
         </h1>
-        <span className="text-2xl font-medium text-[#5b6a7f]">
+        <span className="text-2xl font-medium text-devcard-text">
           #{ranking || 1}
         </span>
       </div>
 
       {/* Bio */}
       {customBio && (
-        <p className="text-[#5b6a7f] max-w-md leading-relaxed text-base px-4">
+        <p className="text-devcard-text max-w-md leading-relaxed text-base px-4">
           {customBio}
         </p>
       )}
@@ -114,8 +119,19 @@ export function ProfileSection({
       {/* Availability Status Badge */}
       {getAvailabilityBadge()}
 
+      {/* Connect Button */}
+      {targetUserId && targetUsername && (
+        <div className="w-full max-w-sm mx-auto mt-6">
+          <ConnectButton
+            targetUserId={targetUserId}
+            targetUsername={targetUsername}
+            className="w-full bg-devcard-green hover:bg-devcard-green/90 text-black font-semibold text-lg py-4 rounded-xl shadow-lg shadow-devcard-green/20 transition-all hover:shadow-xl hover:shadow-devcard-green/30"
+          />
+        </div>
+      )}
+
       {/* All Links in One Inline List */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-[#5b6a7f]">
+      <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-devcard-text">
         {/* Location */}
         {location && (
           <div className="flex items-center gap-1.5 hover:text-devcard-green transition-colors">
@@ -204,13 +220,13 @@ export function ProfileSection({
       {/* Tech Stack */}
       {techStack && techStack.length > 0 && (
         <div className="w-full">
-          <h3 className="text-sm font-medium text-[#dde3ed] mb-3">Tech Stack</h3>
+          <h3 className="text-sm font-medium text-devcard-heading mb-3">Tech Stack</h3>
           <div className="flex flex-wrap gap-2 justify-center">
             {techStack.map((tech) => (
               <Badge
                 key={tech}
                 variant="secondary"
-                className="bg-[#1cf491]/10 text-[#1cf491] border-[#1cf491]/20 hover:bg-[#1cf491]/20 transition-colors"
+                className="bg-devcard-green/10 text-devcard-green border-devcard-green/20 hover:bg-devcard-green/20 transition-colors"
               >
                 {tech}
               </Badge>

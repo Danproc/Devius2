@@ -265,15 +265,10 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     : null;
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f] animate-fade-in">
+    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in">
       <div className="animate-slide-up">
-        {/* Action Buttons - Centered and prominent */}
-        <div className="w-full max-w-2xl mx-auto mb-6 flex flex-col sm:flex-row justify-center gap-3">
-          <ConnectButton
-            targetUserId={devcard.user_id}
-            targetUsername={devcard.display_name || devcard.github_username}
-            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#1cf491]/20 transition-all hover:shadow-xl hover:shadow-[#1cf491]/30"
-          />
+        {/* Share Button - Centered and prominent */}
+        <div className="w-full max-w-2xl mx-auto mb-6 flex justify-center">
           <ShareButtonWrapper
             username={devcard.url_slug}
             displayName={devcard.display_name || devcard.github_username}
@@ -281,7 +276,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
             avatarUrl={devcard.avatar_url}
             variant="outline"
             size="lg"
-            className="text-lg px-8 py-6 rounded-xl border-2 border-[#1cf491] text-[#1cf491] hover:bg-[#1cf491]/10"
+            className="text-lg px-8 py-6 rounded-xl border-2 border-devcard-green text-devcard-green hover:bg-devcard-green/10"
             showWalletOptions={false}
           />
         </div>
@@ -301,6 +296,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
           viewCount={devcard.view_count + 1}
           theme={devcard.theme}
           connections={connectionsData || undefined}
+          targetUserId={devcard.user_id}
+          targetUsername={devcard.display_name || devcard.github_username}
         />
       </div>
     </main>

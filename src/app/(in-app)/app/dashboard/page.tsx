@@ -53,6 +53,16 @@ interface DevCardData {
   updated_at: string;
 }
 
+interface GitHubRepo {
+  full_name: string;
+  name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+}
+
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) {
@@ -65,6 +75,10 @@ const fetcher = async (url: string) => {
 export default function DashboardPage() {
   const [copied, setCopied] = React.useState(false);
   const { data: devcard, error, isLoading, mutate } = useSWR<DevCardData>('/api/cards/me', fetcher);
+  const { data: reposData } = useSWR<{ repositories: GitHubRepo[] }>(
+    '/api/github/repos?sort=stars&limit=50',
+    fetcher
+  );
 
   const shareableUrl = React.useMemo(() => {
     if (!devcard) return '';
@@ -72,6 +86,18 @@ export default function DashboardPage() {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     return `${baseUrl}/${devcard.url_slug}`;
   }, [devcard]);
+
+  // Get actual repo objects for featured repos
+  const featuredRepoObjects = React.useMemo(() => {
+    if (!reposData?.repositories || !devcard?.featured_repos?.length) return [];
+    return reposData.repositories
+      .filter((repo) => devcard.featured_repos!.includes(repo.full_name))
+      .sort((a, b) => {
+        const aIndex = devcard.featured_repos!.indexOf(a.full_name);
+        const bIndex = devcard.featured_repos!.indexOf(b.full_name);
+        return aIndex - bIndex;
+      });
+  }, [reposData, devcard?.featured_repos]);
 
   const handleCopyUrl = React.useCallback(async () => {
     try {
@@ -273,13 +299,13 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-[#dde3ed]">Preview</h2>
-            <p className="text-sm text-[#5b6a7f]">
+            <h2 className="text-xl font-semibold text-devcard-heading">Preview</h2>
+            <p className="text-sm text-devcard-text">
               This is how your DevCard appears to visitors
             </p>
           </div>
           <div className="flex gap-2">
-            <Button asChild className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-medium">
+            <Button asChild className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium">
               <Link href="/app/card/edit">
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Profile
@@ -305,7 +331,7 @@ export default function DashboardPage() {
             socialLinks={devcard.social_links}
             githubStats={devcard.github_stats}
             techStack={devcard.tech_stack}
-            featuredRepos={[]}
+            featuredRepos={featuredRepoObjects}
             viewCount={devcard.view_count}
             theme={devcard.theme}
           />
