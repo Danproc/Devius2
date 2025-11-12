@@ -265,22 +265,22 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     : null;
 
   return (
-    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in">
-      <div className="animate-slide-up">
-        {/* Share Button - Centered and prominent */}
-        <div className="w-full max-w-2xl mx-auto mb-6 flex justify-center">
-          <ShareButtonWrapper
-            username={devcard.url_slug}
-            displayName={devcard.display_name || devcard.github_username}
-            customBio={devcard.custom_bio || undefined}
-            avatarUrl={devcard.avatar_url}
-            variant="outline"
-            size="lg"
-            className="text-lg px-8 py-6 rounded-xl border-2 border-devcard-green text-devcard-green hover:bg-devcard-green/10"
-            showWalletOptions={false}
-          />
-        </div>
+    <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in relative">
+      {/* Share Button - Top right corner, green and smaller */}
+      <div className="fixed top-4 right-4 z-50">
+        <ShareButtonWrapper
+          username={devcard.url_slug}
+          displayName={devcard.display_name || devcard.github_username}
+          customBio={devcard.custom_bio || undefined}
+          avatarUrl={devcard.avatar_url}
+          variant="default"
+          size="sm"
+          className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium px-4 py-2 text-sm"
+          showWalletOptions={false}
+        />
+      </div>
 
+      <div className="animate-slide-up">
         <CardPreview
           displayName={devcard.display_name}
           githubUsername={devcard.github_username}
