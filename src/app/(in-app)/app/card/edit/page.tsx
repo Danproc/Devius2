@@ -346,7 +346,7 @@ export default function CardEditorPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Profile Information Card */}
-              <Card className="bg-[#04080f] border-[#121824]">
+              <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
                   <CardTitle>Profile Information</CardTitle>
                   <CardDescription>Basic information about yourself</CardDescription>
@@ -362,7 +362,7 @@ export default function CardEditorPage() {
                           <Input
                             placeholder={devcard.github_username}
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormDescription>
@@ -382,7 +382,7 @@ export default function CardEditorPage() {
                         <FormControl>
                           <Textarea
                             placeholder="Tell others about yourself..."
-                            className="min-h-[100px] bg-[#04080f] border-[#121824] resize-none"
+                            className="min-h-[100px] bg-devcard-base border-devcard-border resize-none"
                             maxLength={500}
                             {...field}
                           />
@@ -405,7 +405,7 @@ export default function CardEditorPage() {
                           <Input
                             placeholder="San Francisco, CA"
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormMessage />
@@ -416,7 +416,7 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Social Links Card */}
-              <Card className="bg-[#04080f] border-[#121824]">
+              <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
                   <CardTitle>Social Links</CardTitle>
                   <CardDescription>Connect your social media profiles</CardDescription>
@@ -433,7 +433,7 @@ export default function CardEditorPage() {
                             placeholder="https://twitter.com/username"
                             type="url"
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormMessage />
@@ -452,7 +452,7 @@ export default function CardEditorPage() {
                             placeholder="https://linkedin.com/in/username"
                             type="url"
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormMessage />
@@ -471,7 +471,7 @@ export default function CardEditorPage() {
                             placeholder="https://yourwebsite.com"
                             type="url"
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormMessage />
@@ -490,7 +490,7 @@ export default function CardEditorPage() {
                             placeholder="https://portfolio.com"
                             type="url"
                             {...field}
-                            className="bg-[#04080f] border-[#121824]"
+                            className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
                         <FormMessage />
@@ -501,7 +501,7 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Availability Card */}
-              <Card className="bg-[#04080f] border-[#121824]">
+              <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
                   <CardTitle>Availability Status</CardTitle>
                   <CardDescription>Let others know your current availability</CardDescription>
@@ -513,9 +513,13 @@ export default function CardEditorPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value ?? "available"}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value || undefined}
+                          defaultValue={field.value || "available"}
+                        >
                           <FormControl>
-                            <SelectTrigger className="bg-[#04080f] border-[#121824]">
+                            <SelectTrigger className="bg-devcard-base border-devcard-border">
                               <SelectValue placeholder="Select your availability" />
                             </SelectTrigger>
                           </FormControl>
@@ -542,7 +546,7 @@ export default function CardEditorPage() {
                             <Input
                               placeholder="Available for freelance work"
                               {...field}
-                              className="bg-[#04080f] border-[#121824]"
+                              className="bg-devcard-base border-devcard-border"
                               maxLength={200}
                             />
                           </FormControl>
@@ -558,7 +562,7 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Featured Repositories Card */}
-              <Card className="bg-[#04080f] border-[#121824]">
+              <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
                   <CardTitle>Featured Repositories</CardTitle>
                   <CardDescription>
@@ -577,7 +581,7 @@ export default function CardEditorPage() {
                       {repos.map((repo) => (
                         <div
                           key={repo.full_name}
-                          className="flex items-start gap-3 p-3 rounded-lg border border-[#121824] hover:bg-[#121824]/30 transition-colors cursor-pointer"
+                          className="flex items-start gap-3 p-3 rounded-lg border border-devcard-border hover:bg-devcard-border/30 transition-colors cursor-pointer"
                           onClick={() => handleToggleFeaturedRepo(repo.full_name)}
                         >
                           <Checkbox
@@ -618,7 +622,7 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Tech Stack Card */}
-              <Card className="bg-[#04080f] border-[#121824]">
+              <Card className="bg-devcard-base border-devcard-border">
                 <CardHeader>
                   <CardTitle>Tech Stack</CardTitle>
                   <CardDescription>
@@ -628,12 +632,12 @@ export default function CardEditorPage() {
                 <CardContent className="space-y-4">
                   {/* Selected Technologies */}
                   {selectedTech.length > 0 && (
-                    <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-[#121824]/30 border border-[#121824]">
+                    <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-devcard-border/30 border border-devcard-border">
                       {selectedTech.map((tech) => (
                         <Badge
                           key={tech}
                           variant="secondary"
-                          className="bg-[#1cf491]/10 text-[#1cf491] hover:bg-[#1cf491]/20 border-[#1cf491]/20"
+                          className="bg-devcard-green/10 text-devcard-green hover:bg-devcard-green/20 border-devcard-green/20"
                         >
                           {tech}
                           <button
@@ -662,8 +666,8 @@ export default function CardEditorPage() {
                             variant="outline"
                             className={`cursor-pointer transition-colors ${
                               isSelected
-                                ? "bg-[#1cf491]/10 border-[#1cf491] text-[#1cf491]"
-                                : "hover:bg-[#121824]/50"
+                                ? "bg-devcard-green/10 border-devcard-green text-devcard-green"
+                                : "hover:bg-devcard-border/50"
                             }`}
                             onClick={() => handleToggleTech(tech)}
                           >
@@ -691,7 +695,7 @@ export default function CardEditorPage() {
                           }
                         }}
                         maxLength={50}
-                        className="bg-[#04080f] border-[#121824]"
+                        className="bg-devcard-base border-devcard-border"
                       />
                       <Button
                         type="button"
@@ -708,16 +712,16 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Save Button */}
-              <div className="flex justify-end gap-3 sticky bottom-0 bg-[#04080f]/95 backdrop-blur py-4 border-t border-[#121824]">
+              <div className="flex justify-end gap-3 sticky bottom-0 bg-devcard-base/95 backdrop-blur py-4 border-t border-devcard-border">
                 <Link href="/app/dashboard">
-                  <Button variant="outline" type="button" className="border-[#121824] hover:bg-[#121824]/50">
+                  <Button variant="outline" type="button" className="border-devcard-border hover:bg-devcard-border/50">
                     Cancel
                   </Button>
                 </Link>
                 <Button
                   type="submit"
                   disabled={isSaving || !form.formState.isValid}
-                  className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-medium min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSaving ? (
                     <>

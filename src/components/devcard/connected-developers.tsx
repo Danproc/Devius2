@@ -24,7 +24,7 @@ export function ConnectedDevelopers({
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <p className="text-[#5b6a7f] text-base">
+      <p className="text-devcard-text text-base">
         Connected with{' '}
         <span className="text-devcard-green font-semibold">{count}</span>{' '}
         developers
@@ -34,7 +34,7 @@ export function ConnectedDevelopers({
         {displayDevelopers.map((dev, index) => (
           <Avatar
             key={dev.username}
-            className="size-12 border-2 border-[#04080f] ring-1 ring-[#121824]"
+            className="size-12 border-2 border-devcard-base ring-1 ring-devcard-border"
             style={{ zIndex: displayDevelopers.length - index }}
           >
             <AvatarImage src={dev.avatarUrl} alt={dev.username} />
