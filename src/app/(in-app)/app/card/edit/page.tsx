@@ -169,7 +169,7 @@ export default function CardEditorPage() {
 
   // Get actual repo objects for featured repos
   const featuredRepoObjects = React.useMemo(() => {
-    if (!repos || !watchedFeaturedRepos.length) return [];
+    if (!repos || !Array.isArray(repos) || !watchedFeaturedRepos.length) return [];
     return repos
       .filter((repo) => watchedFeaturedRepos.includes(repo.full_name))
       .sort((a, b) => {
@@ -564,7 +564,7 @@ export default function CardEditorPage() {
                       <Skeleton className="h-16 w-full" />
                       <Skeleton className="h-16 w-full" />
                     </div>
-                  ) : repos && repos.length > 0 ? (
+                  ) : repos && Array.isArray(repos) && repos.length > 0 ? (
                     <div className="space-y-2 max-h-[400px] overflow-y-auto">
                       {repos.map((repo) => (
                         <div
