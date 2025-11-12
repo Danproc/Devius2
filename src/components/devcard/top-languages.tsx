@@ -23,10 +23,10 @@ export function TopLanguages({ languages }: TopLanguagesProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-medium text-[#dde3ed]">
+        <h2 className="text-lg font-medium text-devcard-heading">
           Top Languages
         </h2>
-        <p className="text-sm text-[#5b6a7f]">
+        <p className="text-sm text-devcard-text">
           Detected from repositories
         </p>
       </div>
@@ -39,8 +39,8 @@ export function TopLanguages({ languages }: TopLanguagesProps) {
               className="w-3 h-3 rounded-full"
               style={{ backgroundColor: lang.color }}
             />
-            <span className="text-[#dde3ed]">{lang.name}</span>
-            <span className="text-[#5b6a7f]">{lang.percentage}%</span>
+            <span className="text-devcard-heading">{lang.name}</span>
+            <span className="text-devcard-text">{lang.percentage}%</span>
           </div>
         ))}
       </div>

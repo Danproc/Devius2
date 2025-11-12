@@ -515,8 +515,7 @@ export default function CardEditorPage() {
                         <FormLabel>Status</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          value={field.value || undefined}
-                          defaultValue={field.value || "available"}
+                          value={field.value || "available"}
                         >
                           <FormControl>
                             <SelectTrigger className="bg-devcard-base border-devcard-border">

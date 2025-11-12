@@ -65,7 +65,7 @@ export function StatsDisplay({ stats, githubUsername }: StatsDisplayProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-[#dde3ed]">GitHub Statistics</h2>
+      <h2 className="text-xl font-bold text-devcard-heading">GitHub Statistics</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {statItems.map((item) => (
           <a
@@ -77,7 +77,7 @@ export function StatsDisplay({ stats, githubUsername }: StatsDisplayProps) {
               flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200
               ${item.highlight
                 ? 'border-devcard-green/30 bg-devcard-green/5 hover:bg-devcard-green/10 hover:border-devcard-green/50'
-                : 'border-[#121824] bg-[#04080f] hover:bg-white/5 hover:border-white/20'
+                : 'border-devcard-border bg-devcard-base hover:bg-white/5 hover:border-white/20'
               }
               group hover:-translate-y-0.5
             `}
@@ -85,15 +85,15 @@ export function StatsDisplay({ stats, githubUsername }: StatsDisplayProps) {
             <item.icon className={`size-5 transition-colors ${
               item.highlight
                 ? 'text-devcard-green'
-                : 'text-[#5b6a7f] group-hover:text-[#dde3ed]'
+                : 'text-devcard-text group-hover:text-devcard-heading'
             }`} />
             <div className="flex flex-col items-center gap-0.5">
               <span className={`text-2xl font-bold ${
-                item.highlight ? 'text-devcard-green' : 'text-[#dde3ed]'
+                item.highlight ? 'text-devcard-green' : 'text-devcard-heading'
               }`}>
                 {item.value}
               </span>
-              <span className="text-xs text-[#5b6a7f] text-center">
+              <span className="text-xs text-devcard-text text-center">
                 {item.label}
               </span>
             </div>

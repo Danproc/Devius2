@@ -70,10 +70,10 @@ const POPULAR_TECH_STACK = [
  * - T067: Availability status toggle with custom message
  *
  * Design specifications:
- * - Dark theme (#04080f background, #121824 borders)
- * - Labels in #dde3ed
- * - Input text in #5b6a7f
- * - Green (#1cf491) for selected/active states
+ * - Dark theme (devcard-base background, devcard-border borders)
+ * - Labels in devcard-heading
+ * - Input text in devcard-text
+ * - Green (devcard-green) for selected/active states
  */
 export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: CardEditorProps) {
   const [customTechInput, setCustomTechInput] = React.useState("");
@@ -152,10 +152,10 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
   return (
     <div className="space-y-6">
       {/* T062: Profile Information Card */}
-      <Card className="bg-[#04080f] border-[#121824]">
+      <Card className="bg-devcard-base border-devcard-border">
         <CardHeader>
-          <CardTitle className="text-[#dde3ed]">Profile Information</CardTitle>
-          <CardDescription className="text-[#5b6a7f]">Basic information about yourself</CardDescription>
+          <CardTitle className="text-devcard-heading">Profile Information</CardTitle>
+          <CardDescription className="text-devcard-text">Basic information about yourself</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <FormField
@@ -163,15 +163,15 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="display_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Display Name</FormLabel>
+                <FormLabel className="text-devcard-heading">Display Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder={githubUsername}
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
-                <FormDescription className="text-[#5b6a7f]">
+                <FormDescription className="text-devcard-text">
                   Override your GitHub username with a custom display name
                 </FormDescription>
                 <FormMessage />
@@ -185,17 +185,17 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="custom_bio"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Custom Bio</FormLabel>
+                <FormLabel className="text-devcard-heading">Custom Bio</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell others about yourself..."
-                    className="min-h-[100px] bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f] resize-none"
+                    className="min-h-[100px] bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text resize-none"
                     maxLength={500}
                     {...field}
                   />
                 </FormControl>
-                <FormDescription className="text-[#5b6a7f]">
-                  <span className={field.value && field.value.length > 450 ? "text-[#1cf491]" : ""}>
+                <FormDescription className="text-devcard-text">
+                  <span className={field.value && field.value.length > 450 ? "text-devcard-green" : ""}>
                     {field.value?.length || 0} / 500 characters
                   </span>
                 </FormDescription>
@@ -209,12 +209,12 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Location</FormLabel>
+                <FormLabel className="text-devcard-heading">Location</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="San Francisco, CA"
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -225,10 +225,10 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
       </Card>
 
       {/* T064: Social Links Card */}
-      <Card className="bg-[#04080f] border-[#121824]">
+      <Card className="bg-devcard-base border-devcard-border">
         <CardHeader>
-          <CardTitle className="text-[#dde3ed]">Social Links</CardTitle>
-          <CardDescription className="text-[#5b6a7f]">Connect your social media profiles</CardDescription>
+          <CardTitle className="text-devcard-heading">Social Links</CardTitle>
+          <CardDescription className="text-devcard-text">Connect your social media profiles</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <FormField
@@ -236,13 +236,13 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="social_links.twitter"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Twitter / X</FormLabel>
+                <FormLabel className="text-devcard-heading">Twitter / X</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://twitter.com/username"
                     type="url"
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -255,13 +255,13 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="social_links.linkedin"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">LinkedIn</FormLabel>
+                <FormLabel className="text-devcard-heading">LinkedIn</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://linkedin.com/in/username"
                     type="url"
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -274,13 +274,13 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="social_links.website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Website</FormLabel>
+                <FormLabel className="text-devcard-heading">Website</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://yourwebsite.com"
                     type="url"
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -293,13 +293,13 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="social_links.portfolio"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Portfolio</FormLabel>
+                <FormLabel className="text-devcard-heading">Portfolio</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://portfolio.com"
                     type="url"
                     {...field}
-                    className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                    className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
                 <FormMessage />
@@ -310,10 +310,10 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
       </Card>
 
       {/* T067: Availability Status Card */}
-      <Card className="bg-[#04080f] border-[#121824]">
+      <Card className="bg-devcard-base border-devcard-border">
         <CardHeader>
-          <CardTitle className="text-[#dde3ed]">Availability Status</CardTitle>
-          <CardDescription className="text-[#5b6a7f]">Let others know your current availability</CardDescription>
+          <CardTitle className="text-devcard-heading">Availability Status</CardTitle>
+          <CardDescription className="text-devcard-text">Let others know your current availability</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <FormField
@@ -321,10 +321,10 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
             name="availability_status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#dde3ed]">Status</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || undefined}>
+                <FormLabel className="text-devcard-heading">Status</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || "available"}>
                   <FormControl>
-                    <SelectTrigger className="bg-[#04080f] border-[#121824] text-[#dde3ed]">
+                    <SelectTrigger className="bg-devcard-base border-devcard-border text-devcard-heading">
                       <SelectValue placeholder="Select your availability" />
                     </SelectTrigger>
                   </FormControl>
@@ -346,16 +346,16 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
               name="availability_message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#dde3ed]">Custom Message</FormLabel>
+                  <FormLabel className="text-devcard-heading">Custom Message</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Available for freelance work"
                       {...field}
-                      className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                      className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                       maxLength={200}
                     />
                   </FormControl>
-                  <FormDescription className="text-[#5b6a7f]">
+                  <FormDescription className="text-devcard-text">
                     {field.value?.length || 0} / 200 characters
                   </FormDescription>
                   <FormMessage />
@@ -367,10 +367,10 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
       </Card>
 
       {/* T065: Featured Repositories Card */}
-      <Card className="bg-[#04080f] border-[#121824]">
+      <Card className="bg-devcard-base border-devcard-border">
         <CardHeader>
-          <CardTitle className="text-[#dde3ed]">Featured Repositories</CardTitle>
-          <CardDescription className="text-[#5b6a7f]">
+          <CardTitle className="text-devcard-heading">Featured Repositories</CardTitle>
+          <CardDescription className="text-devcard-text">
             Select up to 6 repositories to showcase ({selectedRepos.length}/6)
           </CardDescription>
         </CardHeader>
@@ -388,19 +388,19 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   key={repo.full_name}
                   className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
                     selectedRepos.includes(repo.full_name)
-                      ? "border-[#1cf491] bg-[#1cf491]/5"
-                      : "border-[#121824] hover:bg-[#121824]/30"
+                      ? "border-devcard-green bg-devcard-green/5"
+                      : "border-devcard-border hover:bg-devcard-border/30"
                   }`}
                   onClick={() => handleToggleFeaturedRepo(repo.full_name)}
                 >
                   <Checkbox
                     checked={selectedRepos.includes(repo.full_name)}
                     onCheckedChange={() => handleToggleFeaturedRepo(repo.full_name)}
-                    className="mt-1 data-[state=checked]:bg-[#1cf491] data-[state=checked]:border-[#1cf491]"
+                    className="mt-1 data-[state=checked]:bg-devcard-green data-[state=checked]:border-devcard-green"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-sm truncate text-[#dde3ed]">{repo.name}</p>
+                      <p className="font-medium text-sm truncate text-devcard-heading">{repo.name}</p>
                       {repo.language && (
                         <Badge variant="secondary" className="text-xs">
                           {repo.language}
@@ -408,11 +408,11 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                       )}
                     </div>
                     {repo.description && (
-                      <p className="text-xs text-[#5b6a7f] line-clamp-2 mt-1">
+                      <p className="text-xs text-devcard-text line-clamp-2 mt-1">
                         {repo.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-[#5b6a7f]">
+                    <div className="flex items-center gap-3 mt-2 text-xs text-devcard-text">
                       <span>⭐ {repo.stargazers_count}</span>
                       <span>🍴 {repo.forks_count}</span>
                     </div>
@@ -431,22 +431,22 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
       </Card>
 
       {/* T066: Tech Stack Card */}
-      <Card className="bg-[#04080f] border-[#121824]">
+      <Card className="bg-devcard-base border-devcard-border">
         <CardHeader>
-          <CardTitle className="text-[#dde3ed]">Tech Stack</CardTitle>
-          <CardDescription className="text-[#5b6a7f]">
+          <CardTitle className="text-devcard-heading">Tech Stack</CardTitle>
+          <CardDescription className="text-devcard-text">
             Select or add technologies you work with ({selectedTech.length}/20)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Selected Technologies - Pills/badges display */}
           {selectedTech.length > 0 && (
-            <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-[#121824]/30 border border-[#121824]">
+            <div className="flex flex-wrap gap-2 p-3 rounded-lg bg-devcard-border/30 border border-devcard-border">
               {selectedTech.map((tech) => (
                 <Badge
                   key={tech}
                   variant="secondary"
-                  className="bg-[#1cf491]/10 text-[#1cf491] hover:bg-[#1cf491]/20 border-[#1cf491]/20"
+                  className="bg-devcard-green/10 text-devcard-green hover:bg-devcard-green/20 border-devcard-green/20"
                 >
                   {tech}
                   <button
@@ -463,7 +463,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
 
           {/* Popular Technologies with search/filter */}
           <div>
-            <Label className="text-sm text-[#5b6a7f] mb-2 block">
+            <Label className="text-sm text-devcard-text mb-2 block">
               Popular Technologies
             </Label>
             <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto p-2">
@@ -475,8 +475,8 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                     variant="outline"
                     className={`cursor-pointer transition-colors ${
                       isSelected
-                        ? "bg-[#1cf491]/10 border-[#1cf491] text-[#1cf491]"
-                        : "border-[#121824] text-[#5b6a7f] hover:bg-[#121824]/50 hover:text-[#dde3ed]"
+                        ? "bg-devcard-green/10 border-devcard-green text-devcard-green"
+                        : "border-devcard-border text-devcard-text hover:bg-devcard-border/50 hover:text-devcard-heading"
                     }`}
                     onClick={() => handleToggleTech(tech)}
                   >
@@ -489,7 +489,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
 
           {/* Add Custom Technology */}
           <div>
-            <Label className="text-sm text-[#5b6a7f] mb-2 block">
+            <Label className="text-sm text-devcard-text mb-2 block">
               Add Custom Technology
             </Label>
             <div className="flex gap-2">
@@ -504,14 +504,14 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   }
                 }}
                 maxLength={50}
-                className="bg-[#04080f] border-[#121824] text-[#dde3ed] placeholder:text-[#5b6a7f]"
+                className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
               />
               <Button
                 type="button"
                 onClick={handleAddCustomTech}
                 variant="outline"
                 size="icon"
-                className="shrink-0 border-[#121824] hover:bg-[#1cf491]/10 hover:border-[#1cf491]"
+                className="shrink-0 border-devcard-border hover:bg-devcard-green/10 hover:border-devcard-green"
               >
                 <Plus className="h-4 w-4" />
               </Button>
