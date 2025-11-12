@@ -700,9 +700,9 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Save Button */}
-              <div className="flex justify-end gap-3 sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t">
+              <div className="flex justify-end gap-3 sticky bottom-0 bg-[#04080f]/95 backdrop-blur py-4 border-t border-[#121824]">
                 <Link href="/app/dashboard">
-                  <Button variant="outline" type="button">
+                  <Button variant="outline" type="button" className="border-[#121824] hover:bg-[#121824]/50">
                     Cancel
                   </Button>
                 </Link>
