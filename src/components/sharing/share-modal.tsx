@@ -21,6 +21,7 @@ interface ShareModalProps {
   displayName: string;
   customBio?: string;
   avatarUrl?: string;
+  showWalletOptions?: boolean;
 }
 
 export function ShareModal({
@@ -30,6 +31,7 @@ export function ShareModal({
   displayName,
   customBio,
   avatarUrl,
+  showWalletOptions = true,
 }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
 
@@ -90,21 +92,23 @@ export function ShareModal({
             <QRCode username={username} size={280} className="rounded-lg" />
           </div>
 
-          {/* Wallet Pass Buttons */}
-          <div className="w-full flex flex-col gap-3">
-            <WalletPassButton
-              username={username}
-              platform="apple"
-              displayName={displayName}
-              className="w-full"
-            />
-            <WalletPassButton
-              username={username}
-              platform="google"
-              displayName={displayName}
-              className="w-full"
-            />
-          </div>
+          {/* Wallet Pass Buttons - Only show on admin dashboard */}
+          {showWalletOptions && (
+            <div className="w-full flex flex-col gap-3">
+              <WalletPassButton
+                username={username}
+                platform="apple"
+                displayName={displayName}
+                className="w-full"
+              />
+              <WalletPassButton
+                username={username}
+                platform="google"
+                displayName={displayName}
+                className="w-full"
+              />
+            </div>
+          )}
 
           {/* Copy Link Button */}
           <Button

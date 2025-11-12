@@ -114,10 +114,12 @@ export default function CardEditorPage() {
     fetcher
   );
 
-  const { data: repos, isLoading: isLoadingRepos } = useSWR<GitHubRepo[]>(
+  const { data: reposData, isLoading: isLoadingRepos } = useSWR<{ repositories: GitHubRepo[] }>(
     '/api/github/repos?sort=stars&limit=50',
     fetcher
   );
+
+  const repos = reposData?.repositories;
 
   const form = useForm<DevCardUpdateInput>({
     resolver: zodResolver(devCardUpdateSchema),
@@ -191,6 +193,11 @@ export default function CardEditorPage() {
         portfolio: data.social_links.portfolio || undefined,
       } : undefined;
 
+      // Clear availability_message if status is not 'custom'
+      const cleanedAvailabilityMessage = data.availability_status === 'custom'
+        ? data.availability_message
+        : null;
+
       const response = await fetch('/api/cards/me', {
         method: 'PATCH',
         headers: {
@@ -199,6 +206,7 @@ export default function CardEditorPage() {
         body: JSON.stringify({
           ...data,
           social_links: cleanedSocialLinks,
+          availability_message: cleanedAvailabilityMessage,
         }),
       });
 

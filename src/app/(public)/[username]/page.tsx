@@ -239,15 +239,19 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
-  const [cachedData, featuredRepos] = await Promise.all([
+  const [cachedData, featuredRepos, connectionsData] = await Promise.all([
     getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
       devcard.github_username,
       (devcard.featured_repos as string[]) || []
     ),
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/cards/${devcard.user_id}/connections`)
+      .then(res => res.ok ? res.json() : null)
+      .catch(() => null),
   ]);
   console.log('📊 Cached data result:', cachedData ? 'FOUND' : 'NULL');
   console.log('📦 Featured repos count:', featuredRepos?.length || 0);
+  console.log('🔗 Connections count:', connectionsData?.count || 0);
 
   // Build GitHub stats object
   const githubStats = cachedData
@@ -263,20 +267,22 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-[#04080f] animate-fade-in">
       <div className="animate-slide-up">
-        {/* Action Buttons - Positioned at top right */}
-        <div className="w-full max-w-2xl mx-auto mb-4 flex justify-end gap-3">
+        {/* Action Buttons - Centered and prominent */}
+        <div className="w-full max-w-2xl mx-auto mb-6 flex flex-col sm:flex-row justify-center gap-3">
           <ConnectButton
             targetUserId={devcard.user_id}
             targetUsername={devcard.display_name || devcard.github_username}
-            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold"
+            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold text-lg px-8 py-6 rounded-xl shadow-lg shadow-[#1cf491]/20 transition-all hover:shadow-xl hover:shadow-[#1cf491]/30"
           />
           <ShareButtonWrapper
             username={devcard.url_slug}
             displayName={devcard.display_name || devcard.github_username}
             customBio={devcard.custom_bio || undefined}
             avatarUrl={devcard.avatar_url}
-            variant="default"
-            className="bg-[#1cf491] hover:bg-[#1cf491]/90 text-black font-semibold border-[#1cf491]"
+            variant="outline"
+            size="lg"
+            className="text-lg px-8 py-6 rounded-xl border-2 border-[#1cf491] text-[#1cf491] hover:bg-[#1cf491]/10"
+            showWalletOptions={false}
           />
         </div>
 
@@ -294,6 +300,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
           featuredRepos={featuredRepos}
           viewCount={devcard.view_count + 1}
           theme={devcard.theme}
+          connections={connectionsData || undefined}
         />
       </div>
     </main>

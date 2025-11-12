@@ -227,31 +227,14 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
 
   return (
     <>
-      <div className="space-y-2">
-        <Button
-          onClick={handleConnect}
-          variant="default"
-          className={className}
-          disabled={rateLimitInfo?.remaining === 0}
-        >
-          Connect
-        </Button>
-
-        {/* Rate limit feedback */}
-        {rateLimitInfo && (
-          <div className="text-xs text-muted-foreground text-center">
-            {rateLimitInfo.remaining === 0 ? (
-              <span className="text-destructive">
-                Rate limit reached. Reset in {getRemainingTime()}
-              </span>
-            ) : (
-              <span>
-                {rateLimitInfo.remaining} of {rateLimitInfo.limit} requests remaining
-              </span>
-            )}
-          </div>
-        )}
-      </div>
+      <Button
+        onClick={handleConnect}
+        variant="default"
+        className={className}
+        disabled={rateLimitInfo?.remaining === 0}
+      >
+        Connect with {targetUsername}
+      </Button>
 
       {/* Connection Request Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
