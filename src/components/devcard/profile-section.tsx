@@ -123,11 +123,11 @@ export function ProfileSection({
 
       {/* Connect Button */}
       {targetUserId && targetUsername && (
-        <div className="w-full max-w-sm mx-auto mt-6">
+        <div className="w-full max-w-sm mx-auto">
           <ConnectButton
             targetUserId={targetUserId}
             targetUsername={targetUsername}
-            className="w-full bg-devcard-green hover:bg-devcard-green/90 text-black font-semibold text-lg py-4 rounded-xl shadow-lg shadow-devcard-green/20 transition-all hover:shadow-xl hover:shadow-devcard-green/30"
+            className="w-full bg-devcard-green hover:bg-devcard-green/90 text-black font-medium py-4 rounded-xl shadow-lg shadow-devcard-green/20 transition-all hover:shadow-xl hover:shadow-devcard-green/30"
           />
         </div>
       )}
