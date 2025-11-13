@@ -75,10 +75,10 @@ export function DevCardPreviewWrapper({
       availabilityStatus={devcard.availability_status}
       availabilityMessage={devcard.availability_message}
       socialLinks={devcard.social_links}
-      githubStats={devcard.github_stats}
+      githubStats={devcard.github_stats ?? null}
       techStack={devcard.tech_stack as string[] | null}
       featuredRepos={featuredRepos}
-      customProjects={devcard.custom_projects}
+      customProjects={devcard.custom_projects ?? null}
       viewCount={devcard.view_count}
       theme={devcard.theme}
       connections={connections}
