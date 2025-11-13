@@ -611,7 +611,7 @@ export default function CardEditorPage() {
               </Card>
 
               {/* Custom Projects Section */}
-              <CustomProjectsSection onProjectsChange={() => mutate('/api/cards/me')} />
+              <CustomProjectsSection onProjectsChange={() => mutate()} />
 
               {/* Save Button */}
               <div className="flex justify-end gap-3 sticky bottom-0 bg-devcard-base/95 backdrop-blur py-4 border-t border-devcard-border">
