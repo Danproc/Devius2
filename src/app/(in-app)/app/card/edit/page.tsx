@@ -317,6 +317,7 @@ export default function CardEditorPage() {
                           <Input
                             placeholder={devcard.github_username}
                             {...field}
+                            value={field.value ?? ""}
                             className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
@@ -340,6 +341,7 @@ export default function CardEditorPage() {
                             className="min-h-[100px] bg-devcard-base border-devcard-border resize-none"
                             maxLength={160}
                             {...field}
+                            value={field.value ?? ""}
                           />
                         </FormControl>
                         <FormDescription>
@@ -360,6 +362,7 @@ export default function CardEditorPage() {
                           <Input
                             placeholder="San Francisco, CA"
                             {...field}
+                            value={field.value ?? ""}
                             className="bg-devcard-base border-devcard-border"
                           />
                         </FormControl>
@@ -501,6 +504,7 @@ export default function CardEditorPage() {
                             <Input
                               placeholder="Available for freelance work"
                               {...field}
+                              value={field.value ?? ""}
                               className="bg-devcard-base border-devcard-border"
                               maxLength={35}
                             />
