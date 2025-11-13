@@ -41,7 +41,7 @@ const getCachedDevCard = cache(
       }
       return devcard;
     },
-    (username: string) => ['devcard-by-slug', username],
+    ['devcard-by-slug'],
     {
       revalidate: 3600, // 1 hour
       tags: ['devcards'],
@@ -58,7 +58,7 @@ const getCachedGitHubData = cache(
     async (userId: string) => {
       return await getCachedGitHubUserData(userId);
     },
-    (userId: string) => ['github-user-data', userId],
+    ['github-user-data'],
     {
       revalidate: 1800, // 30 minutes
       tags: ['github-stats'],
@@ -113,7 +113,7 @@ const getCachedFeaturedRepos = cache(
         return [];
       }
     },
-    (githubUsername: string, featuredRepoNames: string[]) => ['featured-repos', githubUsername],
+    ['featured-repos'],
     {
       revalidate: 1800, // 30 minutes
       tags: ['github-repos'],
