@@ -90,6 +90,7 @@ export async function getConnectionRateLimitStatus(
 
     return {
       success: result.remaining > 0,
+      limit: 20, // Daily connection request limit
       remaining: result.remaining,
       reset: result.reset,
     };

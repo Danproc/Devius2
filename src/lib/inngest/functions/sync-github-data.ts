@@ -84,8 +84,8 @@ export const syncGitHubData = inngest.createFunction(
     const repositories = await step.run("fetch-repositories", async () => {
       try {
         const repos = await fetchUserRepositoriesByToken(
-          devCard.github_username,
-          accessToken
+          accessToken,
+          { maxRepos: 100 }
         );
         return simplifyRepositories(repos);
       } catch (error) {
@@ -98,7 +98,6 @@ export const syncGitHubData = inngest.createFunction(
     const stats = await step.run("calculate-stats", async () => {
       try {
         const fullRepos = await fetchUserRepositoriesByToken(
-          devCard.github_username,
           accessToken,
           { maxRepos: 100 }
         );
@@ -127,8 +126,8 @@ export const syncGitHubData = inngest.createFunction(
     const additionalStats = await step.run("calculate-additional-stats", async () => {
       // Get full repos for calculations (not simplified)
       const fullRepos = await fetchUserRepositoriesByToken(
-        devCard.github_username,
-        accessToken
+        accessToken,
+        { maxRepos: 100 }
       );
 
       const mostStarredRepo = getMostStarredRepo(fullRepos);
