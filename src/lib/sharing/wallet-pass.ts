@@ -16,10 +16,11 @@ export type WalletPlatform = 'apple' | 'google';
 
 /**
  * DevCard data for wallet pass generation
+ * Minimal subset of fields needed for wallet pass
  */
-export interface DevCardData {
+export interface WalletPassDevCardData {
   username: string;
-  display_name: string;
+  display_name: string | null;
   custom_bio?: string;
   location?: string;
   avatar_url?: string;
@@ -99,7 +100,7 @@ function getPassConfig(): PassConfig {
  * ```
  */
 export async function generateAppleWalletPass(
-  devCardData: DevCardData
+  devCardData: WalletPassDevCardData
 ): Promise<ApplePassResult> {
   const config = getPassConfig();
 
@@ -278,7 +279,7 @@ export async function generateAppleWalletPass(
  * ```
  */
 export async function generateGooglePayPass(
-  devCardData: DevCardData
+  devCardData: WalletPassDevCardData
 ): Promise<GooglePassResult> {
   const config = getPassConfig();
 
@@ -391,7 +392,7 @@ export async function generateGooglePayPass(
  */
 export async function generateWalletPass(
   platform: WalletPlatform,
-  devCardData: DevCardData
+  devCardData: WalletPassDevCardData
 ): Promise<ApplePassResult | GooglePassResult> {
   if (platform === 'apple') {
     return generateAppleWalletPass(devCardData);
