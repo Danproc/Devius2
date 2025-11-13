@@ -19,6 +19,8 @@ export {
   fetchGitHubProfile,
   fetchGitHubProfileByToken,
   fetchPublicGitHubProfile,
+  fetchGitHubOrganizations,
+  fetchGitHubOrganizationsByToken,
   checkGitHubUserExists,
   extractProfileData,
 } from './fetch-profile';
@@ -42,6 +44,9 @@ export {
   calculateCompleteStats,
   calculateCompleteStatsByToken,
   calculateLanguageStats,
+  getMostStarredRepo,
+  getTopLanguages,
+  LANGUAGE_COLORS,
 } from './calculate-stats';
 
 // Caching

@@ -125,6 +125,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.error("❌ Failed to create DevCard:", err);
             // Don't block sign-in if DevCard creation fails
           }
+
+          // Check for connection intent (user wanted to connect before signing in)
+          try {
+            const { cookies } = await import('next/headers');
+            const connectionIntent = cookies().get('connection_intent')?.value;
+
+            if (connectionIntent && connectionIntent !== userId) {
+              console.log("🔗 Connection intent found for user:", connectionIntent);
+
+              // Send connection request directly via database
+              const { connection_requests } = await import('./db/schema/connections');
+
+              await db.insert(connection_requests).values({
+                from_user_id: userId,
+                to_user_id: connectionIntent,
+                message: 'I would like to connect with you!',
+                status: 'pending',
+              });
+
+              console.log("✅ Connection request auto-sent to:", connectionIntent);
+
+              // Clear the connection intent cookie
+              cookies().delete('connection_intent');
+            }
+          } catch (err) {
+            console.error("❌ Error handling connection intent:", err);
+            // Don't block sign-in if connection fails
+          }
         } catch (error) {
           console.error("❌ Error in GitHub OAuth callback:", error);
         }

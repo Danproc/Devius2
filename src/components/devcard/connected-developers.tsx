@@ -1,8 +1,10 @@
+import Link from 'next/link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface Developer {
   username: string;
   avatarUrl: string;
+  url_slug: string;
 }
 
 interface ConnectedDevelopersProps {
@@ -28,16 +30,22 @@ export function ConnectedDevelopers({
       {displayDevelopers.length > 0 && (
         <div className="flex items-center justify-center -space-x-3">
           {displayDevelopers.map((dev, index) => (
-            <Avatar
+            <Link
               key={dev.username}
-              className="size-12 border-2 border-devcard-base ring-1 ring-devcard-border"
+              href={`/${dev.url_slug}`}
+              className="relative inline-block transition-all duration-200 hover:-translate-y-1 cursor-pointer"
               style={{ zIndex: displayDevelopers.length - index }}
+              aria-label={`View ${dev.username}'s profile`}
             >
-              <AvatarImage src={dev.avatarUrl} alt={dev.username} />
-              <AvatarFallback className="bg-devcard-green/10 text-devcard-green text-sm">
-                {dev.username.slice(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+              <Avatar
+                className="size-12 border-2 border-devcard-base ring-1 ring-devcard-border hover:ring-2 hover:ring-devcard-green transition-all duration-200"
+              >
+                <AvatarImage src={dev.avatarUrl} alt={dev.username} />
+                <AvatarFallback className="bg-devcard-green/10 text-devcard-green text-sm">
+                  {dev.username.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
           ))}
         </div>
       )}

@@ -61,8 +61,8 @@ export async function GET(
       })
       .where(eq(devcards.id, devcard.id));
 
-    // Fetch cached GitHub stats if available
-    const cachedData = await getCachedGitHubUserData(devcard.user_id);
+    // Fetch cached GitHub stats if available (use devcard.id, not user_id!)
+    const cachedData = await getCachedGitHubUserData(devcard.id);
 
     // Build response with DevCard data
     const response = {
@@ -77,11 +77,16 @@ export async function GET(
       github_username: devcard.github_username,
       github_stats: cachedData
         ? {
-            public_repos: cachedData.stats.public_repos,
-            followers: cachedData.stats.followers,
-            following: cachedData.stats.following,
-            total_stars: cachedData.stats.total_stars,
-            contribution_streak: cachedData.stats.contribution_streak,
+            public_repos: cachedData.stats?.public_repos || cachedData.profile?.public_repos || 0,
+            followers: cachedData.stats?.followers || cachedData.profile?.followers || 0,
+            following: cachedData.stats?.following || cachedData.profile?.following || 0,
+            total_stars: cachedData.stats?.total_stars || 0,
+            contribution_streak: cachedData.stats?.contribution_streak || 0,
+            public_gists: cachedData.profile?.public_gists || cachedData.stats?.public_gists || 0,
+            contributions: cachedData.contributions,
+            organizations: cachedData.organizations,
+            most_starred_repo: cachedData.most_starred_repo,
+            top_languages: cachedData.top_languages,
           }
         : null,
       social_links: devcard.social_links,

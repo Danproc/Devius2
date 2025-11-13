@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { connections } from '@/db/schema/connections';
 import { users } from '@/db/schema/user';
+import { devcards } from '@/db/schema/devcard';
 import { and, eq, or, count } from 'drizzle-orm';
 
 /**
@@ -56,10 +57,12 @@ export async function GET(
         id: users.id,
         username: users.github_username,
         avatarUrl: users.image,
+        url_slug: devcards.url_slug,
         connected_at: connections.responded_at,
       })
       .from(connections)
       .innerJoin(users, eq(connections.recipient_id, users.id))
+      .innerJoin(devcards, eq(users.id, devcards.user_id))
       .where(
         and(
           eq(connections.requester_id, userId),
@@ -75,10 +78,12 @@ export async function GET(
         id: users.id,
         username: users.github_username,
         avatarUrl: users.image,
+        url_slug: devcards.url_slug,
         connected_at: connections.responded_at,
       })
       .from(connections)
       .innerJoin(users, eq(connections.requester_id, users.id))
+      .innerJoin(devcards, eq(users.id, devcards.user_id))
       .where(
         and(
           eq(connections.recipient_id, userId),
@@ -109,6 +114,7 @@ export async function GET(
     const formattedDevelopers = top5Connections.map((conn) => ({
       username: conn.username || 'unknown',
       avatarUrl: conn.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conn.id}`,
+      url_slug: conn.url_slug || conn.username?.toLowerCase() || 'unknown',
     }));
 
     return NextResponse.json(

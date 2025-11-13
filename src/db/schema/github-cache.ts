@@ -45,6 +45,28 @@ export const github_cache = pgTable('github_cache', {
     longest_streak: number;
   }>(),
 
+  // Organizations
+  organizations: jsonb('organizations').$type<string[]>(), // Array of org logins
+
+  // Most Starred Repository
+  most_starred_repo: jsonb('most_starred_repo').$type<{
+    name: string;
+    full_name: string;
+    stars: number;
+    url: string;
+    description: string | null;
+    language: string | null;
+  }>(),
+
+  // Top Languages (calculated from repos)
+  top_languages: jsonb('top_languages').$type<Array<{
+    name: string;
+    count: number;
+    stars: number;
+    percentage: number;
+    color?: string;
+  }>>(),
+
   // Metadata
   cached_at: timestamp('cached_at', { mode: 'date' }).defaultNow().notNull(),
   expires_at: timestamp('expires_at', { mode: 'date' }).notNull(),

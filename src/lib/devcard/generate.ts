@@ -7,18 +7,24 @@
 
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
+import { github_cache } from '@/db/schema/github-cache';
 import { users } from '@/db/schema/user';
 import { eq } from 'drizzle-orm';
 import { generateCardUrl } from './url-utils';
 import {
   fetchGitHubProfile,
   fetchUserRepositories,
+  fetchGitHubOrganizations,
   calculateCompleteStats,
   simplifyRepositories,
   calculateLanguageStats,
+  getMostStarredRepo,
+  getTopLanguages,
+  LANGUAGE_COLORS,
   cacheGitHubProfile,
   cacheGitHubRepos,
   cacheGitHubStats,
+  cacheGitHubUserData,
 } from '@/lib/github';
 import type { GitHubProfile, GitHubRepo } from '@/types/github';
 
@@ -143,17 +149,61 @@ export async function createDevCard(
   // Calculate statistics
   const stats = await calculateCompleteStats(userId, profile, repositories);
 
+  // Fetch organizations
+  const organizations = await fetchGitHubOrganizations(userId).catch(() => []);
+
+  // Calculate comprehensive stats
+  const mostStarredRepo = getMostStarredRepo(repositories);
+  const topLanguages = getTopLanguages(repositories, 3); // Already includes colors
+
   // Simplify repositories for storage
   const simplifiedRepos = simplifyRepositories(repositories, 10);
 
   // If card already exists, cache and return it
   if (existingCard) {
-    // Cache GitHub data with devcard.id as key (not userId!)
-    await Promise.all([
-      cacheGitHubProfile(existingCard.id, profile),
-      cacheGitHubRepos(existingCard.id, simplifiedRepos),
-      cacheGitHubStats(existingCard.id, stats),
-    ]);
+    // Cache comprehensive GitHub data directly
+    const expires_at = new Date(Date.now() + 1800 * 1000);
+    const existingPgCache = await db
+      .select()
+      .from(github_cache)
+      .where(eq(github_cache.devcard_id, existingCard.id))
+      .limit(1);
+
+    const cacheData = {
+      devcard_id: existingCard.id,
+      login: profile.login,
+      name: profile.name || null,
+      bio: profile.bio || null,
+      location: profile.location || null,
+      email: profile.email || null,
+      avatar_url: profile.avatar_url,
+      html_url: profile.html_url,
+      public_repos: profile.public_repos,
+      public_gists: profile.public_gists,
+      followers: profile.followers,
+      following: profile.following,
+      total_stars: stats.totalStars || 0,
+      contribution_streak: stats.contributions?.currentStreak || 0,
+      repositories: simplifiedRepos,
+      contributions: stats.contributions || {
+        last_year_total: 0,
+        current_streak: 0,
+        longest_streak: 0,
+      },
+      organizations: organizations,
+      most_starred_repo: mostStarredRepo,
+      top_languages: topLanguages,
+      expires_at,
+    };
+
+    if (existingPgCache.length > 0) {
+      await db
+        .update(github_cache)
+        .set(cacheData)
+        .where(eq(github_cache.devcard_id, existingCard.id));
+    } else {
+      await db.insert(github_cache).values(cacheData);
+    }
 
     return {
       devcard: existingCard,
@@ -162,10 +212,8 @@ export async function createDevCard(
     };
   }
 
-  // Extract top repositories (top 3 by stars)
-  const featuredRepos = simplifiedRepos
-    .slice(0, 3)
-    .map((repo) => repo.full_name);
+  // Don't auto-populate featured repos - let users add custom projects instead
+  const featuredRepos: string[] = [];
 
   // Calculate tech stack from repository languages
   const languageStats = calculateLanguageStats(repositories);
@@ -234,12 +282,36 @@ export async function createDevCard(
     })
     .where(eq(users.id, userId));
 
-  // Cache GitHub data with devcard.id as key for newly created card
-  await Promise.all([
-    cacheGitHubProfile(newCard.id, profile),
-    cacheGitHubRepos(newCard.id, simplifiedRepos),
-    cacheGitHubStats(newCard.id, stats),
-  ]);
+  // Cache comprehensive GitHub data for newly created card
+  const expires_at_new = new Date(Date.now() + 1800 * 1000);
+  const cacheDataNew = {
+    devcard_id: newCard.id,
+    login: profile.login,
+    name: profile.name || null,
+    bio: profile.bio || null,
+    location: profile.location || null,
+    email: profile.email || null,
+    avatar_url: profile.avatar_url,
+    html_url: profile.html_url,
+    public_repos: profile.public_repos,
+    public_gists: profile.public_gists,
+    followers: profile.followers,
+    following: profile.following,
+    total_stars: stats.totalStars || 0,
+    contribution_streak: stats.contributions?.currentStreak || 0,
+    repositories: simplifiedRepos,
+    contributions: stats.contributions || {
+      last_year_total: 0,
+      current_streak: 0,
+      longest_streak: 0,
+    },
+    organizations: organizations,
+    most_starred_repo: mostStarredRepo,
+    top_languages: topLanguages,
+    expires_at: expires_at_new,
+  };
+
+  await db.insert(github_cache).values(cacheDataNew);
 
   return {
     devcard: newCard,
@@ -275,8 +347,15 @@ export async function syncDevCard(userId: string): Promise<typeof devcards.$infe
     includePrivate: false,
   });
 
+  // Fetch organizations
+  const organizations = await fetchGitHubOrganizations(userId).catch(() => []);
+
   // Calculate statistics
   const stats = await calculateCompleteStats(userId, profile, repositories);
+
+  // Calculate comprehensive stats
+  const mostStarredRepo = getMostStarredRepo(repositories);
+  const topLanguages = getTopLanguages(repositories, 3); // Already includes colors
 
   // Simplify repositories
   const simplifiedRepos = simplifyRepositories(repositories, 10);
@@ -325,12 +404,49 @@ export async function syncDevCard(userId: string): Promise<typeof devcards.$infe
     .where(eq(devcards.user_id, userId))
     .returning();
 
-  // Update cache
-  await Promise.all([
-    cacheGitHubProfile(userId, profile),
-    cacheGitHubRepos(userId, simplifiedRepos),
-    cacheGitHubStats(userId, stats),
-  ]);
+  // Update cache with comprehensive data directly to PostgreSQL
+  const expires_at = new Date(Date.now() + 1800 * 1000); // 30 minutes
+  const existingPgCache = await db
+    .select()
+    .from(github_cache)
+    .where(eq(github_cache.devcard_id, existingCard.id))
+    .limit(1);
+
+  const cacheData = {
+    devcard_id: existingCard.id,
+    login: profile.login,
+    name: profile.name || null,
+    bio: profile.bio || null,
+    location: profile.location || null,
+    email: profile.email || null,
+    avatar_url: profile.avatar_url,
+    html_url: profile.html_url,
+    public_repos: profile.public_repos,
+    public_gists: profile.public_gists,
+    followers: profile.followers,
+    following: profile.following,
+    total_stars: stats.totalStars || 0,
+    contribution_streak: stats.contributions?.currentStreak || 0,
+    repositories: simplifiedRepos,
+    contributions: stats.contributions || {
+      last_year_total: 0,
+      current_streak: 0,
+      longest_streak: 0,
+    },
+    organizations: organizations,
+    most_starred_repo: mostStarredRepo,
+    top_languages: topLanguages,
+    expires_at,
+  };
+
+  if (existingPgCache.length > 0) {
+    await db
+      .update(github_cache)
+      .set(cacheData)
+      .where(eq(github_cache.devcard_id, existingCard.id));
+  } else {
+    await db.insert(github_cache).values(cacheData);
+  }
 
   return updatedCard;
 }
@@ -376,10 +492,13 @@ export async function getDevCard(userId: string): Promise<typeof devcards.$infer
 export async function getDevCardBySlug(
   urlSlug: string
 ): Promise<typeof devcards.$inferSelect | null> {
+  // Normalize to lowercase for case-insensitive matching
+  const normalizedSlug = urlSlug.toLowerCase();
+
   const [card] = await db
     .select()
     .from(devcards)
-    .where(eq(devcards.url_slug, urlSlug))
+    .where(eq(devcards.url_slug, normalizedSlug))
     .limit(1);
 
   return card || null;

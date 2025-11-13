@@ -4,7 +4,6 @@ import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { headers } from 'next/headers';
 import { getDevCardBySlug } from '@/lib/devcard';
-import { getDevCardByCustomDomain } from '@/lib/devcard/domain-verification';
 import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
 import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
@@ -12,7 +11,6 @@ import { ConnectButton } from '@/components/devcard/connect-button';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
-import { trackCardView } from '@/lib/analytics/track';
 
 interface PageProps {
   params: Promise<{
@@ -43,7 +41,7 @@ const getCachedDevCard = cache(
       }
       return devcard;
     },
-    ['devcard-by-slug'],
+    (username: string) => ['devcard-by-slug', username],
     {
       revalidate: 3600, // 1 hour
       tags: ['devcards'],
@@ -60,7 +58,7 @@ const getCachedGitHubData = cache(
     async (userId: string) => {
       return await getCachedGitHubUserData(userId);
     },
-    ['github-user-data'],
+    (userId: string) => ['github-user-data', userId],
     {
       revalidate: 1800, // 30 minutes
       tags: ['github-stats'],
@@ -115,7 +113,7 @@ const getCachedFeaturedRepos = cache(
         return [];
       }
     },
-    ['featured-repos'],
+    (githubUsername: string, featuredRepoNames: string[]) => ['featured-repos', githubUsername],
     {
       revalidate: 1800, // 30 minutes
       tags: ['github-repos'],
@@ -134,16 +132,8 @@ export async function generateMetadata({
   let devcard;
 
   // Check if this is a custom domain request
-  const isCustomDomain = !host.includes('localhost') &&
-                         !host.includes('vercel.app') &&
-                         !host.includes('devius.com') &&
-                         host.includes('.');
-
-  if (isCustomDomain) {
-    devcard = await getDevCardByCustomDomain(host);
-  } else {
-    devcard = await getCachedDevCard(username);
-  }
+  // Always use username lookup (custom domains removed)
+  devcard = await getCachedDevCard(username);
 
   if (!devcard) {
     return {
@@ -182,60 +172,25 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   let devcard;
 
-  // Check if this is a custom domain request
-  // Custom domains won't have common platform domains
-  const isCustomDomain = !host.includes('localhost') &&
-                         !host.includes('vercel.app') &&
-                         !host.includes('devius.com') &&
-                         host.includes('.');
+  // Standard username-based routing (custom domains removed)
+  devcard = await getCachedDevCard(username);
 
-  if (isCustomDomain) {
-    console.log('🔍 Custom domain detected:', host);
-
-    // Try to fetch DevCard by custom domain
-    devcard = await getDevCardByCustomDomain(host);
-
-    if (!devcard) {
-      console.log('❌ No DevCard found for custom domain:', host);
-      notFound();
-    }
-
-    // Verify the domain is verified
-    if (!devcard.custom_domain_verified) {
-      console.log('⚠️ Custom domain not verified:', host);
-      notFound();
-    }
-
-    console.log('✅ DevCard found for custom domain:', devcard.url_slug);
-  } else {
-    // Standard username-based routing
-    devcard = await getCachedDevCard(username);
-
-    // Return 404 if DevCard not found or not public
-    if (!devcard) {
-      notFound();
-    }
+  // Return 404 if DevCard not found or not public
+  if (!devcard) {
+    notFound();
   }
 
   // Increment view count and track analytics (async, non-blocking)
   // Note: This runs outside cache to ensure views are counted
-  Promise.all([
-    db.update(devcards)
-      .set({
-        view_count: devcard.view_count + 1,
-      })
-      .where(eq(devcards.id, devcard.id))
-      .catch((error) => {
-        console.error('Failed to increment view count:', error);
-      }),
-    trackCardView(
-      devcard.github_username,
-      devcard.id,
-      headersList
-    ).catch((error) => {
-      console.error('Failed to track card view:', error);
+  // Increment view count (async, non-blocking)
+  db.update(devcards)
+    .set({
+      view_count: devcard.view_count + 1,
     })
-  ]);
+    .where(eq(devcards.id, devcard.id))
+    .catch((error) => {
+      console.error('Failed to increment view count:', error);
+    });
 
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
@@ -253,14 +208,19 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   console.log('📦 Featured repos count:', featuredRepos?.length || 0);
   console.log('🔗 Connections count:', connectionsData?.count || 0);
 
-  // Build GitHub stats object
+  // Build comprehensive GitHub stats object
   const githubStats = cachedData
     ? {
-        public_repos: cachedData.stats.public_repos,
-        followers: cachedData.stats.followers,
-        following: cachedData.stats.following,
-        total_stars: cachedData.stats.total_stars,
-        contribution_streak: cachedData.stats.contribution_streak,
+        public_repos: cachedData.stats?.public_repos || cachedData.profile?.public_repos || 0,
+        followers: cachedData.stats?.followers || cachedData.profile?.followers || 0,
+        following: cachedData.stats?.following || cachedData.profile?.following || 0,
+        total_stars: cachedData.stats?.total_stars || 0,
+        contribution_streak: cachedData.stats?.contribution_streak || 0,
+        public_gists: cachedData.profile?.public_gists || cachedData.stats?.public_gists || 0,
+        contributions: cachedData.contributions,
+        organizations: cachedData.organizations,
+        most_starred_repo: cachedData.most_starred_repo,
+        top_languages: cachedData.top_languages,
       }
     : null;
 
@@ -293,7 +253,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
           githubStats={githubStats}
           techStack={devcard.tech_stack as string[] | null}
           featuredRepos={featuredRepos}
+          customProjects={devcard.custom_projects as any}
           viewCount={devcard.view_count + 1}
+          ranking={devcard.member_number}
           theme={devcard.theme}
           connections={connectionsData || undefined}
           targetUserId={devcard.user_id}

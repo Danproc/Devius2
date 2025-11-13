@@ -342,3 +342,81 @@ export function calculateLanguageStats(repos: GitHubRepo[]) {
     }))
     .sort((a, b) => b.stars - a.stars);
 }
+
+/**
+ * Get the most starred repository
+ *
+ * @param repos - Array of user repositories
+ * @returns Most starred repository or null
+ */
+export function getMostStarredRepo(repos: GitHubRepo[]): {
+  name: string;
+  full_name: string;
+  stars: number;
+  url: string;
+  description: string | null;
+  language: string | null;
+} | null {
+  if (!repos || repos.length === 0) return null;
+
+  const sorted = [...repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
+  const mostStarred = sorted[0];
+
+  return {
+    name: mostStarred.name,
+    full_name: mostStarred.full_name,
+    stars: mostStarred.stargazers_count,
+    url: mostStarred.html_url,
+    description: mostStarred.description,
+    language: mostStarred.language,
+  };
+}
+
+/**
+ * Get top N languages with percentages
+ *
+ * @param repos - Array of user repositories
+ * @param limit - Number of top languages to return (default: 3)
+ * @returns Array of top languages with stats
+ */
+export function getTopLanguages(repos: GitHubRepo[], limit: number = 3): Array<{
+  name: string;
+  count: number;
+  stars: number;
+  percentage: number;
+  color?: string;
+}> {
+  const allLanguages = calculateLanguageStats(repos);
+  return allLanguages.slice(0, limit).map(lang => ({
+    name: lang.language, // Map 'language' field to 'name'
+    count: lang.repos,
+    stars: lang.stars,
+    percentage: lang.percentage,
+    color: LANGUAGE_COLORS[lang.language] || '#808080',
+  }));
+}
+
+/**
+ * Language color mapping (matching GitHub's official colors)
+ */
+export const LANGUAGE_COLORS: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#f7df1e',
+  Python: '#3776ab',
+  Java: '#b07219',
+  Go: '#00add8',
+  Rust: '#dea584',
+  Ruby: '#701516',
+  PHP: '#777bb4',
+  'C++': '#00599c',
+  C: '#555555',
+  'C#': '#178600',
+  Swift: '#ffac45',
+  Kotlin: '#F18E33',
+  Dart: '#00B4AB',
+  Shell: '#89e051',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Vue: '#41b883',
+  Svelte: '#ff3e00',
+};

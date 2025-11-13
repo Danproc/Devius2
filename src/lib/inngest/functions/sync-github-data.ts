@@ -17,8 +17,12 @@ import {
   getGitHubAccessToken,
   fetchGitHubProfileByToken,
   fetchUserRepositoriesByToken,
+  fetchGitHubOrganizationsByToken,
   calculateCompleteStatsByToken,
   simplifyRepositories,
+  getMostStarredRepo,
+  getTopLanguages,
+  LANGUAGE_COLORS,
 } from "@/lib/github";
 import { addDays } from "date-fns";
 
@@ -103,6 +107,33 @@ export const syncGitHubData = inngest.createFunction(
       }
     });
 
+    // Step 5b: Fetch organizations
+    const organizations = await step.run("fetch-organizations", async () => {
+      try {
+        return await fetchGitHubOrganizationsByToken(accessToken);
+      } catch (error) {
+        logger.error("Failed to fetch organizations", { error });
+        return []; // Non-critical, return empty array
+      }
+    });
+
+    // Step 5c: Calculate additional stats
+    const additionalStats = await step.run("calculate-additional-stats", async () => {
+      // Get full repos for calculations (not simplified)
+      const fullRepos = await fetchUserRepositoriesByToken(
+        devCard.github_username,
+        accessToken
+      );
+
+      const mostStarredRepo = getMostStarredRepo(fullRepos);
+      const topLanguages = getTopLanguages(fullRepos, 3); // Already includes colors
+
+      return {
+        mostStarredRepo,
+        topLanguages,
+      };
+    });
+
     // Step 6: Update github_cache table
     const cacheResult = await step.run("update-cache", async () => {
       const now = new Date();
@@ -137,6 +168,9 @@ export const syncGitHubData = inngest.createFunction(
             current_streak: stats.contributions?.currentStreak || 0,
             longest_streak: stats.contributions?.longestStreak || 0,
           },
+          organizations: organizations,
+          most_starred_repo: additionalStats.mostStarredRepo || null,
+          top_languages: additionalStats.topLanguages,
           cached_at: now,
           expires_at: expiresAt,
         };

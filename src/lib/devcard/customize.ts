@@ -11,9 +11,10 @@
  */
 
 import { z } from 'zod';
+import { customProjectsArraySchema } from '@/types/projects';
 
 // Constants
-export const MAX_BIO_LENGTH = 500;
+export const MAX_BIO_LENGTH = 160;
 export const MAX_FEATURED_REPOS = 6;
 export const MAX_TECH_STACK = 20;
 export const AVAILABILITY_STATUSES = ['open', 'available', 'not-available', 'custom'] as const;
@@ -93,11 +94,11 @@ export const availabilityStatusSchema = z
 /**
  * Availability Message Validation Schema
  * - Optional string or null
- * - Maximum 200 characters
+ * - Maximum 35 characters
  */
 export const availabilityMessageSchema = z
   .string()
-  .max(200, 'Availability message must be 200 characters or less')
+  .max(35, 'Availability message must be 35 characters or less')
   .nullable()
   .optional();
 
@@ -151,6 +152,7 @@ export const devCardUpdateSchema = z
     location: locationSchema,
     social_links: socialLinksSchema,
     featured_repos: featuredReposSchema,
+    custom_projects: customProjectsArraySchema.optional(),
     tech_stack: techStackSchema,
     availability_status: availabilityStatusSchema,
     availability_message: availabilityMessageSchema,

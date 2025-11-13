@@ -13,8 +13,6 @@ export interface PremiumStatus {
   expiresAt: Date | null;
   features: {
     custom_themes: boolean;
-    custom_domain: boolean;
-    advanced_analytics: boolean;
     priority_support: boolean;
     organization_profiles: boolean;
   };
@@ -66,8 +64,6 @@ export async function checkPremium(userId: string): Promise<PremiumStatus> {
       expiresAt: user.premium_expires_at,
       features: {
         custom_themes: isPremiumActive && (planFeatures?.custom_themes ?? false),
-        custom_domain: isPremiumActive && (planFeatures?.custom_domain ?? false),
-        advanced_analytics: isPremiumActive && (planFeatures?.advanced_analytics ?? false),
         priority_support: isPremiumActive && (planFeatures?.priority_support ?? false),
         organization_profiles: isPremiumActive && (planFeatures?.organization_profiles ?? false),
       },
@@ -124,8 +120,6 @@ function getDefaultPremiumStatus(): PremiumStatus {
     expiresAt: null,
     features: {
       custom_themes: false,
-      custom_domain: false,
-      advanced_analytics: false,
       priority_support: false,
       organization_profiles: false,
     },

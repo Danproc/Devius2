@@ -112,18 +112,6 @@ export default async function BillingPage() {
                       <span>Custom Themes</span>
                     </div>
                   )}
-                  {premiumStatus.features.custom_domain && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      <span>Custom Domain</span>
-                    </div>
-                  )}
-                  {premiumStatus.features.advanced_analytics && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
-                      <span>Advanced Analytics</span>
-                    </div>
-                  )}
                   {premiumStatus.features.priority_support && (
                     <div className="flex items-center gap-2 text-sm">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -146,8 +134,6 @@ export default async function BillingPage() {
               Upgrade to premium to unlock:
               <ul className="mt-2 space-y-1 list-disc list-inside">
                 <li>Custom themes and branding</li>
-                <li>Custom domain support</li>
-                <li>Advanced analytics</li>
                 <li>Priority support</li>
                 <li>Organization profiles</li>
               </ul>

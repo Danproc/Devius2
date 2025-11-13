@@ -96,6 +96,48 @@ export async function checkGitHubUserExists(username: string): Promise<boolean> 
 }
 
 /**
+ * Fetches user's organizations
+ *
+ * @param userId - The user's ID (retrieves token from database)
+ * @returns Array of organization logins
+ * @throws {GitHubAPIError} If fetch fails
+ */
+export async function fetchGitHubOrganizations(userId: string): Promise<string[]> {
+  try {
+    const octokit = await getGitHubClient(userId);
+    const { data: orgs } = await octokit.rest.orgs.listForAuthenticatedUser({
+      per_page: 100, // Max allowed
+    });
+
+    return orgs.map(org => org.login);
+  } catch (error: any) {
+    console.error('Error fetching organizations:', error);
+    // Return empty array on error rather than failing
+    return [];
+  }
+}
+
+/**
+ * Fetches user's organizations by access token
+ *
+ * @param accessToken - GitHub OAuth access token
+ * @returns Array of organization logins
+ */
+export async function fetchGitHubOrganizationsByToken(accessToken: string): Promise<string[]> {
+  try {
+    const octokit = createGitHubClient(accessToken);
+    const { data: orgs } = await octokit.rest.orgs.listForAuthenticatedUser({
+      per_page: 100,
+    });
+
+    return orgs.map(org => org.login);
+  } catch (error: any) {
+    console.error('Error fetching organizations:', error);
+    return [];
+  }
+}
+
+/**
  * Extracts essential profile fields for DevCard display
  *
  * @param profile - Full GitHub profile data

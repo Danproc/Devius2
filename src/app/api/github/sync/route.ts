@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import withAuthRequired from '@/lib/auth/withAuthRequired';
 import { syncDevCard, hasDevCard } from '@/lib/devcard';
 
@@ -29,6 +30,15 @@ export const POST = withAuthRequired(async (req: NextRequest, context) => {
 
     // Sync GitHub data
     const updatedCard = await syncDevCard(userId);
+
+    // Revalidate the public profile page and GitHub stats cache
+    try {
+      revalidatePath(`/${updatedCard.url_slug}`);
+      revalidateTag('github-stats');
+      revalidateTag('devcards');
+    } catch (error) {
+      console.error('Failed to revalidate cache:', error);
+    }
 
     return NextResponse.json({
       message: 'GitHub sync initiated',

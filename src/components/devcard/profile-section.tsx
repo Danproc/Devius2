@@ -72,7 +72,7 @@ export function ProfileSection({
     );
   };
 
-  const initials = (displayName || githubUsername)
+  const initials = (displayName || githubUsername || 'U')
     .split(' ')
     .map((n) => n[0])
     .join('')
@@ -101,14 +101,17 @@ export function ProfileSection({
         </Avatar>
       </div>
 
-      {/* Name with Member ID Badge */}
-      <div className="flex items-center justify-center gap-3">
-        <h1 className="text-4xl font-medium text-devcard-heading">
+      {/* Name with Member ID Badge - Superscript Pill Style */}
+      <div className="relative inline-block">
+        <h1 className="text-4xl font-medium text-devcard-heading pr-12">
           {displayName || githubUsername}
         </h1>
-        <span className="text-2xl font-medium text-devcard-text">
-          #{ranking || 1}
-        </span>
+        <Badge
+          variant="secondary"
+          className="absolute -top-1 -right-0 bg-devcard-green/10 text-devcard-green border-devcard-green/30 font-bold text-xs px-2 py-0.5 shadow-sm"
+        >
+          #{ranking ?? 1}
+        </Badge>
       </div>
 
       {/* Bio */}

@@ -106,7 +106,19 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
 
   const handleConnect = async () => {
     if (!session?.user) {
-      router.push('/sign-in?redirect=' + window.location.pathname);
+      // Store connection intent before redirecting to auth
+      try {
+        await fetch('/api/connections/intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ targetUserId }),
+        });
+      } catch (error) {
+        console.error('Failed to store connection intent:', error);
+      }
+
+      // Use callbackUrl for proper NextAuth redirect handling
+      router.push('/sign-in?callbackUrl=' + encodeURIComponent(window.location.pathname));
       return;
     }
 
@@ -217,11 +229,22 @@ export function ConnectButton({ targetUserId, targetUsername, className }: Conne
   if (!session?.user) {
     return (
       <Button
-        onClick={() => {
+        onClick={async () => {
+          // Store connection intent before redirecting to auth
+          try {
+            await fetch('/api/connections/intent', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ targetUserId }),
+            });
+          } catch (error) {
+            console.error('Failed to store connection intent:', error);
+          }
+
           toast.info('Sign in required', {
             description: 'Please sign in to send a connection request.',
           });
-          router.push('/sign-in?redirect=' + window.location.pathname);
+          router.push('/sign-in?callbackUrl=' + encodeURIComponent(window.location.pathname));
         }}
         variant="default"
         className={className}

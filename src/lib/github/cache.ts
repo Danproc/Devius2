@@ -113,6 +113,10 @@ async function savePgCache(
     profile?: GitHubProfile;
     repos?: GitHubRepoSimplified[];
     stats?: GitHubStats;
+    organizations?: string[];
+    most_starred_repo?: any;
+    top_languages?: any[];
+    contributions?: any;
   },
   ttl: number
 ): Promise<boolean> {
@@ -142,11 +146,15 @@ async function savePgCache(
       // Repository data
       repositories: data.repos || existing?.repositories || [],
       // Contribution data
-      contributions: data.stats?.contributions || existing?.contributions || {
+      contributions: data.contributions || data.stats?.contributions || existing?.contributions || {
         last_year_total: 0,
         current_streak: 0,
         longest_streak: 0,
       },
+      // Comprehensive stats
+      organizations: data.organizations || existing?.organizations || [],
+      most_starred_repo: data.most_starred_repo || existing?.most_starred_repo || null,
+      top_languages: data.top_languages || existing?.top_languages || [],
       expires_at,
     };
 
@@ -483,7 +491,20 @@ export async function getCachedGitHubUserData(
           longest_streak: 0,
         },
         languages: [],
+        public_repos: pgCache.public_repos,
+        public_gists: pgCache.public_gists,
+        followers: pgCache.followers,
+        following: pgCache.following,
+        contribution_streak: pgCache.contribution_streak || 0,
       },
+      contributions: pgCache.contributions as GitHubContributions || {
+        last_year_total: 0,
+        current_streak: 0,
+        longest_streak: 0,
+      },
+      organizations: (pgCache.organizations as string[]) || [],
+      most_starred_repo: pgCache.most_starred_repo as any,
+      top_languages: (pgCache.top_languages as any[]) || [],
     } as GitHubUserData;
   } catch (error) {
     console.error('Failed to get cached GitHub user data:', error);

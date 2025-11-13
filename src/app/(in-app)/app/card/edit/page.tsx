@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CardPreview } from "@/components/devcard/card-preview";
+import { CustomProjectsSection } from "@/components/devcard/custom-projects-section";
 import { devCardUpdateSchema, type DevCardUpdateInput } from "@/lib/devcard/customize";
 import { Save, Loader2, X, Plus, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -70,6 +71,7 @@ interface DevCardData {
     };
     font?: string;
   } | null;
+  member_number: number;
   view_count: number;
   created_at: string;
   updated_at: string;
@@ -100,6 +102,10 @@ export default function CardEditorPage() {
 
   const { data: devcard, error: devcardError, isLoading: isLoadingCard, mutate } = useSWR<DevCardData>(
     '/api/cards/me',
+    fetcher
+  );
+  const { data: connectionsData } = useSWR(
+    devcard ? `/api/cards/${devcard.user_id}/connections` : null,
     fetcher
   );
 
@@ -136,7 +142,7 @@ export default function CardEditorPage() {
           portfolio: devcard.social_links?.portfolio || "",
         },
         tech_stack: devcard.tech_stack || [],
-        availability_status: devcard.availability_status || "available",
+        availability_status: devcard.availability_status ?? "available",
         availability_message: devcard.availability_message || "",
       });
     }
@@ -332,12 +338,12 @@ export default function CardEditorPage() {
                           <Textarea
                             placeholder="Tell others about yourself..."
                             className="min-h-[100px] bg-devcard-base border-devcard-border resize-none"
-                            maxLength={500}
+                            maxLength={160}
                             {...field}
                           />
                         </FormControl>
                         <FormDescription>
-                          {field.value?.length || 0} / 500 characters
+                          {field.value?.length || 0} / 160 characters
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -464,7 +470,8 @@ export default function CardEditorPage() {
                         <FormLabel>Status</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          value={field.value ?? "available"}
+                          value={field.value || undefined}
+                          defaultValue={field.value ?? "available"}
                         >
                           <FormControl>
                             <SelectTrigger className="bg-devcard-base border-devcard-border">
@@ -495,11 +502,11 @@ export default function CardEditorPage() {
                               placeholder="Available for freelance work"
                               {...field}
                               className="bg-devcard-base border-devcard-border"
-                              maxLength={200}
+                              maxLength={35}
                             />
                           </FormControl>
                           <FormDescription>
-                            {field.value?.length || 0} / 200 characters
+                            {field.value?.length || 0} / 35 characters
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -599,6 +606,9 @@ export default function CardEditorPage() {
                 </CardContent>
               </Card>
 
+              {/* Custom Projects Section */}
+              <CustomProjectsSection onProjectsChange={() => mutate('/api/cards/me')} />
+
               {/* Save Button */}
               <div className="flex justify-end gap-3 sticky bottom-0 bg-devcard-base/95 backdrop-blur py-4 border-t border-devcard-border">
                 <Link href="/app/dashboard">
@@ -649,8 +659,11 @@ export default function CardEditorPage() {
               githubStats={devcard.github_stats}
               techStack={deferredPreviewValues.tech_stack || null}
               featuredRepos={[]}
+              customProjects={devcard.custom_projects as any}
               viewCount={devcard.view_count}
+              ranking={devcard.member_number}
               theme={devcard.theme}
+              connections={connectionsData}
             />
           </div>
         </div>

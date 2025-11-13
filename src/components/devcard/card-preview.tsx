@@ -4,10 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ProfileSection } from './profile-section';
 import { StatsDisplay } from './stats-display';
+import { GitHubStatsCard } from './github-stats-card';
 import { RepoShowcase } from './repo-showcase';
 import { ConnectedDevelopers } from './connected-developers';
 import { TopLanguages } from './top-languages';
+import { ProjectShowcase } from './project-showcase';
 import { Eye } from 'lucide-react';
+import { CustomProject } from '@/types/projects';
 
 // Language colors mapping
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -83,6 +86,7 @@ interface CardPreviewProps {
   githubStats: GitHubStats | null;
   techStack?: string[] | null;
   featuredRepos?: Repository[];
+  customProjects?: CustomProject[] | null;
   viewCount?: number;
   ranking?: number;
   isPremium?: boolean;
@@ -100,6 +104,7 @@ interface CardPreviewProps {
     developers: Array<{
       username: string;
       avatarUrl: string;
+      url_slug: string;
     }>;
   };
   targetUserId?: string;
@@ -118,6 +123,7 @@ export function CardPreview({
   githubStats,
   techStack,
   featuredRepos = [],
+  customProjects,
   viewCount,
   ranking,
   isPremium = false,
@@ -193,24 +199,23 @@ export function CardPreview({
             </a>
           </div>
 
-          {/* Top Languages Section */}
-          <TopLanguages languages={calculateLanguages(featuredRepos)} />
+          {/* Comprehensive GitHub Stats */}
+          {githubStats && (
+            <GitHubStatsCard stats={githubStats as any} githubUsername={githubUsername} />
+          )}
         </div>
       </Card>
 
-      {/* SECTION HEADING for Featured Repositories */}
-      {featuredRepos && featuredRepos.length > 0 && (
+      {/* SECTION HEADING for Custom Projects - Only show if user has added projects */}
+      {customProjects && customProjects.length > 0 && (
         <>
           <div className="text-center">
-            <h2 className="text-2xl font-medium text-devcard-heading">Featured Repositories</h2>
-            <p className="text-sm text-devcard-text">GitHub Projects</p>
+            <h2 className="text-2xl font-medium text-devcard-heading">Projects</h2>
+            <p className="text-sm text-devcard-text">Featured Work</p>
           </div>
 
-          {/* Repository Cards - Individual cards for each repo */}
-          <RepoShowcase
-            repositories={featuredRepos}
-            githubUsername={githubUsername}
-          />
+          {/* Project Cards */}
+          <ProjectShowcase projects={customProjects} />
         </>
       )}
 

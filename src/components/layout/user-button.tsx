@@ -19,10 +19,7 @@ import {
   Users,
   Inbox,
   Edit,
-  BarChart3,
   Settings,
-  Palette,
-  Globe,
 } from "lucide-react";
 import useSWR from "swr";
 
@@ -104,12 +101,6 @@ export function UserButton() {
             Edit Card
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/app/analytics" className="cursor-pointer">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Analytics
-          </Link>
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/app/network" className="cursor-pointer">
@@ -134,30 +125,6 @@ export function UserButton() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {/* Settings submenu for premium features */}
-        {user?.is_premium && (
-          <>
-            <DropdownMenuItem asChild>
-              <Link href="/app/settings/theme" className="cursor-pointer">
-                <Palette className="mr-2 h-4 w-4" />
-                Theme
-                <Badge variant="secondary" className="ml-auto bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-xs">
-                  Premium
-                </Badge>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/app/settings/domain" className="cursor-pointer">
-                <Globe className="mr-2 h-4 w-4" />
-                Domain
-                <Badge variant="secondary" className="ml-auto bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-xs">
-                  Premium
-                </Badge>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-          </>
-        )}
         <DropdownMenuItem asChild>
           <Link href="/app/plan" className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />

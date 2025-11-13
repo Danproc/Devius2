@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, jsonb, integer, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, jsonb, integer, serial, index } from 'drizzle-orm/pg-core';
 import { users } from './user';
 
 export const devcards = pgTable('devcards', {
@@ -16,8 +16,6 @@ export const devcards = pgTable('devcards', {
   // URL & Visibility
   url_slug: text('url_slug').notNull().unique(), // e.g., "johndoe"
   is_public: boolean('is_public').default(true).notNull(),
-  custom_domain: text('custom_domain'), // Premium: e.g., "card.johndoe.dev"
-  custom_domain_verified: boolean('custom_domain_verified').default(false),
 
   // Profile Data
   display_name: text('display_name'), // Can override GitHub name
@@ -34,7 +32,21 @@ export const devcards = pgTable('devcards', {
   }>(),
 
   // Featured Content
-  featured_repos: jsonb('featured_repos').$type<string[]>(), // Array of repo full names
+  featured_repos: jsonb('featured_repos').$type<string[]>(), // Array of repo full names (deprecated - use custom_projects)
+  custom_projects: jsonb('custom_projects').$type<Array<{
+    id: string;
+    title: string;
+    description: string;
+    projectUrl?: string;
+    githubUrl?: string;
+    techStack: string[]; // Mix of predefined and custom tags
+    order: number;
+    // Auto-populated from GitHub if githubUrl provided
+    stars?: number;
+    forks?: number;
+    language?: string;
+    lastFetched?: string; // ISO date string
+  }>>(), // Max 3 custom projects
   tech_stack: jsonb('tech_stack').$type<string[]>(), // Array of technology names
 
   // Availability
@@ -70,6 +82,7 @@ export const devcards = pgTable('devcards', {
   }>(),
 
   // Metadata
+  member_number: serial('member_number').notNull().unique(), // Sequential member number (#1, #2, #3, etc.)
   view_count: integer('view_count').default(0).notNull(),
   last_github_sync: timestamp('last_github_sync', { mode: 'date' }),
   created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),

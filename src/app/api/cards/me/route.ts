@@ -37,8 +37,8 @@ export const GET = withAuthRequired(async (req: NextRequest, context) => {
       );
     }
 
-    // Fetch cached GitHub stats if available
-    const cachedData = await getCachedGitHubUserData(userId);
+    // Fetch cached GitHub stats if available (use devcard.id, not userId!)
+    const cachedData = await getCachedGitHubUserData(devcard.id);
 
     // Build response with DevCard data
     const response = {
@@ -53,19 +53,26 @@ export const GET = withAuthRequired(async (req: NextRequest, context) => {
       github_username: devcard.github_username,
       github_stats: cachedData
         ? {
-            public_repos: cachedData.stats.public_repos,
-            followers: cachedData.stats.followers,
-            following: cachedData.stats.following,
-            total_stars: cachedData.stats.total_stars,
-            contribution_streak: cachedData.stats.contribution_streak,
+            public_repos: cachedData.stats?.public_repos || cachedData.profile?.public_repos || 0,
+            followers: cachedData.stats?.followers || cachedData.profile?.followers || 0,
+            following: cachedData.stats?.following || cachedData.profile?.following || 0,
+            total_stars: cachedData.stats?.total_stars || 0,
+            contribution_streak: cachedData.stats?.contribution_streak || 0,
+            public_gists: cachedData.profile?.public_gists || cachedData.stats?.public_gists || 0,
+            contributions: cachedData.contributions,
+            organizations: cachedData.organizations,
+            most_starred_repo: cachedData.most_starred_repo,
+            top_languages: cachedData.top_languages,
           }
         : null,
       social_links: devcard.social_links,
       featured_repos: devcard.featured_repos,
+      custom_projects: devcard.custom_projects,
       tech_stack: devcard.tech_stack,
       availability_status: devcard.availability_status,
       availability_message: devcard.availability_message,
       theme: devcard.theme,
+      member_number: devcard.member_number,
       view_count: devcard.view_count,
       created_at: devcard.created_at,
       updated_at: devcard.updated_at,
@@ -140,6 +147,7 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
       'location',
       'social_links',
       'featured_repos',
+      'custom_projects',
       'tech_stack',
       'availability_status',
       'availability_message',
@@ -181,8 +189,8 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
       // Don't fail the request if revalidation fails
     }
 
-    // Fetch cached GitHub stats if available
-    const cachedData = await getCachedGitHubUserData(userId);
+    // Fetch cached GitHub stats if available (use devcard.id, not userId!)
+    const cachedData = await getCachedGitHubUserData(updatedCard.id);
 
     // Build response
     const response = {
@@ -197,19 +205,26 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
       github_username: updatedCard.github_username,
       github_stats: cachedData
         ? {
-            public_repos: cachedData.stats.public_repos,
-            followers: cachedData.stats.followers,
-            following: cachedData.stats.following,
-            total_stars: cachedData.stats.total_stars,
-            contribution_streak: cachedData.stats.contribution_streak,
+            public_repos: cachedData.stats?.public_repos || cachedData.profile?.public_repos || 0,
+            followers: cachedData.stats?.followers || cachedData.profile?.followers || 0,
+            following: cachedData.stats?.following || cachedData.profile?.following || 0,
+            total_stars: cachedData.stats?.total_stars || 0,
+            contribution_streak: cachedData.stats?.contribution_streak || 0,
+            public_gists: cachedData.profile?.public_gists || cachedData.stats?.public_gists || 0,
+            contributions: cachedData.contributions,
+            organizations: cachedData.organizations,
+            most_starred_repo: cachedData.most_starred_repo,
+            top_languages: cachedData.top_languages,
           }
         : null,
       social_links: updatedCard.social_links,
       featured_repos: updatedCard.featured_repos,
+      custom_projects: updatedCard.custom_projects,
       tech_stack: updatedCard.tech_stack,
       availability_status: updatedCard.availability_status,
       availability_message: updatedCard.availability_message,
       theme: updatedCard.theme,
+      member_number: updatedCard.member_number,
       view_count: updatedCard.view_count,
       created_at: updatedCard.created_at,
       updated_at: updatedCard.updated_at,

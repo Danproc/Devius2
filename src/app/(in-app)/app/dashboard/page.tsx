@@ -79,6 +79,10 @@ export default function DashboardPage() {
     '/api/github/repos?sort=stars&limit=50',
     fetcher
   );
+  const { data: connectionsData } = useSWR(
+    devcard ? `/api/cards/${devcard.user_id}/connections` : null,
+    fetcher
+  );
 
   const shareableUrl = React.useMemo(() => {
     if (!devcard) return '';
@@ -112,10 +116,25 @@ export default function DashboardPage() {
 
   const handleRefresh = React.useCallback(async () => {
     toast.promise(
-      mutate(),
+      async () => {
+        // Trigger GitHub sync to fetch latest data including comprehensive stats
+        const syncResponse = await fetch('/api/github/sync', {
+          method: 'POST',
+        });
+
+        if (!syncResponse.ok) {
+          throw new Error('Failed to sync GitHub data');
+        }
+
+        // Wait a moment for sync to complete
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Refresh the DevCard data
+        await mutate();
+      },
       {
-        loading: 'Refreshing DevCard...',
-        success: 'DevCard refreshed!',
+        loading: 'Syncing GitHub data and refreshing DevCard...',
+        success: 'DevCard refreshed with latest GitHub stats!',
         error: 'Failed to refresh DevCard',
       }
     );
@@ -332,8 +351,11 @@ export default function DashboardPage() {
             githubStats={devcard.github_stats}
             techStack={devcard.tech_stack}
             featuredRepos={featuredRepoObjects}
+            customProjects={devcard.custom_projects as any}
             viewCount={devcard.view_count}
+            ranking={devcard.member_number}
             theme={devcard.theme}
+            connections={connectionsData}
           />
         </div>
       </div>
