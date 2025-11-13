@@ -97,7 +97,7 @@ export const dailyGitHubSync = inngest.createFunction(
     );
 
     // Process batches sequentially to control API rate limits
-    const batchResults = [];
+    const batchResults: Array<{ batchNumber: number; triggered: number; failed: number }> = [];
 
     for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
       const batchNumber = batchIndex + 1;

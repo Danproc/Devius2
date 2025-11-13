@@ -90,7 +90,6 @@ export async function getConnectionRateLimitStatus(
 
     return {
       success: result.remaining > 0,
-      limit: result.limit,
       remaining: result.remaining,
       reset: result.reset,
     };

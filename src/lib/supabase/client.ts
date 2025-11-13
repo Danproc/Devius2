@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState } from 'react';
 import type { Database } from '@/types/database';

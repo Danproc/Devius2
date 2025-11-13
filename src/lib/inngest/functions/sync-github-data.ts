@@ -97,9 +97,15 @@ export const syncGitHubData = inngest.createFunction(
     // Step 5: Calculate complete stats (includes contribution data)
     const stats = await step.run("calculate-stats", async () => {
       try {
-        return await calculateCompleteStatsByToken(
+        const fullRepos = await fetchUserRepositoriesByToken(
           devCard.github_username,
-          accessToken
+          accessToken,
+          { maxRepos: 100 }
+        );
+        return await calculateCompleteStatsByToken(
+          accessToken,
+          profile,
+          fullRepos
         );
       } catch (error) {
         logger.error("Failed to calculate stats", { error });
