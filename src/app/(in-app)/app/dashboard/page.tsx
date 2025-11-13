@@ -40,7 +40,7 @@ export default function DashboardPage() {
     fetcher
   );
   const { data: connectionsData } = useSWR(
-    devcard ? `/api/cards/${devcard.user_id}/connections` : null,
+    devcard ? `/api/cards/${devcard.url_slug}/connections` : null,
     fetcher
   );
 
