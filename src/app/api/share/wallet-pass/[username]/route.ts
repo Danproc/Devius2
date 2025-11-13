@@ -126,7 +126,7 @@ export async function GET(
     // Return based on platform
     if (platform === 'apple') {
       const appleResult = result as ApplePassResult;
-      return new NextResponse(appleResult.pass, {
+      return new NextResponse(new Uint8Array(appleResult.pass), {
         status: 200,
         headers: {
           'Content-Type': appleResult.mimeType,
