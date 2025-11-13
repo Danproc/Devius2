@@ -182,8 +182,8 @@ export async function createDevCard(
       public_gists: profile.public_gists,
       followers: profile.followers,
       following: profile.following,
-      total_stars: stats.totalStars || 0,
-      contribution_streak: stats.contributions?.currentStreak || 0,
+      total_stars: stats.total_stars || 0,
+      contribution_streak: stats.contributions?.current_streak || 0,
       repositories: simplifiedRepos,
       contributions: stats.contributions || {
         last_year_total: 0,
@@ -297,8 +297,8 @@ export async function createDevCard(
     public_gists: profile.public_gists,
     followers: profile.followers,
     following: profile.following,
-    total_stars: stats.totalStars || 0,
-    contribution_streak: stats.contributions?.currentStreak || 0,
+    total_stars: stats.total_stars || 0,
+    contribution_streak: stats.contributions?.current_streak || 0,
     repositories: simplifiedRepos,
     contributions: stats.contributions || {
       last_year_total: 0,
@@ -425,8 +425,8 @@ export async function syncDevCard(userId: string): Promise<typeof devcards.$infe
     public_gists: profile.public_gists,
     followers: profile.followers,
     following: profile.following,
-    total_stars: stats.totalStars || 0,
-    contribution_streak: stats.contributions?.currentStreak || 0,
+    total_stars: stats.total_stars || 0,
+    contribution_streak: stats.contributions?.current_streak || 0,
     repositories: simplifiedRepos,
     contributions: stats.contributions || {
       last_year_total: 0,

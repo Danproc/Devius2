@@ -167,7 +167,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                 <FormControl>
                   <Input
                     placeholder={githubUsername}
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -191,7 +191,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                     placeholder="Tell others about yourself..."
                     className="min-h-[100px] bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text resize-none"
                     maxLength={500}
-                    {...field}
+                    {...field} value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormDescription className="text-devcard-text">
@@ -213,7 +213,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                 <FormControl>
                   <Input
                     placeholder="San Francisco, CA"
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -241,7 +241,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   <Input
                     placeholder="https://twitter.com/username"
                     type="url"
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -260,7 +260,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   <Input
                     placeholder="https://linkedin.com/in/username"
                     type="url"
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -279,7 +279,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   <Input
                     placeholder="https://yourwebsite.com"
                     type="url"
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -298,7 +298,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   <Input
                     placeholder="https://portfolio.com"
                     type="url"
-                    {...field}
+                    {...field} value={field.value ?? ""}
                     className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                   />
                 </FormControl>
@@ -350,7 +350,7 @@ export function CardEditor({ form, repos, isLoadingRepos, githubUsername }: Card
                   <FormControl>
                     <Input
                       placeholder="Available for freelance work"
-                      {...field}
+                      {...field} value={field.value ?? ""}
                       className="bg-devcard-base border-devcard-border text-devcard-heading placeholder:text-devcard-text"
                       maxLength={200}
                     />
