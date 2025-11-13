@@ -394,7 +394,7 @@ export async function getCachedGitHubStats(userId: string): Promise<GitHubStats 
         longest_streak: 0,
       },
       languages: [], // Not stored in cache
-    } as GitHubStats;
+    } as unknown as GitHubStats;
   } catch (error) {
     console.error('Failed to get cached GitHub stats:', error);
     return null;
@@ -505,7 +505,7 @@ export async function getCachedGitHubUserData(
       organizations: (pgCache.organizations as string[]) || [],
       most_starred_repo: pgCache.most_starred_repo as any,
       top_languages: (pgCache.top_languages as any[]) || [],
-    } as GitHubUserData;
+    } as unknown as GitHubUserData;
   } catch (error) {
     console.error('Failed to get cached GitHub user data:', error);
     return null;
