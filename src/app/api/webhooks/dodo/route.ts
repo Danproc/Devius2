@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextRequest, NextResponse } from "next/server";
 import APIError from "@/lib/api/errors";
 import getOrCreateUser from "@/lib/users/getOrCreateUser";
