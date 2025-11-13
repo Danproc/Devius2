@@ -97,7 +97,7 @@ export async function PATCH(request: NextRequest) {
     // Revalidate the public profile page
     try {
       revalidatePath(`/${updatedCard.url_slug}`);
-      revalidateTag('devcards');
+      revalidateTag('devcards', 'max');
     } catch (error) {
       console.error('Failed to revalidate cache:', error);
     }

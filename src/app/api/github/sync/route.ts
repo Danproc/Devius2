@@ -34,8 +34,8 @@ export const POST = withAuthRequired(async (req: NextRequest, context) => {
     // Revalidate the public profile page and GitHub stats cache
     try {
       revalidatePath(`/${updatedCard.url_slug}`, 'page');
-      revalidateTag('github-stats');
-      revalidateTag('devcards');
+      revalidateTag('github-stats', 'max');
+      revalidateTag('devcards', 'max');
     } catch (error) {
       console.error('Failed to revalidate cache:', error);
     }
