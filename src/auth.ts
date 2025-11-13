@@ -136,9 +136,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               console.log("🔗 Connection intent found for user:", connectionIntent);
 
               // Send connection request directly via database
-              const { connection_requests } = await import('./db/schema/connections');
+              const { connections } = await import('./db/schema/connections');
 
-              await db.insert(connection_requests).values({
+              await db.insert(connections).values({
                 from_user_id: userId,
                 to_user_id: connectionIntent,
                 message: 'I would like to connect with you!',
