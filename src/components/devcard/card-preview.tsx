@@ -11,6 +11,7 @@ import { TopLanguages } from './top-languages';
 import { ProjectShowcase } from './project-showcase';
 import { Eye } from 'lucide-react';
 import { CustomProject } from '@/types/projects';
+import { GitHubStatsExtended } from '@/types/github';
 
 // Language colors mapping
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -49,13 +50,7 @@ function calculateLanguages(repos?: Repository[]) {
     .slice(0, 5);
 }
 
-interface GitHubStats {
-  public_repos: number;
-  followers: number;
-  following: number;
-  total_stars: number;
-  contribution_streak: number;
-}
+// Using GitHubStatsExtended from shared types instead of duplicate interface
 
 interface Repository {
   full_name: string;
@@ -83,7 +78,7 @@ interface CardPreviewProps {
     portfolio?: string;
     instagram?: string;
   } | null;
-  githubStats: GitHubStats | null;
+  githubStats: GitHubStatsExtended | null;
   techStack?: string[] | null;
   featuredRepos?: Repository[];
   customProjects?: CustomProject[] | null;
