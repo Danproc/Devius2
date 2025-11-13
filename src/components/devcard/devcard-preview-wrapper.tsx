@@ -2,6 +2,7 @@
 
 import { CardPreview } from './card-preview';
 import { CustomProject } from '@/types/projects';
+import { GitHubStatsExtended } from '@/types/github';
 
 /**
  * Standard props interface for DevCard data
@@ -22,13 +23,7 @@ export interface DevCardData {
     portfolio?: string;
     instagram?: string;
   } | null;
-  github_stats?: {
-    public_repos: number;
-    followers: number;
-    following: number;
-    total_stars: number;
-    contribution_streak: number;
-  } | null;
+  github_stats?: GitHubStatsExtended | null;
   tech_stack?: string[] | null;
   custom_projects?: CustomProject[] | null;
   view_count?: number;
@@ -52,6 +47,7 @@ interface DevCardPreviewWrapperProps {
     developers: Array<{
       username: string;
       avatarUrl: string;
+      url_slug: string;
     }>;
   };
   ranking?: number;
