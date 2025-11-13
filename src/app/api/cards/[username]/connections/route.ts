@@ -6,23 +6,39 @@ import { devcards } from '@/db/schema/devcard';
 import { and, eq, or, count } from 'drizzle-orm';
 
 /**
- * GET /api/cards/[userId]/connections
+ * GET /api/cards/[username]/connections
  * Retrieve connection count and top 5 connected developers for a user's devcard
  * Public endpoint - no auth required (for displaying on devcard)
  */
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ userId: string }> }
+  context: { params: Promise<{ username: string }> }
 ) {
   try {
-    const { userId } = await context.params;
+    const { username } = await context.params;
 
-    if (!userId) {
+    if (!username) {
       return NextResponse.json(
-        { error: 'User ID is required' },
+        { error: 'Username is required' },
         { status: 400 }
       );
     }
+
+    // Look up the devcard by username slug to get the user_id
+    const devcard = await db
+      .select({ user_id: devcards.user_id })
+      .from(devcards)
+      .where(eq(devcards.url_slug, username))
+      .limit(1);
+
+    if (!devcard || devcard.length === 0) {
+      return NextResponse.json(
+        { error: 'DevCard not found' },
+        { status: 404 }
+      );
+    }
+
+    const userId = devcard[0].user_id;
 
     // Get total count of accepted connections
     const totalResult = await db
@@ -125,7 +141,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error in GET /api/cards/[userId]/connections:', error);
+    console.error('Error in GET /api/cards/[username]/connections:', error);
     return NextResponse.json(
       {
         error: 'Internal Server Error',
