@@ -120,6 +120,29 @@ export interface GitHubStats {
   };
 }
 
+/**
+ * Extended GitHub Stats with Additional Metrics
+ * Includes organizations, most starred repo, and language breakdown
+ */
+export interface GitHubStatsExtended extends GitHubStats {
+  organizations?: string[];
+  most_starred_repo?: {
+    name: string;
+    full_name: string;
+    stars: number;
+    url: string;
+    description: string | null;
+    language: string | null;
+  };
+  top_languages?: Array<{
+    name: string;
+    count: number;
+    stars: number;
+    percentage: number;
+    color?: string;
+  }>;
+}
+
 // Contribution activity data
 export interface GitHubContributions {
   last_year_total: number;
@@ -179,6 +202,22 @@ export interface GitHubUserData {
   repositories: GitHubRepoSimplified[];
   stats: GitHubStats;
   contributions?: GitHubContributions;
+  organizations?: string[];
+  most_starred_repo?: {
+    name: string;
+    full_name: string;
+    stars: number;
+    url: string;
+    description: string | null;
+    language: string | null;
+  };
+  top_languages?: Array<{
+    name: string;
+    count: number;
+    stars: number;
+    percentage: number;
+    color?: string;
+  }>;
 }
 
 // GitHub cache entry

@@ -11,47 +11,7 @@ import { ShareButtonWrapper } from "@/components/sharing/share-button-wrapper";
 import { Copy, CheckCircle2, ExternalLink, RefreshCw, Users, Edit } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
-
-interface DevCardData {
-  id: string;
-  user_id: string;
-  url_slug: string;
-  is_public: boolean;
-  display_name: string | null;
-  custom_bio: string | null;
-  location: string | null;
-  avatar_url: string;
-  github_username: string;
-  github_stats: {
-    public_repos: number;
-    followers: number;
-    following: number;
-    total_stars: number;
-    contribution_streak: number;
-  } | null;
-  social_links: {
-    twitter?: string;
-    linkedin?: string;
-    website?: string;
-    portfolio?: string;
-  } | null;
-  featured_repos: string[] | null;
-  tech_stack: string[] | null;
-  availability_status: 'open' | 'available' | 'not-available' | 'custom' | null;
-  availability_message: string | null;
-  theme: {
-    name: string;
-    colors?: {
-      primary?: string;
-      background?: string;
-      text?: string;
-    };
-    font?: string;
-  } | null;
-  view_count: number;
-  created_at: string;
-  updated_at: string;
-}
+import { DevCardApiResponse } from "@/types/api-responses";
 
 interface GitHubRepo {
   full_name: string;
@@ -74,7 +34,7 @@ const fetcher = async (url: string) => {
 
 export default function DashboardPage() {
   const [copied, setCopied] = React.useState(false);
-  const { data: devcard, error, isLoading, mutate } = useSWR<DevCardData>('/api/cards/me', fetcher);
+  const { data: devcard, error, isLoading, mutate } = useSWR<DevCardApiResponse>('/api/cards/me', fetcher);
   const { data: reposData } = useSWR<{ repositories: GitHubRepo[] }>(
     '/api/github/repos?sort=stars&limit=50',
     fetcher

@@ -34,49 +34,9 @@ import { Save, Loader2, X, Plus, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 import Link from "next/link";
+import { DevCardApiResponse } from "@/types/api-responses";
 
-interface DevCardData {
-  id: string;
-  user_id: string;
-  url_slug: string;
-  is_public: boolean;
-  display_name: string | null;
-  custom_bio: string | null;
-  location: string | null;
-  avatar_url: string;
-  github_username: string;
-  github_stats: {
-    public_repos: number;
-    followers: number;
-    following: number;
-    total_stars: number;
-    contribution_streak: number;
-  } | null;
-  social_links: {
-    twitter?: string;
-    linkedin?: string;
-    website?: string;
-    portfolio?: string;
-  } | null;
-  featured_repos: string[] | null;
-  custom_projects: any[] | null;
-  tech_stack: string[] | null;
-  availability_status: 'open' | 'available' | 'not-available' | 'custom' | null;
-  availability_message: string | null;
-  theme: {
-    name: string;
-    colors?: {
-      primary?: string;
-      background?: string;
-      text?: string;
-    };
-    font?: string;
-  } | null;
-  member_number: number;
-  view_count: number;
-  created_at: string;
-  updated_at: string;
-}
+// Using shared DevCardApiResponse type instead of duplicate interface
 
 const fetcher = async (url: string) => {
   const res = await fetch(url);
@@ -101,7 +61,7 @@ export default function CardEditorPage() {
   const [isSaving, setIsSaving] = React.useState(false);
   const [customTechInput, setCustomTechInput] = React.useState("");
 
-  const { data: devcard, error: devcardError, isLoading: isLoadingCard, mutate } = useSWR<DevCardData>(
+  const { data: devcard, error: devcardError, isLoading: isLoadingCard, mutate } = useSWR<DevCardApiResponse>(
     '/api/cards/me',
     fetcher
   );

@@ -33,7 +33,7 @@ export const POST = withAuthRequired(async (req: NextRequest, context) => {
 
     // Revalidate the public profile page and GitHub stats cache
     try {
-      revalidatePath(`/${updatedCard.url_slug}`);
+      revalidatePath(`/${updatedCard.url_slug}`, 'page');
       revalidateTag('github-stats');
       revalidateTag('devcards');
     } catch (error) {

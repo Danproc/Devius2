@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Store connection intent in secure, httpOnly cookie
-    cookies().set('connection_intent', targetUserId, {
+    const cookieStore = await cookies();
+    cookieStore.set('connection_intent', targetUserId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -42,7 +43,8 @@ export async function POST(req: NextRequest) {
  */
 export async function DELETE() {
   try {
-    cookies().delete('connection_intent');
+    const cookieStore = await cookies();
+    cookieStore.delete('connection_intent');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error clearing connection intent:', error);

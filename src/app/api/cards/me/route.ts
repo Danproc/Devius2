@@ -182,7 +182,7 @@ export const PATCH = withAuthRequired(async (req: NextRequest, context) => {
 
     // Revalidate the public profile page cache
     try {
-      revalidatePath(`/${updatedCard.url_slug}`);
+      revalidatePath(`/${updatedCard.url_slug}`, 'page');
       revalidateTag('devcards');
     } catch (error) {
       console.error('Failed to revalidate cache:', error);

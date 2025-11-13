@@ -129,7 +129,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // Check for connection intent (user wanted to connect before signing in)
           try {
             const { cookies } = await import('next/headers');
-            const connectionIntent = cookies().get('connection_intent')?.value;
+            const cookieStore = await cookies();
+            const connectionIntent = cookieStore.get('connection_intent')?.value;
 
             if (connectionIntent && connectionIntent !== userId) {
               console.log("🔗 Connection intent found for user:", connectionIntent);
@@ -147,7 +148,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               console.log("✅ Connection request auto-sent to:", connectionIntent);
 
               // Clear the connection intent cookie
-              cookies().delete('connection_intent');
+              cookieStore.delete('connection_intent');
             }
           } catch (err) {
             console.error("❌ Error handling connection intent:", err);
