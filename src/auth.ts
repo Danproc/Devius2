@@ -139,8 +139,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               const { connections } = await import('./db/schema/connections');
 
               await db.insert(connections).values({
-                from_user_id: userId,
-                to_user_id: connectionIntent,
+                requester_id: userId,
+                recipient_id: connectionIntent,
                 message: 'I would like to connect with you!',
                 status: 'pending',
               });
