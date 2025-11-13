@@ -59,6 +59,7 @@ interface DevCardData {
     portfolio?: string;
   } | null;
   featured_repos: string[] | null;
+  custom_projects: any[] | null;
   tech_stack: string[] | null;
   availability_status: 'open' | 'available' | 'not-available' | 'custom' | null;
   availability_message: string | null;
