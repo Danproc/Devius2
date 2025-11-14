@@ -200,7 +200,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       devcard.github_username,
       (devcard.featured_repos as string[]) || []
     ),
-    fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/cards/${devcard.url_slug}/connections`)
+    // Use relative URL to work in all environments
+    fetch(`/api/cards/${devcard.url_slug}/connections`)
       .then(res => res.ok ? res.json() : null)
       .catch(() => null),
   ]);
