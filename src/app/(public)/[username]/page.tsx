@@ -216,7 +216,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
         followers: cachedData.stats?.followers || cachedData.profile?.followers || 0,
         following: cachedData.stats?.following || cachedData.profile?.following || 0,
         total_stars: cachedData.stats?.total_stars || 0,
-        contribution_streak: cachedData.stats?.contribution_streak || 0,
+        contribution_streak: cachedData.contributions?.current_streak || cachedData.stats?.contribution_streak || 0,
         public_gists: cachedData.profile?.public_gists || cachedData.stats?.public_gists || 0,
         contributions: cachedData.contributions,
         organizations: cachedData.organizations,
