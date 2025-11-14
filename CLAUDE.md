@@ -1,6 +1,6 @@
-# Devius Development Guidelines
+# StackPass Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-11-11
+Auto-generated from all feature plans. Last updated: 2025-11-14
 
 ## Active Technologies
 

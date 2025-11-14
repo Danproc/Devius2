@@ -73,7 +73,7 @@ export async function getGitHubClient(userId: string): Promise<Octokit> {
 
   return new Octokit({
     auth: accessToken,
-    userAgent: 'Devius DevCard Platform v1.0',
+    userAgent: 'StackPass DevCard Platform v1.0',
     timeZone: 'UTC',
     baseUrl: 'https://api.github.com',
   });
@@ -89,7 +89,7 @@ export async function getGitHubClient(userId: string): Promise<Octokit> {
 export function createGitHubClient(accessToken: string): Octokit {
   return new Octokit({
     auth: accessToken,
-    userAgent: 'Devius DevCard Platform v1.0',
+    userAgent: 'StackPass DevCard Platform v1.0',
     timeZone: 'UTC',
     baseUrl: 'https://api.github.com',
   });

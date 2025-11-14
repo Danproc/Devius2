@@ -115,7 +115,7 @@ export async function generateBrandedQR(
     size,
     errorCorrectionLevel: 'H', // High error correction for branding
     color: {
-      dark: '#00FF94', // Devius brand green
+      dark: '#00FF94', // StackPass brand green
       light: '#0A0A0A', // Dark background
     },
   });

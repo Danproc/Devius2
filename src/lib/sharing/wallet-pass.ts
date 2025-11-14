@@ -124,11 +124,11 @@ export async function generateAppleWalletPass(
           passTypeIdentifier: config.applePassTypeIdentifier!,
           serialNumber: `devcard-${devCardData.username}-${Date.now()}`,
           teamIdentifier: config.appleTeamIdentifier || '',
-          organizationName: 'Devius',
+          organizationName: 'StackPass',
           description: `${devCardData.display_name}'s DevCard`,
 
           // Visual appearance
-          logoText: 'Devius DevCard',
+          logoText: 'StackPass',
           foregroundColor: 'rgb(255, 255, 255)',
           backgroundColor: 'rgb(10, 10, 10)',
           labelColor: 'rgb(0, 255, 148)',
@@ -169,7 +169,7 @@ export async function generateAppleWalletPass(
               {
                 key: 'bio',
                 label: 'Bio',
-                value: devCardData.custom_bio || 'Developer profile on Devius',
+                value: devCardData.custom_bio || 'Developer profile on StackPass',
               },
             ],
             backFields: [
@@ -319,7 +319,7 @@ export async function generateGooglePayPass(
       cardTitle: {
         defaultValue: {
           language: 'en-US',
-          value: 'Devius DevCard',
+          value: 'StackPass DevCard',
         },
       },
       header: {

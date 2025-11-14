@@ -13,22 +13,21 @@ export function CTA2() {
             Ready to get started?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Join our team of 5,000+ users who are already transforming their
-            workflow with Indie Kit.
+            Join thousands of developers already building their network on StackPass.
           </p>
           <div className="mt-8 flex justify-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm">
               <Users className="h-4 w-4 text-primary" />
-              <span>5,000+ active users</span>
+              <span>Growing developer community</span>
             </div>
           </div>
           <div className="mt-8">
             <Button size="lg" asChild>
-              <Link href="/#pricing">Get Indie Kit Pro</Link>
+              <Link href="/auth/signin">Get Started Free</Link>
             </Button>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            199$ discount for the first 100 users
+            Free forever. No credit card required.
           </p>
         </div>
       </div>

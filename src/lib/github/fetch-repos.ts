@@ -154,7 +154,7 @@ export async function fetchPublicRepositories(
   try {
     const { Octokit } = await import('@octokit/rest');
     const octokit = new Octokit({
-      userAgent: 'Devius DevCard Platform v1.0',
+      userAgent: 'StackPass DevCard Platform v1.0',
     });
 
     const repos: GitHubRepo[] = [];

@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch(apiUrl, {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'Devius-DevCard',
+        'User-Agent': 'StackPass-DevCard',
       },
       // Don't use auth token for public repos to avoid rate limit issues
     });
