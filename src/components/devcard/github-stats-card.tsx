@@ -14,6 +14,7 @@ import {
   GitFork,
   Code2,
   ExternalLink,
+  Trophy,
 } from 'lucide-react';
 
 interface ComprehensiveGitHubStats {
@@ -95,13 +96,22 @@ export function GitHubStatsCard({ stats, githubUsername }: GitHubStatsCardProps)
         <>
           <Separator className="bg-devcard-border" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-            {stats.contributions?.current_streak !== undefined && (
+            {stats.contributions?.current_streak !== undefined && stats.contributions.current_streak > 0 && (
               <div className="flex items-center gap-2">
                 <Flame className="h-4 w-4 text-orange-500" />
                 <span className="font-semibold text-orange-500">
                   {stats.contributions.current_streak}
                 </span>
                 <span className="text-xs text-devcard-text">day streak</span>
+              </div>
+            )}
+            {stats.contributions?.longest_streak !== undefined && stats.contributions.longest_streak > 0 && (
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-yellow-500" />
+                <span className="font-semibold text-yellow-600">
+                  {stats.contributions.longest_streak}
+                </span>
+                <span className="text-xs text-devcard-text">best streak</span>
               </div>
             )}
             {stats.contributions?.last_year_total !== undefined && (

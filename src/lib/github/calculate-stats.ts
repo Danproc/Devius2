@@ -102,7 +102,7 @@ export async function fetchContributionStats(userId: string): Promise<GitHubCont
 
 /**
  * Calculates streaks from daily contribution data (used by GraphQL)
- * More accurate than event-based calculation
+ * Uses proven logic from original working implementation
  */
 function calculateStreaksFromDailyData(days: Array<{ date: string; contributionCount: number }>): {
   currentStreak: number;
@@ -112,48 +112,66 @@ function calculateStreaksFromDailyData(days: Array<{ date: string; contributionC
     return { currentStreak: 0, longestStreak: 0 };
   }
 
+  // Filter to only days with contributions (remove zeros)
+  const contributionDates = days
+    .filter(day => day.contributionCount > 0)
+    .map(day => day.date)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime()); // Newest first
+
+  if (contributionDates.length === 0) {
+    return { currentStreak: 0, longestStreak: 0 };
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   let currentStreak = 0;
   let longestStreak = 0;
   let tempStreak = 0;
-  let checkingCurrent = true;
+  let lastDate: Date | null = null;
 
-  // Days are sorted newest first
-  for (let i = 0; i < days.length; i++) {
-    const day = days[i];
-    const date = new Date(day.date);
+  // Check if there's activity today or yesterday
+  const mostRecentDate = new Date(contributionDates[0]);
+  mostRecentDate.setHours(0, 0, 0, 0);
+
+  const daysDifference = Math.floor(
+    (today.getTime() - mostRecentDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  // Only count current streak if last activity was today or yesterday
+  let countingCurrentStreak = daysDifference <= 1;
+
+  contributionDates.forEach((dateStr) => {
+    const date = new Date(dateStr);
     date.setHours(0, 0, 0, 0);
 
-    // Check if this is still part of current streak
-    if (checkingCurrent) {
-      const daysDiff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-
-      if (daysDiff > tempStreak + 1) {
-        // Gap found - current streak is over
-        checkingCurrent = false;
-        currentStreak = tempStreak;
-      }
-    }
-
-    if (day.contributionCount > 0) {
-      tempStreak++;
-      if (checkingCurrent) {
-        currentStreak = tempStreak;
-      }
+    if (lastDate === null) {
+      tempStreak = 1;
+      if (countingCurrentStreak) currentStreak = 1;
     } else {
-      // Day with no contributions breaks streak
-      longestStreak = Math.max(longestStreak, tempStreak);
-      tempStreak = 0;
-      if (checkingCurrent && i > 0) {
-        checkingCurrent = false;
-        currentStreak = 0;
+      const diffDays = Math.floor(
+        (lastDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      if (diffDays === 1) {
+        // Consecutive day
+        tempStreak++;
+        if (countingCurrentStreak) {
+          currentStreak++;
+        }
+      } else {
+        // Gap found - streak broken
+        longestStreak = Math.max(longestStreak, tempStreak);
+        tempStreak = 1;
+        // Stop counting current streak (but preserve the value already calculated)
+        countingCurrentStreak = false;
       }
     }
-  }
 
-  longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
+    lastDate = date;
+  });
+
+  longestStreak = Math.max(longestStreak, tempStreak);
 
   return { currentStreak, longestStreak };
 }
