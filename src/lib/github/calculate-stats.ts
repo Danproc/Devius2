@@ -101,6 +101,180 @@ export async function fetchContributionStats(userId: string): Promise<GitHubCont
 }
 
 /**
+ * Calculates streaks from daily contribution data (used by GraphQL)
+ * More accurate than event-based calculation
+ */
+function calculateStreaksFromDailyData(days: Array<{ date: string; contributionCount: number }>): {
+  currentStreak: number;
+  longestStreak: number;
+} {
+  if (days.length === 0) {
+    return { currentStreak: 0, longestStreak: 0 };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let currentStreak = 0;
+  let longestStreak = 0;
+  let tempStreak = 0;
+  let checkingCurrent = true;
+
+  // Days are sorted newest first
+  for (let i = 0; i < days.length; i++) {
+    const day = days[i];
+    const date = new Date(day.date);
+    date.setHours(0, 0, 0, 0);
+
+    // Check if this is still part of current streak
+    if (checkingCurrent) {
+      const daysDiff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (daysDiff > tempStreak + 1) {
+        // Gap found - current streak is over
+        checkingCurrent = false;
+        currentStreak = tempStreak;
+      }
+    }
+
+    if (day.contributionCount > 0) {
+      tempStreak++;
+      if (checkingCurrent) {
+        currentStreak = tempStreak;
+      }
+    } else {
+      // Day with no contributions breaks streak
+      longestStreak = Math.max(longestStreak, tempStreak);
+      tempStreak = 0;
+      if (checkingCurrent && i > 0) {
+        checkingCurrent = false;
+        currentStreak = 0;
+      }
+    }
+  }
+
+  longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
+
+  return { currentStreak, longestStreak };
+}
+
+/**
+ * Fetches contribution stats using GitHub GraphQL API
+ * More accurate than REST API Events endpoint
+ */
+export async function fetchContributionStatsGraphQL(
+  userId: string
+): Promise<GitHubContributions> {
+  try {
+    const octokit = await getGitHubClient(userId);
+    const { data: user } = await octokit.rest.users.getAuthenticated();
+    const username = user.login;
+
+    // Get current year contributions (Jan 1 to now)
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+
+    const query = `
+      query($username: String!, $from: DateTime!, $to: DateTime!) {
+        user(login: $username) {
+          contributionsCollection(from: $from, to: $to) {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  contributionCount
+                  date
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response: any = await octokit.graphql(query, {
+      username,
+      from: yearStart.toISOString(),
+      to: now.toISOString(),
+    });
+
+    // Calculate streak from daily data
+    const days = response.user.contributionsCollection.contributionCalendar.weeks
+      .flatMap((week: any) => week.contributionDays)
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const { currentStreak, longestStreak } = calculateStreaksFromDailyData(days);
+
+    return {
+      last_year_total: response.user.contributionsCollection.contributionCalendar.totalContributions,
+      current_streak: currentStreak,
+      longest_streak: longestStreak,
+    };
+  } catch (error: any) {
+    console.error('Failed to fetch contribution stats via GraphQL:', error);
+    console.log('Falling back to REST API events...');
+    // Fallback to REST API
+    return fetchContributionStats(userId);
+  }
+}
+
+/**
+ * Fetches contribution stats using an access token via GraphQL
+ */
+export async function fetchContributionStatsByTokenGraphQL(
+  accessToken: string
+): Promise<GitHubContributions> {
+  try {
+    const octokit = createGitHubClient(accessToken);
+    const { data: user } = await octokit.rest.users.getAuthenticated();
+    const username = user.login;
+
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+
+    const query = `
+      query($username: String!, $from: DateTime!, $to: DateTime!) {
+        user(login: $username) {
+          contributionsCollection(from: $from, to: $to) {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  contributionCount
+                  date
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response: any = await octokit.graphql(query, {
+      username,
+      from: yearStart.toISOString(),
+      to: now.toISOString(),
+    });
+
+    const days = response.user.contributionsCollection.contributionCalendar.weeks
+      .flatMap((week: any) => week.contributionDays)
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const { currentStreak, longestStreak } = calculateStreaksFromDailyData(days);
+
+    return {
+      last_year_total: response.user.contributionsCollection.contributionCalendar.totalContributions,
+      current_streak: currentStreak,
+      longest_streak: longestStreak,
+    };
+  } catch (error: any) {
+    console.error('Failed to fetch contribution stats via GraphQL:', error);
+    console.log('Falling back to REST API events...');
+    return fetchContributionStatsByToken(accessToken);
+  }
+}
+
+/**
  * Fetches contribution stats using an access token
  *
  * @param accessToken - GitHub OAuth access token
@@ -282,7 +456,8 @@ export async function calculateCompleteStats(
   repos: GitHubRepo[]
 ): Promise<GitHubStats> {
   const basicStats = calculateBasicStats(profile, repos);
-  const contributions = await fetchContributionStats(userId);
+  // Use GraphQL for accurate contribution stats
+  const contributions = await fetchContributionStatsGraphQL(userId);
 
   return {
     ...basicStats,
@@ -305,7 +480,8 @@ export async function calculateCompleteStatsByToken(
   repos: GitHubRepo[]
 ): Promise<GitHubStats> {
   const basicStats = calculateBasicStats(profile, repos);
-  const contributions = await fetchContributionStatsByToken(accessToken);
+  // Use GraphQL for accurate contribution stats
+  const contributions = await fetchContributionStatsByTokenGraphQL(accessToken);
 
   return {
     ...basicStats,
