@@ -192,9 +192,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
     });
 
   // Build base URL from request headers (works in all environments)
-  const host = headersList.get('host') || '';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  const baseUrl = `${protocol}://${host}`;
+  const requestHost = headersList.get('host') || '';
+  const protocol = requestHost.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${requestHost}`;
 
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
