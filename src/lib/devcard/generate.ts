@@ -387,7 +387,7 @@ export async function syncDevCard(userId: string): Promise<typeof devcards.$infe
     socialLinks.website = profile.blog;
   }
 
-  // Update the DevCard
+  // Update the DevCard (preserve user's custom tech_stack - don't overwrite!)
   const [updatedCard] = await db
     .update(devcards)
     .set({
@@ -397,7 +397,7 @@ export async function syncDevCard(userId: string): Promise<typeof devcards.$infe
       avatar_url: profile.avatar_url,
       social_links: socialLinks,
       featured_repos: featuredRepos,
-      tech_stack: techStack,
+      // tech_stack: techStack, // REMOVED - Don't overwrite user's custom tech stack
       last_github_sync: new Date(),
       updated_at: new Date(),
     })

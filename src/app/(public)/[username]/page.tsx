@@ -200,10 +200,14 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       devcard.github_username,
       (devcard.featured_repos as string[]) || []
     ),
-    // Use relative URL to work in all environments
-    fetch(`/api/cards/${devcard.url_slug}/connections`)
+    // Fetch connections from the API route
+    // In production, get from vercel.app domain
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/cards/${devcard.url_slug}/connections`)
       .then(res => res.ok ? res.json() : null)
-      .catch(() => null),
+      .catch((err) => {
+        console.error('Failed to fetch connections:', err);
+        return null;
+      }),
   ]);
   console.log('📊 Cached data result:', cachedData ? 'FOUND' : 'NULL');
   console.log('📦 Featured repos count:', featuredRepos?.length || 0);
