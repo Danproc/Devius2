@@ -1,19 +1,19 @@
 import { AppConfigPublic } from "./types";
 
 export const appConfig: AppConfigPublic = {
-  projectName: "Indie Kit",
-  projectSlug: "indie-kit",
+  projectName: "StackPass",
+  projectSlug: "stackpass",
   keywords: [
-    "Indie Kit",
-    "NextJS Boilerplate",
-    "NextJS SaaS",
-    "NextJS Starter Kit",
-    "SaaS Boilerplate",
-    "SaaS Starter Kit",
-    "Indie Kit Pro",
+    "StackPass",
+    "Developer Profiles",
+    "GitHub Integration",
+    "Hackathons",
+    "Developer Networking",
+    "Wallet Pass",
+    "DevCard",
   ],
   description:
-    "Indie Kit is a NextJS starter kit for building your own SaaS in hours.",
+    "GitHub-powered developer profiles with wallet passes. Enter Sprints and Seasons to win prizes and badges.",
   auth: {
     enablePasswordAuth: false, // Set to true to enable password-based authentication
   },
@@ -36,7 +36,7 @@ export const appConfig: AppConfigPublic = {
     youtube: "https://youtube.com/-",
   },
   email: {
-    senderName: "Indie Kit",
+    senderName: "StackPass",
     senderEmail: "ssent.hq@gmail.com",
   },
 };

@@ -9,54 +9,54 @@ import {
 
 const faqs = [
   {
-    question: "What is Indie Kit?",
+    question: "What is StackPass?",
     answer:
-      "Indie Kit is a complete starter kit for indie hackers and startups that provides all the essential features needed to launch a SaaS product. It includes authentication, payment processing, email systems, background jobs, SEO optimization, and much more, all pre-configured and ready to use.",
+      "StackPass is a GitHub-powered developer profile platform that showcases your coding activity, projects, and achievements. Create a shareable DevCard, add it to your Apple Wallet or Google Wallet, and participate in Sprints and Seasons to win prizes and badges.",
   },
   {
-    question: "What tech stack does Indie Kit use?",
+    question: "How does StackPass work?",
     answer:
-      "Indie Kit is built with modern technologies including Next.js, TypeScript, TailwindCSS, Shadcn UI, Drizzle ORM, and more. For services, it integrates with industry standards like Stripe/Lemon Squeezy for payments, various email providers (Resend, SES, etc.), and Inngest for background jobs.",
+      "Connect your GitHub account to automatically sync your contributions, repositories, and tech stack. Your profile updates in real-time, and you can generate a wallet pass to share your DevCard with others. Participate in hackathon-style Sprints to compete for prizes.",
   },
   {
-    question: "Do I need to be an experienced developer to use Indie Kit?",
+    question: "What is a DevCard?",
     answer:
-      "While some development experience is helpful, Indie Kit is designed to be accessible. The codebase is well-documented, follows best practices, and comes with detailed guides. We also provide a supportive Discord community where you can get help when needed.",
+      "A DevCard is your digital developer identity card that displays your GitHub stats, tech stack, contributions, and achievements. You can share it via QR code, download it as a wallet pass, or embed it on your website.",
   },
   {
-    question: "Can I customize the design and features?",
+    question: "How do Sprints and Seasons work?",
     answer:
-      "Absolutely! Indie Kit provides a solid foundation that's fully customizable. All components are built with TailwindCSS and Shadcn UI, making it easy to modify the design. You can also add, remove, or modify features to match your specific needs.",
+      "Sprints are time-boxed coding challenges where you compete with other developers. Complete tasks, contribute to projects, and earn points. Seasons are longer competitions with bigger prizes and special badges. Track your progress on the leaderboard.",
   },
   {
-    question: "What kind of support is included?",
+    question: "Is StackPass free?",
     answer:
-      "Indie Kit comes with comprehensive documentation, integration guides, and access to our Discord community. You'll get support for technical issues, guidance on best practices, and can connect with other indie hackers building with the kit.",
+      "Yes! StackPass is free to use. Create your profile, generate wallet passes, and participate in Sprints at no cost. We may introduce premium features in the future, but core functionality will always remain free.",
   },
   {
-    question: "How does the payment integration work?",
+    question: "What wallets are supported?",
     answer:
-      "Indie Kit includes pre-built integrations with Stripe and Lemon Squeezy, handling both one-time payments and subscriptions. It includes features like plan management, usage quotas, and customer portals. PayPal integration is coming soon.",
+      "StackPass supports both Apple Wallet (iOS) and Google Wallet (Android). Your DevCard can be added to either wallet and will display your real-time GitHub stats and achievements.",
   },
   {
-    question: "What about email functionality?",
+    question: "How do I connect with other developers?",
     answer:
-      "The kit includes a complete email system with beautiful, responsive templates built using react-email. It supports multiple providers (Resend, SES, Mailgun, etc.) and includes automated sequences for onboarding, notifications, and marketing.",
+      "Use StackPass to discover developers with similar tech stacks, send connection requests, and build your professional network. View others' DevCards, check their GitHub activity, and collaborate on projects.",
   },
   {
-    question: "How does Indie Kit handle SEO?",
+    question: "Can I customize my DevCard?",
     answer:
-      "Indie Kit comes with built-in SEO optimization including automated sitemap generation, structured data (JSON-LD), Open Graph tags, and a complete blog structure using MDX. All UI components are also optimized for search engines.",
+      "Yes! You can customize your DevCard by selecting which stats to display, choosing your primary tech stack, and highlighting specific projects. Premium themes and additional customization options may be available in the future.",
   },
   {
-    question: "What databases are supported?",
+    question: "How often does my profile update?",
     answer:
-      "Indie Kit supports PostgreSQL, MySQL, and MongoDB out of the box. It uses Drizzle ORM for type-safe database operations and includes features like automated migrations and connection pooling for better performance.",
+      "Your GitHub stats sync automatically every 24 hours. You can also manually trigger a sync from your dashboard. Real-time updates for contributions and activity streaks are reflected immediately.",
   },
   {
-    question: "How much time can Indie Kit save me?",
+    question: "What if I don't have a GitHub account?",
     answer:
-      "Based on our estimates, Indie Kit can save you 50+ hours of development time by providing pre-built features and integrations. This includes time saved on authentication (12h), payment processing (8h), email setup (4h), background jobs (7h), and more.",
+      "A GitHub account is required to use StackPass since we pull your coding activity and projects from GitHub. If you're new to GitHub, you can create a free account at github.com and start building your developer profile.",
   },
 ];
 
@@ -69,16 +69,14 @@ export function WebsiteFAQs() {
             Frequently Asked Questions
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Can&apos;t find what you&apos;re looking for? Join our{" "}
+            Can&apos;t find what you&apos;re looking for? Reach out to our{" "}
             <a
-              href="https://discord.gg/indiekit"
+              href="/support"
               className="font-medium text-primary hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
             >
-              Discord community
+              support team
             </a>{" "}
-            for support
+            for help
           </p>
         </div>
         <div className="mx-auto mt-12 max-w-3xl">

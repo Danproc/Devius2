@@ -222,7 +222,7 @@ export function CardPreview({
             href="/"
             className="font-medium text-devcard-green hover:brightness-110 transition-all"
           >
-            Devius
+            StackPass
           </a>
         </p>
       </div>

@@ -82,7 +82,7 @@ export function generateTwitterShare(metadata: ShareMetadata): string {
   const url = getDevCardURL(metadata.username, metadata.url);
   const text = metadata.custom_bio
     ? `Check out ${metadata.display_name}'s DevCard - ${metadata.custom_bio}`
-    : `Check out ${metadata.display_name}'s DevCard on Devius`;
+    : `Check out ${metadata.display_name}'s DevCard on StackPass`;
 
   return `https://twitter.com/intent/tweet?text=${encodeParam(text)}&url=${encodeParam(url)}`;
 }
@@ -179,7 +179,7 @@ export function generateRedditShare(metadata: ShareMetadata): string {
  */
 export function generateHackerNewsShare(metadata: ShareMetadata): string {
   const url = getDevCardURL(metadata.username, metadata.url);
-  const title = `${metadata.display_name}'s DevCard on Devius`;
+  const title = `${metadata.display_name}'s DevCard on StackPass`;
 
   return `https://news.ycombinator.com/submitlink?u=${encodeParam(url)}&t=${encodeParam(title)}`;
 }
@@ -304,14 +304,14 @@ export function generateOpenGraphTags(
   const url = getDevCardURL(metadata.username, metadata.url);
   const title = `${metadata.display_name}'s DevCard`;
   const description =
-    metadata.custom_bio || `Check out ${metadata.display_name}'s developer profile on Devius`;
+    metadata.custom_bio || `Check out ${metadata.display_name}'s developer profile on StackPass`;
 
   return {
     'og:type': 'profile',
     'og:url': url,
     'og:title': title,
     'og:description': description,
-    'og:site_name': 'Devius',
+    'og:site_name': 'StackPass',
     ...(imageUrl && { 'og:image': imageUrl }),
 
     // Twitter Card
@@ -359,5 +359,5 @@ export function generateClipboardText(metadata: ShareMetadata): string {
     return `${metadata.display_name}'s DevCard - ${metadata.custom_bio}\n\n${url}`;
   }
 
-  return `Check out ${metadata.display_name}'s DevCard on Devius\n\n${url}`;
+  return `Check out ${metadata.display_name}'s DevCard on StackPass\n\n${url}`;
 }

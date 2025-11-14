@@ -1,10 +1,14 @@
-# Indie Kit
+# StackPass
 
-Indie Kit is a NextJS Boilerplate for building SaaS products.
+StackPass is a GitHub-powered developer profile platform with wallet passes. Enter Sprints and Seasons to win prizes and badges.
 
 ## Features
 
-- NextJS 15
+- NextJS 16 (App Router with Turbopack)
+- GitHub-powered developer profiles
+- Wallet passes (Apple Wallet / Google Wallet)
+- Hackathon Sprints and Seasons
+- Developer connections and networking
 
 ## Getting Started
 
@@ -14,15 +18,11 @@ Indie Kit is a NextJS Boilerplate for building SaaS products.
 
 ## Documentation
 
-For detailed documentation, visit [https://indiekit.pro/app/docs](https://indiekit.pro/app/docs)
-
-## Quick Start
-
-Check out our ["Launch in 5 Minutes" tutorial](https://indiekit.pro/app/docs/tutorials/launch-in-5-minutes) to get started quickly.
+Visit the project documentation for more details.
 
 ## Community
 
-Join our [Discord community](https://indiekit.pro/app) to connect with other developers and get help.
+Connect with other developers on StackPass to grow your network.
 
 ## License
 

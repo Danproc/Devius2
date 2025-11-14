@@ -87,7 +87,7 @@ export function WithWithout() {
                 <X className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-red-700 dark:text-red-400">
-                Without Indie Kit
+                Without StackPass
               </h3>
             </div>
             <div className="space-y-6">
@@ -110,7 +110,7 @@ export function WithWithout() {
                 <Check className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-green-700 dark:text-green-400">
-                With Indie Kit
+                With StackPass
               </h3>
             </div>
             <div className="space-y-6">

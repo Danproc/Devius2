@@ -62,7 +62,7 @@ export async function fetchGitHubProfileByToken(accessToken: string): Promise<Gi
 export async function fetchPublicGitHubProfile(username: string): Promise<GitHubProfile> {
   try {
     const octokit = new Octokit({
-      userAgent: 'Devius DevCard Platform v1.0',
+      userAgent: 'StackPass DevCard Platform v1.0',
     });
 
     const { data } = await octokit.rest.users.getByUsername({ username });

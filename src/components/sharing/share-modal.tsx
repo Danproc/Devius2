@@ -157,7 +157,7 @@ export function ShareModal({
               size="lg"
             >
               <a href="/" target="_blank" rel="noopener noreferrer">
-                Create your own Devius DevCard
+                Create your own DevCard on StackPass
               </a>
             </Button>
           </div>

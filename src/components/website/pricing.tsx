@@ -8,7 +8,7 @@ import { BorderBeam } from "@/components/ui/border-beam";
 
 const plans = [
   {
-    name: "Indie Kit",
+    name: "StackPass",
     description: "Perfect for building B2C products",
     price: 79,
     anchorPrice: 349,
@@ -120,7 +120,7 @@ export function WebsitePricing() {
               </div>
               {plan.paymentLink && (
                 <Button className="w-full" asChild>
-                  <Link href={plan.paymentLink}>Get Indie Kit Pro</Link>
+                  <Link href={plan.paymentLink}>Get StackPass</Link>
                 </Button>
               )}
               <ul className="mt-8 space-y-3 text-sm">
@@ -162,7 +162,7 @@ export function WebsitePricing() {
         <div className="mt-16 max-w-2xl mx-auto">
           <div className="rounded-3xl bg-muted/40 p-8 shadow-xs ring-1 ring-border/60">
             <div className="mb-8">
-              <h3 className="text-xl font-bold">B2B Indie Kit</h3>
+              <h3 className="text-xl font-bold">B2B StackPass</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 Perfect for building B2B SaaS with team & workspace features
               </p>
