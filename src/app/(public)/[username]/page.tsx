@@ -24,8 +24,7 @@ interface PageProps {
 // Incremental Static Regeneration (ISR) - revalidate every 3600 seconds (1 hour)
 export const revalidate = 3600;
 
-// Use dynamic rendering to support custom domains via headers
-export const dynamic = 'force-dynamic';
+// Enable dynamic params for username-based routes
 export const dynamicParams = true;
 
 /**
@@ -192,6 +191,11 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       console.error('Failed to increment view count:', error);
     });
 
+  // Build base URL from request headers (works in all environments)
+  const host = headersList.get('host') || '';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const baseUrl = `${protocol}://${host}`;
+
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
   const [cachedData, featuredRepos, connectionsData] = await Promise.all([
@@ -200,9 +204,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       devcard.github_username,
       (devcard.featured_repos as string[]) || []
     ),
-    // Fetch connections from the API route
-    // In production, get from vercel.app domain
-    fetch(`${process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/cards/${devcard.url_slug}/connections`)
+    // Fetch connections using absolute URL from request headers
+    fetch(`${baseUrl}/api/cards/${devcard.url_slug}/connections`)
       .then(res => res.ok ? res.json() : null)
       .catch((err) => {
         console.error('Failed to fetch connections:', err);

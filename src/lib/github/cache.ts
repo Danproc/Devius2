@@ -86,13 +86,9 @@ async function getPgCache(devcard_id: string) {
 
     if (!cached) return null;
 
-    // Check if expired
-    if (cached.expires_at < new Date()) {
-      // Delete expired cache
-      await db.delete(github_cache).where(eq(github_cache.devcard_id, devcard_id));
-      return null;
-    }
-
+    // Return cached data even if expired (stale-while-revalidate pattern)
+    // The background sync job will refresh the data
+    // This ensures stats are ALWAYS visible, never deleted
     return cached;
   } catch (error) {
     console.error('Failed to get PostgreSQL cache:', error);
