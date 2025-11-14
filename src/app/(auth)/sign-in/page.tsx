@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 export default function SignInPage() {
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight mb-2">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-devcard-heading mb-2">
           Welcome back
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Sign in to your account to continue
+        <p className="text-sm text-devcard-heading/70">
+          Sign in to your StackPass account
         </p>
       </div>
 
@@ -25,7 +25,7 @@ export default function SignInPage() {
       <div className="mt-6 text-center">
         <Link
           href="/sign-up"
-          className="text-sm text-primary hover:text-primary/90 underline underline-offset-4"
+          className="text-sm text-devcard-green hover:text-devcard-green/80 font-medium"
         >
           Don&apos;t have an account? Sign up
         </Link>

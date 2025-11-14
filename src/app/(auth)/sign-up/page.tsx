@@ -14,12 +14,12 @@ export default function SignUpPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight mb-2">
-          Create an account
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-devcard-heading mb-2">
+          Create your StackPass
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Get started with {appConfig.projectName} today
+        <p className="text-sm text-devcard-heading/70">
+          Join the network of builders
         </p>
       </div>
 
@@ -28,11 +28,11 @@ export default function SignUpPage() {
       <div className="mt-6 text-center">
         <Link
           href="/sign-in"
-          className="text-sm text-primary hover:text-primary/90 underline underline-offset-4"
+          className="text-sm text-devcard-green hover:text-devcard-green/80 font-medium"
         >
           Already have an account? Sign in
         </Link>
       </div>
     </>
   )
-} 
+}

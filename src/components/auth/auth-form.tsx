@@ -145,8 +145,8 @@ export function AuthForm({ className, callbackUrl, ...props }: AuthFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="text-center mb-4">
-        <p className="text-sm text-muted-foreground">
-          DevCard requires GitHub to auto-generate your developer card
+        <p className="text-sm text-devcard-heading/70">
+          StackPass requires GitHub to auto-generate your developer profile
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export function AuthForm({ className, callbackUrl, ...props }: AuthFormProps) {
         type="button"
         disabled={isLoading}
         onClick={handleGitHubSignIn}
-        className="w-full py-6 bg-[#00FF88] hover:bg-[#00DD77] text-black border-0 font-semibold"
+        className="w-full py-6 bg-devcard-green hover:bg-devcard-green/90 text-black border-0 font-medium rounded-full"
       >
         {isLoading ? (
           <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
@@ -164,8 +164,8 @@ export function AuthForm({ className, callbackUrl, ...props }: AuthFormProps) {
         Connect with GitHub
       </Button>
 
-      <p className="text-xs text-center text-muted-foreground">
-        By connecting, you authorize DevCard to access your public GitHub profile, repositories, and stats
+      <p className="text-xs text-center text-devcard-heading/60">
+        By connecting, you authorize StackPass to access your public GitHub profile, repositories, and stats
       </p>
     </div>
   );

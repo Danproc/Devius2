@@ -9,38 +9,38 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-devcard-base py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
-          {/* Replace with your actual logo path */}
-          <Image
-            src="/assets/logo.png"
-            alt={appConfig.projectName}
-            width={48}
-            height={48}
-            className="mb-4"
-          />
-          <h2 className="text-center text-3xl font-bold tracking-tight text-foreground">
-            {appConfig.projectName}
+          <h2 className="text-4xl font-bold mb-3">
+            <span className="text-devcard-heading">Stack</span>
+            <span className="text-devcard-green">Pass</span>
           </h2>
+          <p className="text-sm text-devcard-green font-mono tracking-wider">[ AUTH ]</p>
         </div>
 
-        <div className="bg-background py-8 px-4 rounded-lg sm:px-10 border border-border shadow-lg">
+        <div className="relative bg-devcard-border/10 py-8 px-4 sm:px-10 border border-devcard-border">
+          {/* Corner brackets for techy look */}
+          <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-devcard-green" />
+          <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-devcard-green" />
+          <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-devcard-green" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-devcard-green" />
+
           {children}
         </div>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-xs text-devcard-heading/60">
           By continuing, you agree to our{" "}
           <Link
             href="/terms"
-            className="font-medium text-primary hover:text-primary/90 underline underline-offset-4"
+            className="font-medium text-devcard-green hover:text-devcard-green/80"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy"
-            className="font-medium text-primary hover:text-primary/90 underline underline-offset-4"
+            className="font-medium text-devcard-green hover:text-devcard-green/80"
           >
             Privacy Policy
           </Link>
