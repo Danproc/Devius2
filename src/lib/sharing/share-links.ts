@@ -51,7 +51,7 @@ function getDevCardURL(username: string, custom_url?: string): string {
     return custom_url;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://devius.io';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev';
   return `${baseUrl}/${username}`;
 }
 
