@@ -21,7 +21,7 @@ export function Hero() {
           </Badge>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-devcard-heading leading-[1]">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-devcard-heading leading-[1]">
             Your GitHub, Beautifully Networked.
           </h1>
 

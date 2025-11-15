@@ -24,7 +24,7 @@ const steps = [
 
 export function Process() {
   return (
-    <MaxWidthWrapper className="py-10">
+    <MaxWidthWrapper className="py-10" id="how-it-works">
       <AnimationContainer delay={0.1}>
         <div className="flex flex-col items-center justify-center w-full py-8 max-w-xl mx-auto">
           <MagicBadge title="The Process" />

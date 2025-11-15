@@ -78,8 +78,21 @@ export function Header() {
           </Button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="flex items-center md:hidden">
+        {/* Mobile CTA & Menu Button */}
+        <div className="flex items-center gap-2 md:hidden">
+          <Link
+            href="/sign-in"
+            className="text-xs font-medium text-devcard-text hover:text-devcard-green transition-colors"
+          >
+            Sign in
+          </Link>
+          <Button
+            asChild
+            size="sm"
+            className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium text-xs px-3 rounded-full h-8"
+          >
+            <Link href="/sign-up">Get pass</Link>
+          </Button>
           <button
             className="inline-flex items-center justify-center rounded-md p-2 text-devcard-text hover:bg-devcard-border/50 hover:text-devcard-green transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}

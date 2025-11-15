@@ -157,15 +157,15 @@ export function ShareModal({
               size="lg"
             >
               <a href="/" target="_blank" rel="noopener noreferrer">
-                Create your own DevCard on StackPass
+                Create your own StackPass
               </a>
             </Button>
           </div>
 
-          {/* Social Proof (Optional - can be populated with real data later) */}
+          {/* Social Proof */}
           <div className="w-full text-center">
             <p className="text-xs text-gray-500">
-              Join thousands of developers sharing their DevCards
+              Connect with other developers sharing their StackPass.
             </p>
           </div>
         </div>

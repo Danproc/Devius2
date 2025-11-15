@@ -11,9 +11,7 @@ export function CTALamp() {
       <div className="mt-20 max-w-7xl mx-auto px-4 md:px-12 lg:px-20">
         <div className="flex flex-col items-center justify-center relative w-full text-center py-20 md:py-32">
           <h2 className="bg-gradient-to-b from-devcard-heading to-devcard-heading/40 py-4 bg-clip-text text-center text-4xl md:text-7xl !leading-[1.15] font-bold tracking-tight text-transparent">
-            Turn "nice to meet you"
-            <br />
-            into "here's the repo."
+            Networking that ends in a demo.
           </h2>
           <p className="text-devcard-heading/70 mt-6 max-w-md mx-auto text-lg">
             Get your wallet-ready profile and jump into the next hackathon.

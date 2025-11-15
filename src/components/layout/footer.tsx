@@ -31,9 +31,7 @@ export function Footer() {
           <p className="text-devcard-text text-sm">
             Your GitHub, beautifully networked.
           </p>
-          <span className="mt-2 text-devcard-heading/60 text-sm">
-            Built by developers, for developers
-          </span>
+      
 
           {/* Inline Links Below */}
           <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-devcard-text">
@@ -61,7 +59,7 @@ export function Footer() {
       {/* Copyright - Centered */}
       <AnimationContainer delay={0.6}>
         <p className="text-sm text-devcard-text text-center">
-          &copy; {new Date().getFullYear()} StackPass. All rights reserved.
+          &copy; {new Date().getFullYear()} StackPass. All rights reserved.<br></br>Built & Maintained by <a target ="_blank" className="text-devcard-green"href="https://thenorthern-web.co.uk">The Northern Web</a>
         </p>
       </AnimationContainer>
     </footer>

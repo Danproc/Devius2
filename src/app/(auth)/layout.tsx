@@ -12,6 +12,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <div className="min-h-screen flex flex-col items-center justify-center bg-devcard-base py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
+          <Image
+            src="/assets/icon-logo.svg"
+            alt="StackPass"
+            width={64}
+            height={64}
+            className="w-16 h-16 mb-4"
+          />
           <h2 className="text-4xl font-bold mb-3">
             <span className="text-devcard-heading">Stack</span>
             <span className="text-devcard-green">Pass</span>

@@ -27,7 +27,7 @@ const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) {
     const error = await res.json();
-    throw new Error(error.message || 'Failed to fetch DevCard');
+    throw new Error(error.message || 'Failed to fetch StackPass');
   }
   return res.json();
 };
@@ -93,9 +93,9 @@ export default function DashboardPage() {
         await mutate();
       },
       {
-        loading: 'Syncing GitHub data and refreshing DevCard...',
-        success: 'DevCard refreshed with latest GitHub stats!',
-        error: 'Failed to refresh DevCard',
+        loading: 'Syncing GitHub data and refreshing StackPass...',
+        success: 'StackPass refreshed with latest GitHub stats!',
+        error: 'Failed to refresh StackPass',
       }
     );
   }, [mutate]);
@@ -129,21 +129,21 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Dashboard</h1>
           <p className="text-devcard-text">
-            Manage your DevCard and view your shareable profile
+            Manage your StackPass and view your shareable profile
           </p>
         </div>
 
         <Alert variant="destructive">
           <AlertDescription>
-            {error?.message || 'Failed to load your DevCard. Please try again later.'}
+            {error?.message || 'Failed to load your StackPass. Please try again later.'}
           </AlertDescription>
         </Alert>
 
         <Card className="bg-devcard-base/30 border-devcard-border">
           <CardHeader>
-            <CardTitle className="text-devcard-heading">No DevCard Found</CardTitle>
+            <CardTitle className="text-devcard-heading">No StackPass Found</CardTitle>
             <CardDescription className="text-devcard-text">
-              It looks like you haven't created a DevCard yet. Your DevCard should have been automatically created when you signed in with GitHub.
+              It looks like you haven't created a StackPass yet. Your StackPass should have been automatically created when you signed in with GitHub.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -161,7 +161,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your DevCard Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your StackPass Dashboard</h1>
         <p className="text-devcard-text">
           Your developer profile is live! Share it with the world.
         </p>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-devcard-heading">
             <CheckCircle2 className="h-5 w-5 text-devcard-green" />
-            Your DevCard is Live!
+            Your StackPass is Live!
           </CardTitle>
           <CardDescription className="text-devcard-text">
             Share this URL to showcase your developer profile and projects
@@ -280,7 +280,7 @@ export default function DashboardPage() {
           <div>
             <h2 className="text-xl font-semibold text-devcard-heading">Preview</h2>
             <p className="text-sm text-devcard-text">
-              This is how your DevCard appears to visitors
+              This is how your StackPass appears to visitors
             </p>
           </div>
           <div className="flex gap-2">
@@ -327,7 +327,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent className="text-sm text-devcard-text space-y-2">
           <ul className="list-disc list-inside space-y-1">
-            <li>Customize your DevCard profile and featured repositories</li>
+            <li>Customize your StackPass profile and featured repositories</li>
             <li>Share your unique URL on social media and portfolios</li>
             <li>Track views and engagement on your profile</li>
             <li>Keep your GitHub profile updated to sync latest stats</li>

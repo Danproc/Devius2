@@ -79,12 +79,12 @@ export function UserButton() {
           {user?.name || user?.email}
         </span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 bg-devcard-base border-devcard-border">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{user?.name || "-"}</p>
+            <p className="text-sm font-medium text-devcard-heading">{user?.name || "-"}</p>
             {user?.email && (
-              <p className="text-xs text-muted-foreground">{user.email}</p>
+              <p className="text-xs text-devcard-text">{user.email}</p>
             )}
           </div>
         </div>

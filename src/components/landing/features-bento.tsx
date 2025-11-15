@@ -242,7 +242,7 @@ const features = [
 
 export function FeaturesBento() {
   return (
-    <MaxWidthWrapper className="pt-10">
+    <MaxWidthWrapper className="pt-10" id="features">
       <AnimationContainer delay={0.1}>
         <div className="flex flex-col w-full items-center justify-center py-8">
           <MagicBadge title="Features" />
