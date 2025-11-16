@@ -1,4 +1,4 @@
-# Wallet Pass Setup Guide for Devius DevCard
+# Wallet Pass Setup Guide for StackPass
 
 > **Status**: Your wallet pass implementation is 100% complete. This guide helps you configure the required certificates and accounts.
 
@@ -46,8 +46,8 @@
 - [ ] Click **Identifiers** → **+** button
 - [ ] Select **Pass Type IDs** → **Continue**
 - [ ] Fill in:
-  - **Description**: `Devius DevCard`
-  - **Identifier**: `pass.io.devius.devcard`
+  - **Description**: `StackPass`
+  - **Identifier**: `pass.dev.stackpass.card`
 - [ ] Click **Continue** → **Register**
 - [ ] **Save this identifier** for later
 
@@ -57,11 +57,11 @@
 - [ ] Menu: **Keychain Access** → **Certificate Assistant** → **Request a Certificate from a Certificate Authority**
 - [ ] Fill in:
   - **User Email**: Your Apple ID email
-  - **Common Name**: `Devius DevCard Pass Certificate`
+  - **Common Name**: `StackPass Pass Certificate`
   - **CA Email**: Leave EMPTY
   - **Request is**: ✓ Saved to disk
   - ✓ Let me specify key pair information
-- [ ] Save as: `DevCardPass.certSigningRequest`
+- [ ] Save as: `StackPassPass.certSigningRequest`
 - [ ] Key settings:
   - **Key Size**: 2048 bits
   - **Algorithm**: RSA
@@ -72,7 +72,7 @@
 - [ ] Click **+** button
 - [ ] Select **Pass Type ID Certificate** → **Continue**
 - [ ] Select your Pass Type ID → **Continue**
-- [ ] Upload `DevCardPass.certSigningRequest` → **Continue**
+- [ ] Upload `StackPassPass.certSigningRequest` → **Continue**
 - [ ] **Download** `pass.cer`
 - [ ] **Double-click** `pass.cer` to install in Keychain
 
@@ -80,10 +80,10 @@
 
 - [ ] Open **Keychain Access**
 - [ ] Select **login** keychain → **My Certificates**
-- [ ] Find `Pass Type ID: pass.io.devius.devcard`
+- [ ] Find `Pass Type ID: pass.dev.stackpass.card`
 - [ ] **Expand** to see private key
 - [ ] **Right-click certificate** → **Export**
-- [ ] Save as: `.specify/certificates/pass-model/devcard-pass.p12`
+- [ ] Save as: `.specify/certificates/pass-model/stackpass.p12`
 - [ ] **Set a password** (save it securely!)
 
 ### Step 5: Convert to PEM Files
@@ -92,10 +92,10 @@
 cd .specify/certificates/pass-model/
 
 # Extract certificate
-openssl pkcs12 -in devcard-pass.p12 -out signerCert.pem -clcerts -nokeys -legacy
+openssl pkcs12 -in stackpass.p12 -out signerCert.pem -clcerts -nokeys -legacy
 
 # Extract private key
-openssl pkcs12 -in devcard-pass.p12 -out signerKey.pem -nocerts -nodes -legacy
+openssl pkcs12 -in stackpass.p12 -out signerKey.pem -nocerts -nodes -legacy
 
 # Set permissions
 chmod 644 signerCert.pem
@@ -129,7 +129,7 @@ chmod 644 wwdr.pem
 
 - [ ] Go to: https://console.cloud.google.com/
 - [ ] Click **Select a project** → **NEW PROJECT**
-- [ ] Project name: `Devius DevCard`
+- [ ] Project name: `StackPass`
 - [ ] Click **CREATE**
 - [ ] **Select the new project**
 
@@ -145,7 +145,7 @@ chmod 644 wwdr.pem
 - [ ] Click **CREATE SERVICE ACCOUNT**
 - [ ] Fill in:
   - **Name**: `devius-wallet-service`
-  - **Description**: `Service account for DevCard wallet passes`
+  - **Description**: `Service account for StackPass wallet passes`
 - [ ] Click **CREATE AND CONTINUE**
 - [ ] Grant role: **Service Account User**
 - [ ] Click **DONE**
@@ -194,7 +194,7 @@ Add to your `.env.local` file:
 
 # Apple Wallet
 APPLE_TEAM_IDENTIFIER=YOUR_TEAM_ID_HERE
-APPLE_PASS_TYPE_IDENTIFIER=pass.io.devius.devcard
+APPLE_PASS_TYPE_IDENTIFIER=pass.dev.stackpass.card
 APPLE_CERTIFICATE_PATH=/Users/dan/Documents/Websites/Devius/Deviusv2/Devius/.specify/certificates/pass-model/signerCert.pem
 APPLE_KEY_PATH=/Users/dan/Documents/Websites/Devius/Deviusv2/Devius/.specify/certificates/pass-model/signerKey.pem
 APPLE_WWDRCA_PATH=/Users/dan/Documents/Websites/Devius/Deviusv2/Devius/.specify/certificates/pass-model/wwdr.pem
