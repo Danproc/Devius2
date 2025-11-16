@@ -4,9 +4,9 @@
  */
 
 import { sendEmail } from './client';
-import { Welcome } from '@/emails/Welcome';
-import { ConnectionRequest } from '@/emails/ConnectionRequest';
-import { ConnectionAccepted } from '@/emails/ConnectionAccepted';
+import Welcome from '@/emails/Welcome';
+import ConnectionRequest from '@/emails/ConnectionRequest';
+import ConnectionAccepted from '@/emails/ConnectionAccepted';
 
 /**
  * Send welcome email when user signs up
