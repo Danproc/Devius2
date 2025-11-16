@@ -61,6 +61,9 @@ interface PassConfig {
   appleCertificatePath?: string;
   appleKeyPath?: string;
   appleWWDRCAPath?: string;
+  appleCertificateBase64?: string;
+  appleKeyBase64?: string;
+  appleWWDRCABase64?: string;
 
   // Google Pay
   googleIssuerId?: string;
@@ -78,6 +81,9 @@ function getPassConfig(): PassConfig {
     appleCertificatePath: process.env.APPLE_CERTIFICATE_PATH,
     appleKeyPath: process.env.APPLE_KEY_PATH,
     appleWWDRCAPath: process.env.APPLE_WWDRCA_PATH,
+    appleCertificateBase64: process.env.APPLE_CERTIFICATE_BASE64,
+    appleKeyBase64: process.env.APPLE_KEY_BASE64,
+    appleWWDRCABase64: process.env.APPLE_WWDRCA_BASE64,
 
     // Google Pay (requires Google Cloud project)
     googleIssuerId: process.env.GOOGLE_WALLET_ISSUER_ID,
@@ -106,11 +112,27 @@ export async function generateAppleWalletPass(
 ): Promise<ApplePassResult> {
   const config = getPassConfig();
 
-  // Validate Apple Wallet configuration
-  if (!config.appleCertificatePath || !config.appleKeyPath) {
+  // Validate Apple Wallet configuration - support both file paths and Base64
+  const hasPaths = config.appleCertificatePath && config.appleKeyPath;
+  const hasBase64 = config.appleCertificateBase64 && config.appleKeyBase64;
+
+  if (!hasPaths && !hasBase64) {
     throw new Error(
-      'Apple Wallet pass generation requires APPLE_CERTIFICATE_PATH and APPLE_KEY_PATH environment variables'
+      'Apple Wallet pass generation requires either certificate paths or Base64 encoded certificates'
     );
+  }
+
+  // Decode Base64 certificates if provided (for Vercel deployment)
+  let certBuffer: Buffer | undefined;
+  let keyBuffer: Buffer | undefined;
+  let wwdrBuffer: Buffer | undefined;
+
+  if (hasBase64) {
+    certBuffer = Buffer.from(config.appleCertificateBase64!, 'base64');
+    keyBuffer = Buffer.from(config.appleKeyBase64!, 'base64');
+    if (config.appleWWDRCABase64) {
+      wwdrBuffer = Buffer.from(config.appleWWDRCABase64, 'base64');
+    }
   }
 
   try {
@@ -232,9 +254,10 @@ export async function generateAppleWalletPass(
         },
       },
       {
-        signerCert: config.appleCertificatePath,
-        signerKey: config.appleKeyPath,
-        ...(config.appleWWDRCAPath && { wwdr: config.appleWWDRCAPath }),
+        // Use Base64 buffers if available (Vercel), otherwise use file paths (local)
+        signerCert: certBuffer || config.appleCertificatePath!,
+        signerKey: keyBuffer || config.appleKeyPath!,
+        ...(wwdrBuffer ? { wwdr: wwdrBuffer } : config.appleWWDRCAPath ? { wwdr: config.appleWWDRCAPath } : {}),
       }
     );
 
@@ -419,7 +442,9 @@ export async function generateWalletPass(
  */
 export function isAppleWalletConfigured(): boolean {
   const config = getPassConfig();
-  return !!(config.appleCertificatePath && config.appleKeyPath);
+  const hasPaths = !!(config.appleCertificatePath && config.appleKeyPath);
+  const hasBase64 = !!(config.appleCertificateBase64 && config.appleKeyBase64);
+  return hasPaths || hasBase64;
 }
 
 /**
