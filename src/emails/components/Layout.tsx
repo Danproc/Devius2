@@ -45,27 +45,25 @@ export const Layout = ({ children, previewText }: LayoutProps) => {
         }}
       >
         <Body className="bg-background my-auto mx-auto font-sans">
-          <Container className="border border-solid border-border rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
-            <div className="flex justify-center items-center">
-              <Img
-                src={`${baseUrl}/assets/logo.png`}
-                width="20"
-                height="20"
-                alt={`${appConfig.projectName} Logo`}
-                className="my-0 mx-0"
-              />
-              <Text className="text-foreground ">{appConfig.projectName}</Text>
+          <Container className="relative border border-solid border-border my-[40px] mx-auto p-[32px] max-w-[600px]" style={{ position: 'relative' }}>
+            {/* Corner brackets for techy look */}
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '16px', height: '16px', borderTop: '2px solid #1cf491', borderLeft: '2px solid #1cf491' }}></div>
+            <div style={{ position: 'absolute', top: 0, right: 0, width: '16px', height: '16px', borderTop: '2px solid #1cf491', borderRight: '2px solid #1cf491' }}></div>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '16px', height: '16px', borderBottom: '2px solid #1cf491', borderLeft: '2px solid #1cf491' }}></div>
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', borderBottom: '2px solid #1cf491', borderRight: '2px solid #1cf491' }}></div>
+
+            <div className="text-center mb-4">
+              <Text className="text-foreground text-2xl font-bold" style={{ margin: 0 }}>
+                <span style={{ color: '#dde3ed' }}>Stack</span>
+                <span style={{ color: '#1cf491' }}>Pass</span>
+              </Text>
             </div>
+
             {children}
+
             <Hr className="border border-solid border-border my-[26px] mx-0 w-full" />
-            <Img
-              src={`${baseUrl}/assets/logo.png`}
-              width="20"
-              height="20"
-              alt={`${appConfig.projectName} Logo`}
-              className="my-0 mx-0"
-            />
-            <Text className="text-muted text-[11px] leading-[24px]">
+
+            <Text className="text-muted text-[11px] leading-[20px] text-center">
               This email was sent to you by StackPass.
               <br />
               <br />
@@ -74,7 +72,7 @@ export const Layout = ({ children, previewText }: LayoutProps) => {
               <br />
               Questions? Visit{" "}
               <Link
-                className="text-primary-400"
+                style={{ color: '#1cf491' }}
                 href={`${baseUrl}`}
               >
                 stackpass.dev

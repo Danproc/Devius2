@@ -19,8 +19,8 @@ export default function ConnectionAcceptedEmail({
       <Layout
         previewText={`${accepterName} accepted your connection request on StackPass`}
       >
-        <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#111827' }}>
-          🎉 Connection Accepted!
+        <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#dde3ed' }}>
+          Connection Accepted
         </Text>
 
         <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#374151', marginBottom: '16px' }}>
@@ -28,15 +28,15 @@ export default function ConnectionAcceptedEmail({
         </Text>
 
         <Container style={{
-          backgroundColor: '#f0fdf4',
+          backgroundColor: '#121824',
           padding: '16px',
           borderRadius: '8px',
           marginTop: '24px',
           marginBottom: '24px',
           borderLeft: '4px solid #1cf491'
         }}>
-          <Text style={{ fontSize: '16px', color: '#166534', marginBottom: '0', fontWeight: '500' }}>
-            ✓ You are now connected with {accepterName}
+          <Text style={{ fontSize: '16px', color: '#1cf491', marginBottom: '0', fontWeight: '500' }}>
+            You are now connected with {accepterName}
           </Text>
         </Container>
 
@@ -49,17 +49,17 @@ export default function ConnectionAcceptedEmail({
           style={{
             backgroundColor: '#1cf491',
             color: '#000000',
-            borderRadius: '6px',
-            padding: '12px 24px',
+            borderRadius: '9999px',
+            padding: '12px 32px',
             textDecoration: 'none',
             display: 'inline-block',
-            fontWeight: '600',
-            fontSize: '16px',
+            fontWeight: '500',
+            fontSize: '14px',
             marginTop: '8px',
             marginBottom: '16px'
           }}
         >
-          View {accepterName}&apos;s StackPass →
+          View {accepterName}'s StackPass
         </Button>
 
         <Text style={{ marginTop: '24px', color: '#9ca3af', fontSize: '14px', lineHeight: '20px' }}>

@@ -24,12 +24,12 @@ export default function ConnectionRequestEmail({
       <Layout
         previewText={`${requesterName} wants to connect with you on StackPass`}
       >
-        <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#111827' }}>
-          🤝 New Connection Request
+        <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#dde3ed' }}>
+          New Connection Request
         </Text>
 
-        <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#374151', marginBottom: '16px' }}>
-          <strong>{requesterName}</strong> wants to connect with you on StackPass!
+        <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#dde3ed', marginBottom: '16px' }}>
+          <strong>{requesterName}</strong> wants to connect with you on StackPass.
         </Text>
 
         {message && (
@@ -80,12 +80,12 @@ export default function ConnectionRequestEmail({
           style={{
             backgroundColor: '#1cf491',
             color: '#000000',
-            borderRadius: '6px',
-            padding: '12px 24px',
+            borderRadius: '9999px',
+            padding: '12px 32px',
             textDecoration: 'none',
             display: 'inline-block',
-            fontWeight: '600',
-            fontSize: '16px'
+            fontWeight: '500',
+            fontSize: '14px'
           }}
         >
           View Connection Requests

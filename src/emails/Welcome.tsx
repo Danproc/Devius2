@@ -15,17 +15,17 @@ export default function Welcome({ userName, dashboardUrl }: WelcomeEmailProps) {
   return (
     <Html>
       <Layout
-        previewText={`Welcome to StackPass, ${userName}! 👋`}
+        previewText={`Welcome to StackPass, ${userName}`}
       >
         <Text className="text-foreground text-xl font-bold">
-          Welcome to StackPass, {userName}! 👋
+          Welcome to StackPass, {userName}
         </Text>
 
-        <Text className="text-foreground">We&apos;re excited to have you on board!</Text>
+        <Text className="text-foreground">We're excited to have you on board!</Text>
 
         <Container className="ml-4 mt-4">
           <Text className="mb-2 text-foreground">
-            🚀 Here&apos;s what you can do with StackPass:
+            Here's what you can do with StackPass:
           </Text>
           <Text className="ml-4 mb-2 text-foreground">• Download your wallet pass and scan to connect at events</Text>
           <Text className="ml-4 mb-2 text-foreground">• Showcase your GitHub stats and featured projects</Text>
