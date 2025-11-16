@@ -25,26 +25,34 @@ export default function Welcome({ userName, dashboardUrl }: WelcomeEmailProps) {
 
         <Container className="ml-4 mt-4">
           <Text className="mb-2">
-            🚀 Here&apos;s what you can do with {appConfig.projectName}:
+            🚀 Here&apos;s what you can do with StackPass:
           </Text>
-          <Text className="ml-4 mb-2">• Lorem ipsum dolor sit amet</Text>
-          <Text className="ml-4 mb-2">• Lorem ipsum dolor sit amet</Text>
-          <Text className="ml-4 mb-2">• Lorem ipsum dolor sit amet</Text>
-          <Text className="ml-4 mb-2">• Lorem ipsum dolor sit amet</Text>
+          <Text className="ml-4 mb-2">• Download your wallet pass and scan to connect at events</Text>
+          <Text className="ml-4 mb-2">• Showcase your GitHub stats and featured projects</Text>
+          <Text className="ml-4 mb-2">• Connect with other developers in your tech stack</Text>
+          <Text className="ml-4 mb-2">• Join hackathons and compete for prizes (Pro members)</Text>
         </Container>
 
-        <Text className="mt-4">Ready to get started?</Text>
+        <Text className="mt-4">Ready to customize your profile?</Text>
 
         <Button
           href={dashboardUrl}
-          className="bg-primary text-primary-foreground rounded-md py-2 px-4 mt-4"
+          style={{
+            backgroundColor: '#1cf491',
+            color: '#000000',
+            borderRadius: '6px',
+            padding: '12px 24px',
+            textDecoration: 'none',
+            display: 'inline-block',
+            fontWeight: '600',
+            marginTop: '16px'
+          }}
         >
-          Get Started
+          Go to Dashboard
         </Button>
 
         <Text className="mt-4 text-muted">
-          Need help getting started? Reply to this email and our support team
-          will be happy to help!
+          Questions? Reply to this email and we&apos;ll help you get set up!
         </Text>
       </Layout>
     </Html>

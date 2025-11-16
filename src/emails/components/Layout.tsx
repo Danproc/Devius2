@@ -67,25 +67,20 @@ export const Layout = ({ children, previewText }: LayoutProps) => {
               className="my-0 mx-0"
             />
             <Text className="text-muted text-[11px] leading-[24px]">
-              This email was sent to you by {appConfig.projectName}.
+              This email was sent to you by StackPass.
               <br />
-              Registered Office: {appConfig.legal.address.street},{" "}
-              {appConfig.legal.address.city}, {appConfig.legal.address.state},{" "}
-              {appConfig.legal.address.postalCode},{" "}
-              {appConfig.legal.address.country}
               <br />
-              If you have any questions, feel free to reach out to us at{" "}
+              StackPass is a developer network that helps you connect with builders and ship in focused hackathons.
+              <br />
+              <br />
+              Questions? Visit{" "}
               <Link
                 className="text-primary-400"
-                href={`mailto:${appConfig.legal.email}`}
+                href={`${baseUrl}`}
               >
-                {appConfig.legal.email}
-              </Link>{" "}
-              or{" "}
-              <Link className="text-primary-400" href={`${baseUrl}/contact`}>
-                Contact Us
+                stackpass.dev
               </Link>
-              .
+              {" "}or reply to this email.
             </Text>
           </Container>
         </Body>
