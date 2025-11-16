@@ -40,14 +40,16 @@ export function Process() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full py-8 gap-4 md:gap-8">
         {steps.map((step, id) => (
           <AnimationContainer delay={0.2 * id} key={id}>
-            <MagicCard className="group md:py-8">
+            <MagicCard className="group md:py-8 relative">
+              {/* Step number badge - positioned in top right corner */}
+              <span className="absolute top-4 right-4 border-2 border-devcard-border text-devcard-heading font-medium text-xl rounded-full w-10 h-10 flex items-center justify-center bg-devcard-base">
+                {id + 1}
+              </span>
+
               <div className="flex flex-col items-start justify-center w-full">
                 <step.icon strokeWidth={1.5} className="w-10 h-10 text-devcard-green" />
-                <div className="flex flex-col relative items-start">
-                  <span className="absolute -top-6 right-0 border-2 border-devcard-border text-devcard-heading font-medium text-2xl rounded-full w-12 h-12 flex items-center justify-center">
-                    {id + 1}
-                  </span>
-                  <h3 className="text-base mt-6 font-bold text-devcard-heading">
+                <div className="flex flex-col items-start mt-4">
+                  <h3 className="text-base font-bold text-devcard-heading">
                     {step.title}
                   </h3>
                   <p className="mt-2 text-sm text-devcard-heading/70">
