@@ -26,6 +26,7 @@ export interface WalletPassDevCardData {
   location?: string;
   avatar_url?: string;
   github_username?: string;
+  member_number?: number;
   social_links?: {
     twitter?: string;
     linkedin?: string;
@@ -73,7 +74,7 @@ function getPassConfig(): PassConfig {
   return {
     // Apple Wallet (requires Apple Developer account)
     appleTeamIdentifier: process.env.APPLE_TEAM_IDENTIFIER,
-    applePassTypeIdentifier: process.env.APPLE_PASS_TYPE_IDENTIFIER || 'pass.io.devius.devcard',
+    applePassTypeIdentifier: process.env.APPLE_PASS_TYPE_IDENTIFIER || 'pass.dev.stackpass.card',
     appleCertificatePath: process.env.APPLE_CERTIFICATE_PATH,
     appleKeyPath: process.env.APPLE_KEY_PATH,
     appleWWDRCAPath: process.env.APPLE_WWDRCA_PATH,
@@ -138,7 +139,7 @@ export async function generateAppleWalletPass(
             headerFields: [
               {
                 key: 'header',
-                label: 'DEVCARD',
+                label: 'STACKPASS',
                 value: devCardData.display_name,
               },
             ],
@@ -155,6 +156,15 @@ export async function generateAppleWalletPass(
                 label: 'Username',
                 value: `@${devCardData.github_username || devCardData.username}`,
               },
+              ...(devCardData.member_number
+                ? [
+                    {
+                      key: 'member',
+                      label: 'Founder',
+                      value: `#${String(devCardData.member_number).padStart(3, '0')}`,
+                    },
+                  ]
+                : []),
               ...(devCardData.location
                 ? [
                     {
@@ -176,7 +186,7 @@ export async function generateAppleWalletPass(
               {
                 key: 'profile',
                 label: 'Profile URL',
-                value: `https://devius.io/${devCardData.username}`,
+                value: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
               },
               ...(devCardData.social_links?.twitter
                 ? [
@@ -211,7 +221,7 @@ export async function generateAppleWalletPass(
           // Barcode/QR code
           barcodes: [
             {
-              message: `https://devius.io/${devCardData.username}`,
+              message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
               format: 'PKBarcodeFormatQR',
               messageEncoding: 'iso-8859-1',
             },

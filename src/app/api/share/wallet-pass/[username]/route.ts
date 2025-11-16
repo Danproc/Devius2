@@ -111,6 +111,7 @@ export async function GET(
       location: devcard.location || undefined,
       avatar_url: devcard.avatar_url || undefined,
       github_username: devcard.github_username || undefined,
+      member_number: devcard.member_number || undefined,
       social_links: devcard.social_links
         ? {
             twitter: (devcard.social_links as any).twitter || undefined,
