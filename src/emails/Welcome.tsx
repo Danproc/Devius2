@@ -15,25 +15,25 @@ export default function Welcome({ userName, dashboardUrl }: WelcomeEmailProps) {
   return (
     <Html>
       <Layout
-        previewText={`Welcome to ${appConfig.projectName}, ${userName}! 👋`}
+        previewText={`Welcome to StackPass, ${userName}! 👋`}
       >
-        <Text>
-          Welcome to {appConfig.projectName}, {userName}! 👋
+        <Text className="text-foreground text-xl font-bold">
+          Welcome to StackPass, {userName}! 👋
         </Text>
 
-        <Text>We&apos;re excited to have you on board!</Text>
+        <Text className="text-foreground">We&apos;re excited to have you on board!</Text>
 
         <Container className="ml-4 mt-4">
-          <Text className="mb-2">
+          <Text className="mb-2 text-foreground">
             🚀 Here&apos;s what you can do with StackPass:
           </Text>
-          <Text className="ml-4 mb-2">• Download your wallet pass and scan to connect at events</Text>
-          <Text className="ml-4 mb-2">• Showcase your GitHub stats and featured projects</Text>
-          <Text className="ml-4 mb-2">• Connect with other developers in your tech stack</Text>
-          <Text className="ml-4 mb-2">• Join hackathons and compete for prizes (Pro members)</Text>
+          <Text className="ml-4 mb-2 text-foreground">• Download your wallet pass and scan to connect at events</Text>
+          <Text className="ml-4 mb-2 text-foreground">• Showcase your GitHub stats and featured projects</Text>
+          <Text className="ml-4 mb-2 text-foreground">• Connect with other developers in your tech stack</Text>
+          <Text className="ml-4 mb-2 text-foreground">• Join hackathons and compete for prizes (Pro members)</Text>
         </Container>
 
-        <Text className="mt-4">Ready to customize your profile?</Text>
+        <Text className="mt-4 text-foreground">Ready to customize your profile?</Text>
 
         <Button
           href={dashboardUrl}

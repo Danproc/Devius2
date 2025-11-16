@@ -33,13 +33,12 @@ export const Layout = ({ children, previewText }: LayoutProps) => {
           theme: {
             extend: {
               colors: {
-                // TODO: Change this to the correct color
-                primary: "#f97316",
-                background: "#f9fafb",
-                foreground: "#111827",
-                border: "#e5e7eb",
-                muted: "#9ca3af",
-                ["primary-foreground"]: "#f8fafc",
+                primary: "#1cf491", // StackPass green
+                background: "#04080f", // Dark navy
+                foreground: "#dde3ed", // Light text
+                border: "#121824", // Dark border
+                muted: "#5b6a7f", // Muted text
+                ["primary-foreground"]: "#000000", // Black text on green
               },
             },
           },

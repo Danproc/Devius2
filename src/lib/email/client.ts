@@ -42,6 +42,12 @@ export async function sendEmail({
   }
 
   try {
+    console.log('📧 Sending email:', {
+      from: getFromEmail(),
+      to,
+      subject,
+    });
+
     const result = await resend.emails.send({
       from: getFromEmail(),
       to,
@@ -49,9 +55,10 @@ export async function sendEmail({
       react,
     });
 
+    console.log('✅ Email sent successfully:', result);
     return result;
   } catch (error) {
-    console.error('Failed to send email:', error);
+    console.error('❌ Failed to send email:', error);
     throw error;
   }
 }
