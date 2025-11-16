@@ -122,6 +122,10 @@ export async function generateAppleWalletPass(
     );
   }
 
+  if (!config.appleTeamIdentifier) {
+    throw new Error('APPLE_TEAM_IDENTIFIER is required');
+  }
+
   // Decode Base64 certificates if provided (for Vercel deployment)
   let certBuffer: Buffer | undefined;
   let keyBuffer: Buffer | undefined;
@@ -146,7 +150,7 @@ export async function generateAppleWalletPass(
           formatVersion: 1,
           passTypeIdentifier: config.applePassTypeIdentifier!,
           serialNumber: `devcard-${devCardData.username}-${Date.now()}`,
-          teamIdentifier: config.appleTeamIdentifier || '',
+          teamIdentifier: config.appleTeamIdentifier!,
           organizationName: 'StackPass',
           description: `${devCardData.display_name}'s DevCard`,
 
