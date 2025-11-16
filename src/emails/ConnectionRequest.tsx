@@ -22,14 +22,14 @@ export default function ConnectionRequestEmail({
   return (
     <Html>
       <Layout
-        previewText={`${requesterName} wants to connect with you on DevCard`}
+        previewText={`${requesterName} wants to connect with you on StackPass`}
       >
         <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#111827' }}>
           🤝 New Connection Request
         </Text>
 
         <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#374151', marginBottom: '16px' }}>
-          <strong>{requesterName}</strong> wants to connect with you on DevCard!
+          <strong>{requesterName}</strong> wants to connect with you on StackPass!
         </Text>
 
         {message && (
@@ -52,7 +52,7 @@ export default function ConnectionRequestEmail({
 
         <Container style={{ marginTop: '24px', marginBottom: '24px' }}>
           <Text style={{ fontSize: '16px', marginBottom: '12px', color: '#374151' }}>
-            View their DevCard to learn more about them:
+            View their StackPass to learn more about them:
           </Text>
           <Button
             href={cardUrl}
@@ -67,7 +67,7 @@ export default function ConnectionRequestEmail({
               fontWeight: '500'
             }}
           >
-            View {requesterName}&apos;s DevCard →
+            View {requesterName}&apos;s StackPass →
           </Button>
         </Container>
 
@@ -93,7 +93,7 @@ export default function ConnectionRequestEmail({
 
         <Text style={{ marginTop: '24px', color: '#9ca3af', fontSize: '14px', lineHeight: '20px' }}>
           You&apos;re receiving this email because {requesterName} wants to
-          connect with you on DevCard. If you don&apos;t want to connect, you
+          connect with you on StackPass. If you don&apos;t want to connect, you
           can simply ignore this email or decline the request.
         </Text>
       </Layout>

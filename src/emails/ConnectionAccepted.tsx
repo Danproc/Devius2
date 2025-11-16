@@ -17,14 +17,14 @@ export default function ConnectionAcceptedEmail({
   return (
     <Html>
       <Layout
-        previewText={`${accepterName} accepted your connection request on DevCard`}
+        previewText={`${accepterName} accepted your connection request on StackPass`}
       >
         <Text style={{ fontSize: '20px', fontWeight: '600', marginBottom: '16px', color: '#111827' }}>
           🎉 Connection Accepted!
         </Text>
 
         <Text style={{ fontSize: '16px', lineHeight: '24px', color: '#374151', marginBottom: '16px' }}>
-          Great news! <strong>{accepterName}</strong> has accepted your connection request on DevCard.
+          Great news! <strong>{accepterName}</strong> has accepted your connection request on StackPass.
         </Text>
 
         <Container style={{
@@ -41,7 +41,7 @@ export default function ConnectionAcceptedEmail({
         </Container>
 
         <Text style={{ fontSize: '16px', marginBottom: '16px', color: '#374151' }}>
-          You can now view their full DevCard and stay connected with their latest projects and updates.
+          You can now view their full StackPass and stay connected with their latest projects and updates.
         </Text>
 
         <Button
@@ -59,11 +59,11 @@ export default function ConnectionAcceptedEmail({
             marginBottom: '16px'
           }}
         >
-          View {accepterName}&apos;s DevCard →
+          View {accepterName}&apos;s StackPass →
         </Button>
 
         <Text style={{ marginTop: '24px', color: '#9ca3af', fontSize: '14px', lineHeight: '20px' }}>
-          Keep building your network! Connect with more developers on DevCard to showcase your work and discover amazing projects.
+          Keep building your network! Connect with more developers on StackPass to showcase your work and discover amazing projects.
         </Text>
       </Layout>
     </Html>
