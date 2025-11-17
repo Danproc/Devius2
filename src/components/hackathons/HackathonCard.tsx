@@ -17,6 +17,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
   const daysRemaining = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   const statusColor = {
+    draft: 'bg-gray-500',
     upcoming: 'bg-blue-500',
     active: 'bg-devcard-green',
     voting: 'bg-yellow-500',
