@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CardPreview } from "@/components/devcard/card-preview";
-import { ShareButtonWrapper } from "@/components/sharing/share-button-wrapper";
+import { WalletPassButton } from "@/components/sharing/wallet-pass-button";
 import { Copy, CheckCircle2, ExternalLink, RefreshCw, Users, Edit } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
@@ -160,11 +160,28 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your StackPass Dashboard</h1>
         <p className="text-devcard-text">
           Your developer profile is live! Share it with the world.
         </p>
+
+        {/* Wallet Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <WalletPassButton
+            username={devcard.url_slug}
+            platform="apple"
+            displayName={devcard.display_name || devcard.github_username}
+            className="flex-1"
+          />
+          <Button
+            disabled
+            variant="outline"
+            className="flex-1 bg-devcard-border/50 border-devcard-border text-devcard-heading/50 cursor-not-allowed"
+          >
+            Add to Google Pay - Coming Soon
+          </Button>
+        </div>
       </div>
 
       {/* Shareable URL Card */}
@@ -203,16 +220,6 @@ export default function DashboardPage() {
                   </>
                 )}
               </Button>
-              <ShareButtonWrapper
-                username={devcard.url_slug}
-                displayName={devcard.display_name || devcard.github_username}
-                customBio={devcard.custom_bio || undefined}
-                avatarUrl={devcard.avatar_url}
-                variant="outline"
-                size="icon"
-                className="border-devcard-green/30 hover:bg-devcard-green/10"
-                showLabel={false}
-              />
               <Button
                 asChild
                 variant="outline"

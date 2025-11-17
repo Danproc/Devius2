@@ -60,26 +60,23 @@ export function WalletPassButton({
   };
 
   const isApple = platform === 'apple';
-  const label = isApple ? 'Add to Apple Wallet' : 'Add to Google Pay';
-  const icon = isApple ? '🍎' : '📱';
+  const label = isApple ? 'Add StackPass to Apple Wallet' : 'Add to Google Pay';
 
   return (
     <Button
       onClick={handleDownload}
       disabled={loading}
-      className={`bg-[#00FF94] text-black hover:bg-[#00FF94]/90 font-medium ${className}`}
+      className={`bg-devcard-green text-black hover:bg-devcard-green/90 font-medium rounded-full ${className}`}
       size="lg"
     >
       {loading ? (
         <>
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           <span>Generating...</span>
         </>
       ) : (
         <>
-          <span>{icon}</span>
           <span>{label}</span>
-          <Download className="w-4 h-4" />
         </>
       )}
     </Button>
