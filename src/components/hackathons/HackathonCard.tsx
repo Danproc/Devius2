@@ -12,9 +12,13 @@ interface HackathonCardProps {
 export function HackathonCard({ hackathon }: HackathonCardProps) {
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
+  const startDate = new Date(hackathon.start_at);
   const deadline = new Date(hackathon.submission_deadline_at);
   const now = new Date();
   const daysRemaining = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Calculate total duration in hours
+  const durationHours = Math.round((deadline.getTime() - startDate.getTime()) / (1000 * 60 * 60));
 
   const statusColor = {
     draft: 'bg-gray-500',
@@ -45,24 +49,40 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
           {hackathon.description}
         </p>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-devcard-green" />
-            <div>
-              <div className="text-devcard-text text-xs">Deadline</div>
-              <div className="text-devcard-heading font-medium">
-                {deadline.toLocaleDateString()}
-              </div>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-devcard-text">
+              <Calendar className="h-4 w-4 text-devcard-green" />
+              <span>Start:</span>
             </div>
+            <span className="text-devcard-heading font-medium">
+              {startDate.toLocaleDateString()} {startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-devcard-green" />
-            <div>
-              <div className="text-devcard-text text-xs">Prize Pool</div>
-              <div className="text-devcard-heading font-medium">
-                ${totalPrize.toLocaleString()}
-              </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-devcard-text">
+              <Calendar className="h-4 w-4 text-devcard-green" />
+              <span>End:</span>
             </div>
+            <span className="text-devcard-heading font-medium">
+              {deadline.toLocaleDateString()} {deadline.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm pt-2 border-t border-devcard-border">
+            <span className="text-devcard-text">Duration</span>
+            <span className="text-devcard-green font-semibold">{durationHours} hours</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2 text-devcard-text">
+              <DollarSign className="h-4 w-4 text-devcard-green" />
+              <span>Prize Pool</span>
+            </div>
+            <span className="text-devcard-heading font-semibold">
+              ${totalPrize.toLocaleString()}
+            </span>
           </div>
         </div>
 
