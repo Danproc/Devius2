@@ -46,11 +46,26 @@ export async function PATCH(
     const { id } = await context.params;
     const updates = await req.json();
 
+    // Convert date strings to Date objects if needed
+    const processedUpdates: any = { ...updates };
+    if (updates.start_at && typeof updates.start_at === 'string') {
+      processedUpdates.start_at = new Date(updates.start_at);
+    }
+    if (updates.submission_deadline_at && typeof updates.submission_deadline_at === 'string') {
+      processedUpdates.submission_deadline_at = new Date(updates.submission_deadline_at);
+    }
+    if (updates.voting_start_at && typeof updates.voting_start_at === 'string') {
+      processedUpdates.voting_start_at = new Date(updates.voting_start_at);
+    }
+    if (updates.voting_end_at && typeof updates.voting_end_at === 'string') {
+      processedUpdates.voting_end_at = new Date(updates.voting_end_at);
+    }
+
     // Update hackathon
     const [updatedHackathon] = await db
       .update(hackathons)
       .set({
-        ...updates,
+        ...processedUpdates,
         updated_at: new Date(),
       })
       .where(eq(hackathons.id, id))
