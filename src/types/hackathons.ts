@@ -83,6 +83,8 @@ export interface CreateHackathonInput {
   theme?: string;
   description: string;
   rules?: string;
+  registration_start_at?: string; // ISO timestamp
+  registration_end_at?: string;
   start_at: string; // ISO timestamp
   submission_deadline_at: string;
   voting_start_at?: string;
@@ -125,7 +127,8 @@ export interface DeclareWinnersInput {
 }
 
 // Utility types
-export type HackathonStatus = 'draft' | 'upcoming' | 'active' | 'voting' | 'completed';
+export type HackathonStatus = 'draft' | 'upcoming' | 'registration' | 'active' | 'voting' | 'completed';
 export type SubmissionStatus = 'draft' | 'submitted' | 'disqualified' | 'winner_first' | 'winner_second' | 'winner_third';
 export type BadgeType = 'gold' | 'silver' | 'bronze';
 export type TeamInviteStatus = 'pending' | 'accepted' | 'declined' | 'expired';
+export type ParticipationType = 'solo' | 'team';

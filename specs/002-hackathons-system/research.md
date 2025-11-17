@@ -14,7 +14,7 @@ This document captures technical research, decisions, and patterns for implement
 
 ### 1. Database Schema & Relationships
 
-**Decision**: Use Drizzle ORM with Supabase Postgres, add 5 new tables with foreign key constraints to existing `users` and `devcards` tables
+**Decision**: Use Drizzle ORM with Supabase Postgres, add 6 new tables with foreign key constraints to existing `users` and `devcards` tables
 
 **Rationale**:
 - Consistent with existing codebase patterns (already using Drizzle + Supabase)
@@ -204,7 +204,67 @@ This document captures technical research, decisions, and patterns for implement
 
 ---
 
-### 10. Gallery Performance with Large Datasets
+### 10. Registration Phase & Capacity Management
+
+**Decision**: Add dedicated registration phase before submissions open, with capacity limits enforced at database level using atomic operations
+
+**Rationale**:
+- Creates scarcity and urgency (limited spots drive FOMO)
+- Allows organizers to plan resources based on confirmed participant count
+- Separates commitment (registration) from execution (submission)
+- Prevents overload if submissions required significant infrastructure
+- First-come-first-served with capacity cap is simple and fair
+
+**Alternatives Considered**:
+- Direct submission without registration: Rejected - no capacity control, harder to plan
+- Lottery system: Rejected - unfair to early responders, complex to implement
+- Waitlist after capacity: Rejected - adds complexity for MVP (can add in v1.1)
+- Pay-to-register: Rejected - Pro membership already required, double-charging feels wrong
+
+**Implementation Notes**:
+- New table: `hackathon_registrations` with unique constraint on (hackathon_id, user_id)
+- Hackathons table adds: `registration_start_at`, `registration_end_at`, `max_participants` (nullable for unlimited)
+- Registration lifecycle: NOT_REGISTERED → REGISTERED → (optional) UNREGISTERED (if before registration_end_at)
+- Atomic check-and-insert for registration:
+  ```sql
+  INSERT INTO hackathon_registrations (hackathon_id, user_id, participation_type)
+  SELECT $1, $2, $3
+  WHERE (SELECT COUNT(*) FROM hackathon_registrations WHERE hackathon_id = $1) < $max_participants
+  RETURNING *;
+  ```
+- Enforce registration check before allowing submission creation
+- Show capacity status on UI: "X/Y spots filled" or "Unlimited spots"
+- Participation preference (solo/team) is advisory only - not enforced at submission time
+
+**Race Condition Handling**:
+- Use database transaction with SELECT FOR UPDATE when checking capacity
+- Unique constraint prevents duplicate registrations
+- Handle concurrent registrations near capacity gracefully:
+  - Transaction succeeds → registration created
+  - Transaction fails → return "Full" error with clear message
+- Front-end optimistic UI updates, but server validates
+
+**Unregistration Policy**:
+- Allow unregistration ONLY before `registration_end_at`
+- Unregistration after registration closes is prevented (even during gap period before submissions open)
+- Soft delete pattern: Add `unregistered_at` timestamp (nullable)
+- Query active registrations: `WHERE unregistered_at IS NULL`
+- Freed spots immediately available for others to claim
+
+**Pro Membership Validation**:
+- Check `is_premium = true` AND `premium_expires_at > NOW()` at registration time
+- If Pro expires after registration but before submission: registration remains valid, can submit
+- If Pro expires after submission but before voting: can view but not vote
+- Winners receive badges regardless of Pro status at award time
+
+**Timeline Validation**:
+- Enforce: `registration_start_at < registration_end_at < start_at < submission_deadline_at`
+- Gap period between registration close and submission open is required (prevents instant submission rush)
+- Typical flow: 7-day registration → 2-day gap → 14-day hackathon → 3-day voting
+
+---
+
+### 11. Gallery Performance with Large Datasets
 
 **Decision**: Paginate gallery (20 projects per page), index on (hackathon_id, placement) for fast filtering
 
@@ -295,4 +355,4 @@ This document captures technical research, decisions, and patterns for implement
 
 ## Conclusion
 
-All technical decisions align with existing StackPass architecture. No new infrastructure required. Ready to proceed with data model and API contract design.
+All technical decisions align with existing StackPass architecture. The registration phase adds a new user flow stage but leverages existing patterns (RLS, Pro checks, Drizzle ORM). No new infrastructure required beyond the `hackathon_registrations` table. Ready to proceed with data model and API contract design.

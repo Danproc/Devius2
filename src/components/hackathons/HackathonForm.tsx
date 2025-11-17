@@ -25,6 +25,12 @@ export function HackathonForm({ hackathon, mode }: HackathonFormProps) {
     theme: hackathon?.theme || '',
     description: hackathon?.description || '',
     rules: hackathon?.rules || '',
+    registration_start_at: hackathon?.registration_start_at
+      ? new Date(hackathon.registration_start_at).toISOString().slice(0, 16)
+      : '',
+    registration_end_at: hackathon?.registration_end_at
+      ? new Date(hackathon.registration_end_at).toISOString().slice(0, 16)
+      : '',
     start_at: hackathon?.start_at ? new Date(hackathon.start_at).toISOString().slice(0, 16) : '',
     submission_deadline_at: hackathon?.submission_deadline_at
       ? new Date(hackathon.submission_deadline_at).toISOString().slice(0, 16)
@@ -143,9 +149,72 @@ export function HackathonForm({ hackathon, mode }: HackathonFormProps) {
           <CardTitle className="text-devcard-heading">Dates & Deadlines</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Registration Dates */}
+          <div className="space-y-3 pb-4 border-b border-devcard-border">
+            <h4 className="text-sm font-semibold text-devcard-green">Registration Phase (Optional)</h4>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="registration_start_at" className="text-devcard-heading">
+                  Registration Start
+                </Label>
+                <Input
+                  id="registration_start_at"
+                  type="datetime-local"
+                  value={formData.registration_start_at || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, registration_start_at: e.target.value })
+                  }
+                  className="bg-devcard-base border-devcard-border text-devcard-heading"
+                />
+                <p className="text-xs text-devcard-text mt-1">
+                  Leave empty to skip registration
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="registration_end_at" className="text-devcard-heading">
+                  Registration End
+                </Label>
+                <Input
+                  id="registration_end_at"
+                  type="datetime-local"
+                  value={formData.registration_end_at || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, registration_end_at: e.target.value })
+                  }
+                  className="bg-devcard-base border-devcard-border text-devcard-heading"
+                />
+              </div>
+              <div>
+                <Label htmlFor="max_participants" className="text-devcard-heading">
+                  Max Participants
+                </Label>
+                <Input
+                  id="max_participants"
+                  type="number"
+                  value={formData.max_participants || ''}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      max_participants: e.target.value ? parseInt(e.target.value) : undefined,
+                    })
+                  }
+                  placeholder="Unlimited"
+                  className="bg-devcard-base border-devcard-border text-devcard-heading"
+                  min="1"
+                />
+                <p className="text-xs text-devcard-text mt-1">
+                  Leave empty for unlimited
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Hackathon Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="start_at" className="text-devcard-heading">Start Date</Label>
+              <Label htmlFor="start_at" className="text-devcard-heading">
+                Hackathon Start <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="start_at"
                 type="datetime-local"
@@ -156,7 +225,9 @@ export function HackathonForm({ hackathon, mode }: HackathonFormProps) {
               />
             </div>
             <div>
-              <Label htmlFor="submission_deadline_at" className="text-devcard-heading">Submission Deadline</Label>
+              <Label htmlFor="submission_deadline_at" className="text-devcard-heading">
+                Submission Deadline <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="submission_deadline_at"
                 type="datetime-local"

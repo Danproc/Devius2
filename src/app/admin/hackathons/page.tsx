@@ -12,7 +12,7 @@ import { desc } from 'drizzle-orm';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Users, Trophy, Upload } from 'lucide-react';
+import { Plus, Edit, Users, Trophy, Upload, ExternalLink } from 'lucide-react';
 import { PublishButton } from '@/components/hackathons/PublishButton';
 
 export default async function AdminHackathonsPage() {
@@ -32,6 +32,7 @@ export default async function AdminHackathonsPage() {
     switch (status) {
       case 'draft': return 'bg-gray-500';
       case 'upcoming': return 'bg-blue-500';
+      case 'registration': return 'bg-cyan-500';
       case 'active': return 'bg-green-500';
       case 'voting': return 'bg-yellow-500';
       case 'completed': return 'bg-purple-500';
@@ -87,6 +88,16 @@ export default async function AdminHackathonsPage() {
                     {hackathon.status === 'draft' && (
                       <PublishButton hackathonId={hackathon.id} />
                     )}
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="border-devcard-border text-devcard-heading"
+                    >
+                      <Link href={`/app/hackathons/${hackathon.slug}`} target="_blank">
+                        <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </Button>
                     <Button
                       asChild
                       variant="outline"

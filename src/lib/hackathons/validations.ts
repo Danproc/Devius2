@@ -81,14 +81,39 @@ export function isVotingPeriodActive(votingStart: Date | null, votingEnd: Date |
 }
 
 /**
- * Validate date order for hackathon
+ * Check if registration period is active
+ */
+export function isRegistrationPeriodActive(
+  registrationStart: Date | null,
+  registrationEnd: Date | null
+): boolean {
+  if (!registrationStart || !registrationEnd) return false;
+  const now = new Date();
+  return now >= registrationStart && now <= registrationEnd;
+}
+
+/**
+ * Validate date order for hackathon (including registration)
  */
 export function isValidHackathonDates(
   startAt: Date,
   submissionDeadline: Date,
+  registrationStart?: Date | null,
+  registrationEnd?: Date | null,
   votingStart?: Date | null,
   votingEnd?: Date | null
 ): { valid: boolean; error?: string } {
+  // Registration dates validation (if provided)
+  if (registrationStart && registrationEnd) {
+    if (registrationEnd <= registrationStart) {
+      return { valid: false, error: 'Registration end must be after registration start' };
+    }
+
+    if (startAt <= registrationEnd) {
+      return { valid: false, error: 'Hackathon start must be after registration ends' };
+    }
+  }
+
   if (submissionDeadline <= startAt) {
     return { valid: false, error: 'Submission deadline must be after start date' };
   }

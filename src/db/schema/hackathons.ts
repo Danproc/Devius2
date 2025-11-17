@@ -5,6 +5,7 @@ import { users } from './user';
 export const hackathonStatusEnum = pgEnum('hackathon_status', [
   'draft',
   'upcoming',
+  'registration',
   'active',
   'voting',
   'completed'
@@ -25,6 +26,8 @@ export const hackathons = pgTable('hackathons', {
   status: hackathonStatusEnum('status').notNull().default('draft'),
 
   // Dates & Deadlines
+  registration_start_at: timestamp('registration_start_at', { withTimezone: true }),
+  registration_end_at: timestamp('registration_end_at', { withTimezone: true }),
   start_at: timestamp('start_at', { withTimezone: true }).notNull(),
   submission_deadline_at: timestamp('submission_deadline_at', { withTimezone: true }).notNull(),
   voting_start_at: timestamp('voting_start_at', { withTimezone: true }),

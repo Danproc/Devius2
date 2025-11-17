@@ -8,16 +8,18 @@ import { hackathon_teams } from '@/db/schema/hackathon-teams';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathon_votes } from '@/db/schema/hackathon-votes';
 import { hackathon_badges } from '@/db/schema/hackathon-badges';
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
+import { hackathon_registrations } from '@/db/schema/hackathon-registrations';
+import { users } from '@/db/schema/user';
+import { eq, and, desc, sql, inArray, isNull, count } from 'drizzle-orm';
 
 /**
- * Get active and upcoming hackathons
+ * Get active and upcoming hackathons (includes registration phase)
  */
 export async function getActiveHackathons() {
   return db
     .select()
     .from(hackathons)
-    .where(inArray(hackathons.status, ['upcoming', 'active', 'voting']))
+    .where(inArray(hackathons.status, ['upcoming', 'registration', 'active', 'voting']))
     .orderBy(hackathons.start_at);
 }
 
@@ -204,4 +206,65 @@ export async function isUserOnSubmissionTeam(submissionId: string, userId: strin
 
   const members = team.members as Array<{ user_id: string; joined_at: string }>;
   return members.some(m => m.user_id === userId);
+}
+
+/**
+ * Get user's registration for a hackathon
+ */
+export async function getUserRegistration(hackathonId: string, userId: string) {
+  const [registration] = await db
+    .select()
+    .from(hackathon_registrations)
+    .where(
+      and(
+        eq(hackathon_registrations.hackathon_id, hackathonId),
+        eq(hackathon_registrations.user_id, userId)
+      )
+    )
+    .limit(1);
+
+  return registration;
+}
+
+/**
+ * Get registration count for a hackathon
+ */
+export async function getRegistrationCount(hackathonId: string): Promise<number> {
+  const result = await db
+    .select({ count: count() })
+    .from(hackathon_registrations)
+    .where(eq(hackathon_registrations.hackathon_id, hackathonId));
+
+  return result[0]?.count || 0;
+}
+
+/**
+ * Check if hackathon is at capacity
+ */
+export async function isHackathonFull(hackathonId: string): Promise<boolean> {
+  const [hackathon] = await db
+    .select()
+    .from(hackathons)
+    .where(eq(hackathons.id, hackathonId))
+    .limit(1);
+
+  if (!hackathon) return false;
+
+  const maxParticipants = hackathon.max_participants as number | null;
+  if (maxParticipants === null) return false; // Unlimited
+
+  const currentCount = await getRegistrationCount(hackathonId);
+  return currentCount >= maxParticipants;
+}
+
+/**
+ * Get registered users for a hackathon (with user details)
+ */
+export async function getRegisteredUsers(hackathonId: string) {
+  return db
+    .select()
+    .from(hackathon_registrations)
+    .innerJoin(users, eq(hackathon_registrations.user_id, users.id))
+    .where(eq(hackathon_registrations.hackathon_id, hackathonId))
+    .orderBy(desc(hackathon_registrations.registered_at));
 }

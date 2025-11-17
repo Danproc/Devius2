@@ -6,12 +6,32 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { getHackathonBySlug, getUserSubmission } from '@/lib/hackathons/queries';
+import {
+  getHackathonBySlug,
+  getUserSubmission,
+  getUserRegistration,
+  getRegistrationCount,
+  getRegisteredUsers,
+} from '@/lib/hackathons/queries';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, DollarSign, Trophy, ArrowRight, Edit } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Calendar, DollarSign, Trophy, ArrowRight, Edit, Clock, Users, Search } from 'lucide-react';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
+import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
+import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
+import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
+import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
 
 export default async function HackathonDetailPage({
   params,
@@ -33,6 +53,24 @@ export default async function HackathonDetailPage({
   // Check if user already has a submission
   const userSubmission = await getUserSubmission(hackathon.id, session.user.id);
 
+  // Check if registration is still open
+  const isRegistrationActive = hackathon.registration_start_at && hackathon.registration_end_at
+    ? isRegistrationPeriodActive(
+        new Date(hackathon.registration_start_at),
+        new Date(hackathon.registration_end_at)
+      )
+    : false;
+
+  // Check if user is registered
+  const userRegistration = await getUserRegistration(hackathon.id, session.user.id);
+
+  // Get registration stats and users
+  const registrationCount = await getRegistrationCount(hackathon.id);
+  const registeredUsers = isRegistrationActive ? await getRegisteredUsers(hackathon.id) : [];
+  const maxParticipants = hackathon.max_participants as number | null;
+  const isFull = maxParticipants !== null && registrationCount >= maxParticipants;
+  const canUnregister = isRegistrationActive;
+
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
   const startDate = new Date(hackathon.start_at);
@@ -41,6 +79,7 @@ export default async function HackathonDetailPage({
   const statusColor = {
     draft: 'bg-gray-500',
     upcoming: 'bg-blue-500',
+    registration: 'bg-cyan-500',
     active: 'bg-devcard-green',
     voting: 'bg-yellow-500',
     completed: 'bg-purple-500',
@@ -59,7 +98,16 @@ export default async function HackathonDetailPage({
           )}
         </div>
 
-        {/* Countdown Timer */}
+        {/* Registration Status & Countdown */}
+        {isRegistrationActive && hackathon.registration_end_at && (
+          <RegistrationStatus
+            registrationEndAt={hackathon.registration_end_at}
+            currentCount={registrationCount}
+            maxParticipants={maxParticipants}
+          />
+        )}
+
+        {/* Submission Countdown */}
         {hackathon.status === 'active' && (
           <CountdownTimer deadline={hackathon.submission_deadline_at} />
         )}
@@ -91,12 +139,29 @@ export default async function HackathonDetailPage({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
+              {hackathon.registration_start_at && hackathon.registration_end_at && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-devcard-text">Registration Opens</span>
+                    <span className="text-devcard-heading">
+                      {new Date(hackathon.registration_start_at).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-devcard-text">Registration Closes</span>
+                    <span className="text-devcard-heading">
+                      {new Date(hackathon.registration_end_at).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="border-t border-devcard-border my-2"></div>
+                </>
+              )}
               <div className="flex justify-between">
-                <span className="text-devcard-text">Starts</span>
+                <span className="text-devcard-text">Hackathon Starts</span>
                 <span className="text-devcard-heading">{startDate.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-devcard-text">Deadline</span>
+                <span className="text-devcard-text">Submission Deadline</span>
                 <span className="text-devcard-heading">{deadline.toLocaleString()}</span>
               </div>
             </CardContent>
@@ -130,10 +195,11 @@ export default async function HackathonDetailPage({
           </Card>
         </div>
 
-        {/* Entry/Submission Actions */}
+        {/* Entry/Submission/Registration Actions */}
         <Card className="border-devcard-green/30 bg-devcard-green/5">
-          <CardContent className="py-6">
+          <CardContent className="py-4">
             {userSubmission ? (
+              // User has already submitted
               <div className="text-center">
                 <Trophy className="h-12 w-12 text-devcard-green mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-devcard-heading mb-2">You're Entered!</h3>
@@ -149,27 +215,74 @@ export default async function HackathonDetailPage({
                   </Link>
                 </Button>
               </div>
-            ) : hackathon.status === 'active' ? (
+            ) : isRegistrationActive ? (
+              // Registration period is active - show registration button
               <div className="text-center">
-                <h3 className="text-xl font-bold text-devcard-heading mb-4">Ready to compete?</h3>
-                <Button
-                  asChild
-                  className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full"
-                  size="lg"
-                >
-                  <Link href={`/app/hackathons/${hackathon.id}/enter`}>
-                    Enter Hackathon
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <h3 className="text-xl font-bold text-devcard-heading mb-4">
+                  {userRegistration ? "You're Registered!" : 'Join the Competition'}
+                </h3>
+                <RegistrationButton
+                  hackathonId={hackathon.id}
+                  isRegistered={!!userRegistration}
+                  isFull={isFull}
+                  canUnregister={canUnregister}
+                />
+                {!userRegistration && !isFull && (
+                  <p className="text-sm text-devcard-text mt-4">
+                    {maxParticipants !== null
+                      ? `${maxParticipants - registrationCount} spots remaining`
+                      : 'Unlimited spots available'}
+                  </p>
+                )}
+              </div>
+            ) : hackathon.status === 'active' ? (
+              // Active phase - show submit button (only if registered)
+              <div className="text-center">
+                {userRegistration ? (
+                  <>
+                    <h3 className="text-xl font-bold text-devcard-heading mb-4">Ready to compete?</h3>
+                    <Button
+                      asChild
+                      className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full"
+                      size="lg"
+                    >
+                      <Link href={`/app/hackathons/${hackathon.slug}/enter`}>
+                        Submit Project
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-xl font-bold text-devcard-heading mb-4">Registration Required</h3>
+                    <p className="text-devcard-text mb-4">
+                      You must register during the registration period to participate in this hackathon.
+                    </p>
+                    {hackathon.registration_start_at && hackathon.registration_end_at && (
+                      <div className="text-sm text-devcard-text">
+                        <Clock className="inline h-4 w-4 mr-1" />
+                        Registration was open from{' '}
+                        {new Date(hackathon.registration_start_at).toLocaleDateString()} to{' '}
+                        {new Date(hackathon.registration_end_at).toLocaleDateString()}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ) : (
               <div className="text-center text-devcard-text">
-                This hackathon is not currently accepting submissions.
+                This hackathon is not currently accepting registrations or submissions.
               </div>
             )}
           </CardContent>
         </Card>
+
+        {/* Registered Users Table */}
+        {isRegistrationActive && registeredUsers.length > 0 && (
+          <div className="mt-6">
+            <RegisteredUsersList users={registeredUsers} totalCount={registrationCount} />
+          </div>
+        )}
       </div>
     </div>
   );

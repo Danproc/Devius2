@@ -23,6 +23,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
   const statusColor = {
     draft: 'bg-gray-500',
     upcoming: 'bg-blue-500',
+    registration: 'bg-cyan-500',
     active: 'bg-devcard-green',
     voting: 'bg-yellow-500',
     completed: 'bg-purple-500',
