@@ -12,7 +12,8 @@ import { desc } from 'drizzle-orm';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Users, Trophy } from 'lucide-react';
+import { Plus, Edit, Users, Trophy, Upload } from 'lucide-react';
+import { PublishButton } from '@/components/hackathons/PublishButton';
 
 export default async function AdminHackathonsPage() {
   // Check admin authorization
@@ -83,6 +84,9 @@ export default async function AdminHackathonsPage() {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
+                    {hackathon.status === 'draft' && (
+                      <PublishButton hackathonId={hackathon.id} />
+                    )}
                     <Button
                       asChild
                       variant="outline"
