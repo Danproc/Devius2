@@ -121,9 +121,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.log("🔵 Creating StackPass for", githubProfile.login);
             const result = await createDevCard(userId);
             console.log(`✅ StackPass created at /${result.devcard.url_slug}`);
-          } catch (err) {
+          } catch (err: any) {
             console.error("❌ Failed to create StackPass:", err);
-            console.error("Error details:", err);
+            console.error("Error message:", err?.message);
+            console.error("Error stack:", err?.stack);
+            // Log detailed error for debugging
+            if (err?.cause) {
+              console.error("Error cause:", err.cause);
+            }
             // Don't block sign-in if StackPass creation fails
           }
 
