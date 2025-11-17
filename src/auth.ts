@@ -95,7 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return false;
       }
 
-      // Handle GitHub OAuth - store GitHub data and create DevCard
+      // Handle GitHub OAuth - store GitHub data and create StackPass
       if (account?.provider === "github" && profile && user?.id) {
         console.log("🔵 GitHub sign-in detected for", (profile as any).login);
         console.log("User ID:", user.id);
@@ -115,15 +115,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           console.log("✅ GitHub data stored for", githubProfile.login);
 
-          // Create DevCard for this user
+          // Create StackPass for this user
           const { createDevCard } = await import("./lib/devcard/generate");
           try {
-            console.log("🔵 Creating DevCard for", githubProfile.login);
+            console.log("🔵 Creating StackPass for", githubProfile.login);
             const result = await createDevCard(userId);
-            console.log(`✅ DevCard created at /${result.devcard.url_slug}`);
+            console.log(`✅ StackPass created at /${result.devcard.url_slug}`);
           } catch (err) {
-            console.error("❌ Failed to create DevCard:", err);
-            // Don't block sign-in if DevCard creation fails
+            console.error("❌ Failed to create StackPass:", err);
+            console.error("Error details:", err);
+            // Don't block sign-in if StackPass creation fails
           }
 
           // Check for connection intent (user wanted to connect before signing in)
@@ -179,7 +180,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.impersonatedBy = user.impersonatedBy;
       }
 
-      // Store GitHub account info for DevCard creation
+      // Store GitHub account info for StackPass creation
       if (account?.provider === "github" && profile) {
         const githubProfile = profile as any;
         token.githubId = githubProfile.id;
@@ -207,7 +208,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-    // GitHub OAuth for DevCard V2
+    // GitHub OAuth for StackPass
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
