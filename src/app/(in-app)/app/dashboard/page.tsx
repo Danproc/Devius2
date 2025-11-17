@@ -171,7 +171,7 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your StackPass Dashboard</h1>
         <p className="text-devcard-text">
-          Your developer profile is live! Share it with the world.
+          Your developer profile is live! Share it with the world. Login on your Phone to add your StackPass to Apple Wallet!
         </p>
 
         {/* Wallet Buttons - Only on mobile */}
