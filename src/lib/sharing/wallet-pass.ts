@@ -304,6 +304,20 @@ export async function generateAppleWalletPass(
       console.warn('Icon not found, pass may not display correctly');
     }
 
+    // Add thumbnail (profile picture)
+    if (devCardData.avatar_url) {
+      try {
+        const response = await fetch(devCardData.avatar_url);
+        if (response.ok) {
+          const avatarBuffer = Buffer.from(await response.arrayBuffer());
+          pass.addBuffer('thumbnail.png', avatarBuffer);
+          console.log('✅ Profile picture added as thumbnail');
+        }
+      } catch (error) {
+        console.warn('Failed to fetch avatar for thumbnail:', error);
+      }
+    }
+
     // Generate the pass
     const passBuffer = pass.getAsBuffer();
 
