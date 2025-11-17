@@ -163,33 +163,45 @@ export async function generateAppleWalletPass(
     // Generate QR code for the pass
     const qrBuffer = await generateQRBuffer(devCardData.username, { size: 400 });
 
-    // Create pass instance
-    const pass = new PKPass({}, {
-      signerCert: certBuffer,
-      signerKey: keyBuffer,
-      wwdr: wwdrBuffer,
-    });
+    // Build complete pass.json structure
+    const passJson = {
+      formatVersion: 1,
+      passTypeIdentifier: config.applePassTypeIdentifier!,
+      serialNumber: `stackpass-${devCardData.username}-${Date.now()}`,
+      teamIdentifier: config.appleTeamIdentifier!,
+      organizationName: 'StackPass',
+      description: `${devCardData.display_name}'s StackPass`,
+      logoText: 'StackPass',
+      foregroundColor: 'rgb(255, 255, 255)',
+      backgroundColor: 'rgb(10, 10, 10)',
+      labelColor: 'rgb(0, 255, 148)',
+      generic: {
+        headerFields: [] as any[],
+        primaryFields: [] as any[],
+        secondaryFields: [] as any[],
+        auxiliaryFields: [] as any[],
+        backFields: [] as any[],
+      },
+      barcodes: [
+        {
+          message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
+          format: 'PKBarcodeFormatQR',
+          messageEncoding: 'iso-8859-1',
+        },
+      ],
+    };
 
-    // CRITICAL: Set type FIRST before other properties
-    pass.type = 'generic';
-
-    // Set each property individually (library uses getters/setters)
-    pass.passTypeIdentifier = config.applePassTypeIdentifier!;
-    pass.serialNumber = `stackpass-${devCardData.username}-${Date.now()}`;
-    pass.teamIdentifier = config.appleTeamIdentifier!;
-    pass.organizationName = 'StackPass';
-    pass.description = `${devCardData.display_name}'s StackPass`;
-    pass.logoText = 'StackPass';
-    pass.foregroundColor = 'rgb(255, 255, 255)';
-    pass.backgroundColor = 'rgb(10, 10, 10)';
-    pass.labelColor = 'rgb(0, 255, 148)';
-
-    console.log('✅ Pass properties set:', {
-      type: pass.type,
-      passTypeId: pass.passTypeIdentifier,
-      serialNumber: pass.serialNumber,
-      teamId: pass.teamIdentifier,
-    });
+    // Create pass instance with pass.json buffer
+    const pass = new PKPass(
+      {
+        'pass.json': Buffer.from(JSON.stringify(passJson)),
+      },
+      {
+        signerCert: certBuffer,
+        signerKey: keyBuffer,
+        wwdr: wwdrBuffer,
+      }
+    );
 
     // Header fields
     pass.headerFields.push({
@@ -268,14 +280,7 @@ export async function generateAppleWalletPass(
       });
     }
 
-    // Barcode
-    pass.barcodes = [
-      {
-        message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
-        format: 'PKBarcodeFormatQR',
-        messageEncoding: 'iso-8859-1',
-      } as any,
-    ];
+    // Barcode already set in passJson above
 
 
     // Add images (logo, icon, strip, thumbnail)
