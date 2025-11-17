@@ -34,7 +34,15 @@ const fetcher = async (url: string) => {
 
 export default function DashboardPage() {
   const [copied, setCopied] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
   const { data: devcard, error, isLoading, mutate } = useSWR<DevCardApiResponse>('/api/cards/me', fetcher);
+
+  // Detect mobile device
+  React.useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const mobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+    setIsMobile(mobile);
+  }, []);
   const { data: reposData } = useSWR<{ repositories: GitHubRepo[] }>(
     '/api/github/repos?sort=stars&limit=50',
     fetcher
@@ -166,22 +174,24 @@ export default function DashboardPage() {
           Your developer profile is live! Share it with the world.
         </p>
 
-        {/* Wallet Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <WalletPassButton
-            username={devcard.url_slug}
-            platform="apple"
-            displayName={devcard.display_name || devcard.github_username}
-            className="flex-1"
-          />
-          <Button
-            disabled
-            variant="outline"
-            className="flex-1 bg-devcard-border/50 border-devcard-border text-devcard-heading/50 cursor-not-allowed"
-          >
-            Add to Google Pay - Coming Soon
-          </Button>
-        </div>
+        {/* Wallet Buttons - Only on mobile */}
+        {isMobile && (
+          <div className="flex flex-col sm:flex-row gap-3">
+            <WalletPassButton
+              username={devcard.url_slug}
+              platform="apple"
+              displayName={devcard.display_name || devcard.github_username}
+              className="flex-1"
+            />
+            <Button
+              disabled
+              variant="outline"
+              className="flex-1 bg-devcard-border/50 border-devcard-border text-devcard-heading/50 cursor-not-allowed rounded-full"
+            >
+              Add to Google Pay - Coming Soon
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Shareable URL Card */}
