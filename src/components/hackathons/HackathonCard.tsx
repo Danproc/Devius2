@@ -99,7 +99,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
           asChild
           className="w-full bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full"
         >
-          <Link href={`/hackathons/${hackathon.id}`}>
+          <Link href={`/app/hackathons/${hackathon.slug}`}>
             View Details
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

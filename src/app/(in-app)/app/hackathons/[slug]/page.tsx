@@ -6,7 +6,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { getHackathonById, getUserSubmission } from '@/lib/hackathons/queries';
+import { getHackathonBySlug, getUserSubmission } from '@/lib/hackathons/queries';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,22 +16,22 @@ import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 export default async function HackathonDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) {
     redirect('/sign-in');
   }
 
-  const { id } = await params;
-  const hackathon = await getHackathonById(id);
+  const { slug } = await params;
+  const hackathon = await getHackathonBySlug(slug);
 
   if (!hackathon) {
     redirect('/app/hackathons');
   }
 
   // Check if user already has a submission
-  const userSubmission = await getUserSubmission(id, session.user.id);
+  const userSubmission = await getUserSubmission(hackathon.id, session.user.id);
 
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
