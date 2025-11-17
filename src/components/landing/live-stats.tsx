@@ -3,8 +3,12 @@ import { devcards } from '@/db/schema/devcard';
 import { connections } from '@/db/schema/connections';
 import { count, eq } from 'drizzle-orm';
 import { LiveStatsClient } from './live-stats-client';
+import { unstable_noStore } from 'next/cache';
 
 export async function LiveStats() {
+  // Disable caching for real-time stats
+  unstable_noStore();
+
   // Fetch real-time stats from database
   const [developerCount] = await db
     .select({ count: count() })
