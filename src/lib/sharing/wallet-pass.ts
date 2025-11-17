@@ -8,6 +8,7 @@
 
 import { PKPass } from 'passkit-generator';
 import path from 'path';
+import fs from 'fs';
 import { generateQRBuffer } from './qr-generator';
 
 /**
@@ -126,144 +127,143 @@ export async function generateAppleWalletPass(
     throw new Error('APPLE_TEAM_IDENTIFIER is required');
   }
 
-  // Decode Base64 certificates if provided (for Vercel deployment)
-  let certBuffer: Buffer | undefined;
-  let keyBuffer: Buffer | undefined;
-  let wwdrBuffer: Buffer | undefined;
+  // Load certificates as buffers
+  let certBuffer: Buffer;
+  let keyBuffer: Buffer;
+  let wwdrBuffer: Buffer;
 
   if (hasBase64) {
+    // Decode Base64 certificates (Vercel)
     certBuffer = Buffer.from(config.appleCertificateBase64!, 'base64');
     keyBuffer = Buffer.from(config.appleKeyBase64!, 'base64');
-    if (config.appleWWDRCABase64) {
-      wwdrBuffer = Buffer.from(config.appleWWDRCABase64, 'base64');
-    }
+    wwdrBuffer = config.appleWWDRCABase64
+      ? Buffer.from(config.appleWWDRCABase64, 'base64')
+      : fs.readFileSync(config.appleWWDRCAPath!);
+  } else {
+    // Read from filesystem (local development)
+    certBuffer = fs.readFileSync(config.appleCertificatePath!);
+    keyBuffer = fs.readFileSync(config.appleKeyPath!);
+    wwdrBuffer = fs.readFileSync(config.appleWWDRCAPath!);
   }
 
   try {
+    console.log('🔐 Apple Wallet Config:', {
+      teamId: config.appleTeamIdentifier,
+      passTypeId: config.applePassTypeIdentifier,
+      hasCertPath: !!config.appleCertificatePath,
+      hasCertBase64: !!config.appleCertificateBase64,
+    });
+
     // Generate QR code for the pass
     const qrBuffer = await generateQRBuffer(devCardData.username, { size: 400 });
 
-    // Create pass instance
-    const pass = new PKPass(
+    // Create pass instance with v3 API
+    const pass = new PKPass({}, {
+      signerCert: certBuffer,
+      signerKey: keyBuffer,
+      wwdr: wwdrBuffer,
+    });
+
+    // Set pass type and basic info
+    pass.type = 'generic';
+    pass.passTypeIdentifier = config.applePassTypeIdentifier!;
+    pass.serialNumber = `stackpass-${devCardData.username}-${Date.now()}`;
+    pass.teamIdentifier = config.appleTeamIdentifier!;
+    pass.organizationName = 'StackPass';
+    pass.description = `${devCardData.display_name}'s StackPass`;
+
+    // Visual appearance
+    pass.logoText = 'StackPass';
+    pass.foregroundColor = 'rgb(255, 255, 255)';
+    pass.backgroundColor = 'rgb(10, 10, 10)';
+    pass.labelColor = 'rgb(0, 255, 148)';
+
+    // Header fields
+    pass.headerFields.push({
+      key: 'header',
+      label: 'STACKPASS',
+      value: devCardData.display_name || '',
+    });
+
+    // Primary fields
+    pass.primaryFields.push({
+      key: 'name',
+      label: 'Developer',
+      value: devCardData.display_name || '',
+    });
+
+    // Secondary fields
+    pass.secondaryFields.push(
       {
-        'pass.json': {
-          formatVersion: 1,
-          passTypeIdentifier: config.applePassTypeIdentifier!,
-          serialNumber: `devcard-${devCardData.username}-${Date.now()}`,
-          teamIdentifier: config.appleTeamIdentifier!,
-          organizationName: 'StackPass',
-          description: `${devCardData.display_name}'s DevCard`,
-
-          // Visual appearance
-          logoText: 'StackPass',
-          foregroundColor: 'rgb(255, 255, 255)',
-          backgroundColor: 'rgb(10, 10, 10)',
-          labelColor: 'rgb(0, 255, 148)',
-
-          // Pass structure (Generic pass type)
-          generic: {
-            headerFields: [
-              {
-                key: 'header',
-                label: 'STACKPASS',
-                value: devCardData.display_name,
-              },
-            ],
-            primaryFields: [
-              {
-                key: 'name',
-                label: 'Developer',
-                value: devCardData.display_name,
-              },
-            ],
-            secondaryFields: [
-              {
-                key: 'username',
-                label: 'Username',
-                value: `@${devCardData.github_username || devCardData.username}`,
-              },
-              ...(devCardData.member_number
-                ? [
-                    {
-                      key: 'member',
-                      label: 'Founder',
-                      value: `#${String(devCardData.member_number).padStart(3, '0')}`,
-                    },
-                  ]
-                : []),
-              ...(devCardData.location
-                ? [
-                    {
-                      key: 'location',
-                      label: 'Location',
-                      value: devCardData.location,
-                    },
-                  ]
-                : []),
-            ],
-            auxiliaryFields: [
-              {
-                key: 'bio',
-                label: 'Bio',
-                value: devCardData.custom_bio || 'Developer profile on StackPass',
-              },
-            ],
-            backFields: [
-              {
-                key: 'profile',
-                label: 'Profile URL',
-                value: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
-              },
-              ...(devCardData.social_links?.twitter
-                ? [
-                    {
-                      key: 'twitter',
-                      label: 'Twitter',
-                      value: devCardData.social_links.twitter,
-                    },
-                  ]
-                : []),
-              ...(devCardData.social_links?.linkedin
-                ? [
-                    {
-                      key: 'linkedin',
-                      label: 'LinkedIn',
-                      value: devCardData.social_links.linkedin,
-                    },
-                  ]
-                : []),
-              ...(devCardData.social_links?.website
-                ? [
-                    {
-                      key: 'website',
-                      label: 'Website',
-                      value: devCardData.social_links.website,
-                    },
-                  ]
-                : []),
-            ],
-          },
-
-          // Barcode/QR code
-          barcodes: [
-            {
-              message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
-              format: 'PKBarcodeFormatQR',
-              messageEncoding: 'iso-8859-1',
-            },
-          ],
-
-          // Relevance (optional - can add location-based relevance later)
-          relevantDate: new Date().toISOString(),
-        },
-      },
-      {
-        // Use Base64 buffers if available (Vercel), otherwise use file paths (local)
-        signerCert: certBuffer || config.appleCertificatePath!,
-        signerKey: keyBuffer || config.appleKeyPath!,
-        ...(wwdrBuffer ? { wwdr: wwdrBuffer } : config.appleWWDRCAPath ? { wwdr: config.appleWWDRCAPath } : {}),
+        key: 'username',
+        label: 'Username',
+        value: `@${devCardData.github_username || devCardData.username}`,
       }
     );
+
+    if (devCardData.member_number) {
+      pass.secondaryFields.push({
+        key: 'member',
+        label: 'Founder',
+        value: `#${String(devCardData.member_number).padStart(3, '0')}`,
+      });
+    }
+
+    if (devCardData.location) {
+      pass.secondaryFields.push({
+        key: 'location',
+        label: 'Location',
+        value: devCardData.location,
+      });
+    }
+
+    // Auxiliary fields
+    pass.auxiliaryFields.push({
+      key: 'bio',
+      label: 'Bio',
+      value: devCardData.custom_bio || 'Developer profile on StackPass',
+    });
+
+    // Back fields
+    pass.backFields.push({
+      key: 'profile',
+      label: 'Profile URL',
+      value: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
+    });
+
+    if (devCardData.social_links?.twitter) {
+      pass.backFields.push({
+        key: 'twitter',
+        label: 'Twitter',
+        value: devCardData.social_links.twitter,
+      });
+    }
+
+    if (devCardData.social_links?.linkedin) {
+      pass.backFields.push({
+        key: 'linkedin',
+        label: 'LinkedIn',
+        value: devCardData.social_links.linkedin,
+      });
+    }
+
+    if (devCardData.social_links?.website) {
+      pass.backFields.push({
+        key: 'website',
+        label: 'Website',
+        value: devCardData.social_links.website,
+      });
+    }
+
+    // Barcode
+    pass.barcodes = [
+      {
+        message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
+        format: 'PKBarcodeFormatQR',
+        messageEncoding: 'iso-8859-1',
+      } as any,
+    ];
+
 
     // Add images (logo, icon, strip, thumbnail)
     // Note: These files should be placed in a public/wallet-assets directory
