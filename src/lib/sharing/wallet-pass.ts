@@ -133,12 +133,18 @@ export async function generateAppleWalletPass(
   let wwdrBuffer: Buffer;
 
   if (hasBase64) {
-    // Decode Base64 certificates (Vercel)
-    certBuffer = Buffer.from(config.appleCertificateBase64!, 'base64');
-    keyBuffer = Buffer.from(config.appleKeyBase64!, 'base64');
+    // Decode Base64 certificates (Vercel) - trim whitespace first
+    certBuffer = Buffer.from(config.appleCertificateBase64!.trim().replace(/\s/g, ''), 'base64');
+    keyBuffer = Buffer.from(config.appleKeyBase64!.trim().replace(/\s/g, ''), 'base64');
     wwdrBuffer = config.appleWWDRCABase64
-      ? Buffer.from(config.appleWWDRCABase64, 'base64')
+      ? Buffer.from(config.appleWWDRCABase64.trim().replace(/\s/g, ''), 'base64')
       : fs.readFileSync(config.appleWWDRCAPath!);
+
+    console.log('📦 Decoded Base64 cert sizes:', {
+      cert: certBuffer.length,
+      key: keyBuffer.length,
+      wwdr: wwdrBuffer.length,
+    });
   } else {
     // Read from filesystem (local development)
     certBuffer = fs.readFileSync(config.appleCertificatePath!);
@@ -157,26 +163,33 @@ export async function generateAppleWalletPass(
     // Generate QR code for the pass
     const qrBuffer = await generateQRBuffer(devCardData.username, { size: 400 });
 
-    // Create pass instance with v3 API
+    // Create pass instance
     const pass = new PKPass({}, {
       signerCert: certBuffer,
       signerKey: keyBuffer,
       wwdr: wwdrBuffer,
     });
 
-    // Set pass type and basic info
+    // CRITICAL: Set type FIRST before other properties
     pass.type = 'generic';
+
+    // Set each property individually (library uses getters/setters)
     pass.passTypeIdentifier = config.applePassTypeIdentifier!;
     pass.serialNumber = `stackpass-${devCardData.username}-${Date.now()}`;
     pass.teamIdentifier = config.appleTeamIdentifier!;
     pass.organizationName = 'StackPass';
     pass.description = `${devCardData.display_name}'s StackPass`;
-
-    // Visual appearance
     pass.logoText = 'StackPass';
     pass.foregroundColor = 'rgb(255, 255, 255)';
     pass.backgroundColor = 'rgb(10, 10, 10)';
     pass.labelColor = 'rgb(0, 255, 148)';
+
+    console.log('✅ Pass properties set:', {
+      type: pass.type,
+      passTypeId: pass.passTypeIdentifier,
+      serialNumber: pass.serialNumber,
+      teamId: pass.teamIdentifier,
+    });
 
     // Header fields
     pass.headerFields.push({
