@@ -13,13 +13,19 @@ import { auth } from '@/auth';
 export async function isAdmin(): Promise<boolean> {
   const session = await auth();
 
+  console.log('Admin check - Session user:', session?.user?.email);
+
   if (!session?.user?.email) {
+    console.log('No session or email found');
     return false;
   }
 
   // Admin check - currently email-based
-  const adminEmails = ['dan@stackpass.dev'];
-  return adminEmails.includes(session.user.email);
+  const adminEmails = ['dan@stackpass.dev', 'hello@thenorthern-web.co.uk'];
+  const isAdminUser = adminEmails.includes(session.user.email);
+
+  console.log('Is admin?', isAdminUser);
+  return isAdminUser;
 }
 
 /**

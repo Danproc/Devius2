@@ -17,15 +17,21 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const status = searchParams.get('status');
 
-    let query = db.select().from(hackathons);
-
     // Filter by status if provided
+    let results;
     if (status) {
       const statuses = status.split(',');
-      query = query.where(inArray(hackathons.status, statuses as any));
+      results = await db
+        .select()
+        .from(hackathons)
+        .where(inArray(hackathons.status, statuses as any))
+        .orderBy(desc(hackathons.start_at));
+    } else {
+      results = await db
+        .select()
+        .from(hackathons)
+        .orderBy(desc(hackathons.start_at));
     }
-
-    const results = await query.orderBy(desc(hackathons.start_at));
 
     return NextResponse.json({ hackathons: results });
   } catch (error: any) {

@@ -39,19 +39,20 @@ export default async function AdminHackathonsPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-devcard-heading">Hackathon Management</h1>
-          <p className="text-devcard-text mt-2">Create and manage StackPass hackathons</p>
+    <div className="min-h-screen bg-devcard-base">
+      <div className="container mx-auto py-8 max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-devcard-heading">Hackathon Management</h1>
+            <p className="text-devcard-text mt-2">Create and manage StackPass hackathons</p>
+          </div>
+          <Button asChild className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full">
+            <Link href="/admin/hackathons/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Hackathon
+            </Link>
+          </Button>
         </div>
-        <Button asChild className="bg-devcard-green hover:bg-devcard-green/90 text-black">
-          <Link href="/admin/hackathons/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Create Hackathon
-          </Link>
-        </Button>
-      </div>
 
       {allHackathons.length === 0 ? (
         <Card className="border-devcard-border bg-devcard-base">
@@ -140,6 +141,7 @@ export default async function AdminHackathonsPage() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

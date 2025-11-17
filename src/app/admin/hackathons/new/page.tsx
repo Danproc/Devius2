@@ -13,13 +13,15 @@ export default async function NewHackathonPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-devcard-heading">Create Hackathon</h1>
-        <p className="text-devcard-text mt-2">Set up a new coding competition for Pro members</p>
-      </div>
+    <div className="min-h-screen bg-devcard-base">
+      <div className="container mx-auto py-8 max-w-4xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-devcard-heading">Create Hackathon</h1>
+          <p className="text-devcard-text mt-2">Set up a new coding competition for Pro members</p>
+        </div>
 
-      <HackathonForm mode="create" />
+        <HackathonForm mode="create" />
+      </div>
     </div>
   );
 }
