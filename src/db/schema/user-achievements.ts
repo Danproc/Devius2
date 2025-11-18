@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, pgEnum, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, pgEnum, integer, boolean, unique } from 'drizzle-orm/pg-core';
 import { users } from './user';
 
 /**
@@ -63,29 +63,36 @@ export const achievementTypeEnum = pgEnum('achievement_type', [
  * User Achievements Table
  * Tracks all achievements earned by users
  */
-export const user_achievements = pgTable('user_achievements', {
-  // Primary Key
-  id: uuid('id').primaryKey().defaultRandom(),
+export const user_achievements = pgTable(
+  'user_achievements',
+  {
+    // Primary Key
+    id: uuid('id').primaryKey().defaultRandom(),
 
-  // Foreign Key
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    // Foreign Key
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
 
-  // Achievement Info
-  achievement_type: achievementTypeEnum('achievement_type').notNull(),
+    // Achievement Info
+    achievement_type: achievementTypeEnum('achievement_type').notNull(),
 
-  // Display on profile (user can toggle)
-  is_displayed: boolean('is_displayed').notNull().default(true),
+    // Display on profile (user can toggle)
+    is_displayed: boolean('is_displayed').notNull().default(true),
 
-  // Display order (for custom sorting)
-  display_order: integer('display_order').default(0),
+    // Display order (for custom sorting)
+    display_order: integer('display_order').default(0),
 
-  // Metadata (for achievements that have variable data)
-  metadata: text('metadata'), // JSON string for extra info (e.g., streak count, date achieved)
+    // Metadata (for achievements that have variable data)
+    metadata: text('metadata'), // JSON string for extra info (e.g., streak count, date achieved)
 
-  // Timestamps
-  earned_at: timestamp('earned_at', { withTimezone: true }).notNull().defaultNow(),
-  created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+    // Timestamps
+    earned_at: timestamp('earned_at', { withTimezone: true }).notNull().defaultNow(),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    // Prevent duplicate achievements for same user
+    unique_user_achievement: unique().on(table.user_id, table.achievement_type),
+  })
+);
 
 export type UserAchievement = typeof user_achievements.$inferSelect;
 export type NewUserAchievement = typeof user_achievements.$inferInsert;

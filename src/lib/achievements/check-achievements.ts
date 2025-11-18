@@ -248,15 +248,20 @@ export async function awardAchievements(
 
   if (newAchievements.length === 0) return 0;
 
-  // Insert new achievements
-  await db.insert(user_achievements).values(
-    newAchievements.map((type) => ({
-      user_id: userId,
-      achievement_type: type,
-      is_displayed: true,
-      display_order: 0,
-    }))
-  );
+  // Insert new achievements with ON CONFLICT DO NOTHING to handle duplicates
+  if (newAchievements.length > 0) {
+    await db
+      .insert(user_achievements)
+      .values(
+        newAchievements.map((type) => ({
+          user_id: userId,
+          achievement_type: type,
+          is_displayed: true,
+          display_order: 0,
+        }))
+      )
+      .onConflictDoNothing();
+  }
 
   return newAchievements.length;
 }
