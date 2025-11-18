@@ -9,7 +9,7 @@ import { RepoShowcase } from './repo-showcase';
 import { ConnectedDevelopers } from './connected-developers';
 import { TopLanguages } from './top-languages';
 import { ProjectShowcase } from './project-showcase';
-import { Eye, Trophy, Award } from 'lucide-react';
+import { Eye, Trophy } from 'lucide-react';
 import { CustomProject } from '@/types/projects';
 import { GitHubStatsExtended } from '@/types/github';
 import { BadgeCard } from '@/components/hackathons/BadgeCard';
@@ -184,6 +184,7 @@ export function CardPreview({
             isPremium={isPremium}
             targetUserId={targetUserId}
             targetUsername={targetUsername}
+            achievements={achievements}
           />
 
           {/* Connected Developers */}
@@ -234,34 +235,6 @@ export function CardPreview({
 
           {/* Project Cards */}
           <ProjectShowcase projects={customProjects} />
-        </>
-      )}
-
-      {/* User Achievements */}
-      {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
-        <>
-          <div className="text-center">
-            <h2 className="text-2xl font-medium text-devcard-heading flex items-center justify-center gap-2">
-              <Award className="h-6 w-6 text-devcard-green" />
-              Achievements
-            </h2>
-            <p className="text-sm text-devcard-text">
-              {achievements.filter(a => a.is_displayed).length} {achievements.filter(a => a.is_displayed).length === 1 ? 'Badge' : 'Badges'} Earned
-            </p>
-          </div>
-
-          {/* Achievement Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {achievements
-              .filter(a => a.is_displayed)
-              .map((achievement) => (
-                <AchievementBadge
-                  key={achievement.id}
-                  achievement={achievement as any}
-                  size="md"
-                />
-              ))}
-          </div>
         </>
       )}
 

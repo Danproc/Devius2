@@ -2,8 +2,10 @@
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ConnectButton } from './connect-button';
 import { MapPin, Globe, Github, Instagram, Crown, Twitter, Linkedin, Briefcase } from 'lucide-react';
+import { ACHIEVEMENT_DEFINITIONS, RARITY_CONFIG, type AchievementType } from '@/db/schema/user-achievements';
 
 interface ProfileSectionProps {
   displayName: string | null;
@@ -25,6 +27,12 @@ interface ProfileSectionProps {
   isPremium?: boolean;
   targetUserId?: string;
   targetUsername?: string;
+  achievements?: Array<{
+    id: string;
+    achievement_type: string;
+    earned_at: Date | string;
+    is_displayed: boolean;
+  }>;
 }
 
 export function ProfileSection({
@@ -41,6 +49,7 @@ export function ProfileSection({
   isPremium = false,
   targetUserId,
   targetUsername,
+  achievements,
 }: ProfileSectionProps) {
   const getAvailabilityBadge = () => {
     if (!availabilityStatus) return null;
@@ -113,6 +122,45 @@ export function ProfileSection({
           #{ranking ?? 1}
         </Badge>
       </div>
+
+      {/* Achievement Icons with Tooltips */}
+      {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
+        <TooltipProvider>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {achievements
+              .filter(a => a.is_displayed)
+              .slice(0, 8) // Show max 8 badges
+              .map((achievement) => {
+                const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType];
+                const rarityConfig = RARITY_CONFIG[definition.rarity];
+
+                return (
+                  <Tooltip key={achievement.id}>
+                    <TooltipTrigger>
+                      <div className={`text-2xl cursor-help hover:scale-110 transition-transform p-1.5 rounded-lg border ${rarityConfig.borderColor} bg-gradient-to-br from-devcard-base to-transparent`}>
+                        {definition.icon}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-devcard-base border-devcard-border max-w-xs">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-semibold text-devcard-heading">{definition.name}</p>
+                          <Badge className={`${rarityConfig.color} text-xs capitalize`}>
+                            {definition.rarity}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-devcard-text">{definition.description}</p>
+                        <p className="text-xs text-devcard-text/70 pt-1">
+                          Earned {new Date(achievement.earned_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+          </div>
+        </TooltipProvider>
+      )}
 
       {/* Bio */}
       {customBio && (
