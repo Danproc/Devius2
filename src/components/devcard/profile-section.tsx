@@ -124,6 +124,16 @@ export function ProfileSection({
         </Badge>
       </div>
 
+      {/* Bio */}
+      {customBio && (
+        <p className="text-devcard-text max-w-md leading-relaxed text-base px-4">
+          {customBio}
+        </p>
+      )}
+
+      {/* Availability Status Badge */}
+      {getAvailabilityBadge()}
+
       {/* Achievement Icons with Tooltips */}
       {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
         <TooltipProvider>
@@ -165,16 +175,6 @@ export function ProfileSection({
           </div>
         </TooltipProvider>
       )}
-
-      {/* Bio */}
-      {customBio && (
-        <p className="text-devcard-text max-w-md leading-relaxed text-base px-4">
-          {customBio}
-        </p>
-      )}
-
-      {/* Availability Status Badge */}
-      {getAvailabilityBadge()}
 
       {/* Connect Button */}
       {targetUserId && targetUsername && (
