@@ -9,10 +9,11 @@ import { RepoShowcase } from './repo-showcase';
 import { ConnectedDevelopers } from './connected-developers';
 import { TopLanguages } from './top-languages';
 import { ProjectShowcase } from './project-showcase';
-import { Eye, Trophy } from 'lucide-react';
+import { Eye, Trophy, Award } from 'lucide-react';
 import { CustomProject } from '@/types/projects';
 import { GitHubStatsExtended } from '@/types/github';
 import { BadgeCard } from '@/components/hackathons/BadgeCard';
+import { AchievementBadge } from '@/components/achievements/AchievementBadge';
 
 // Language colors mapping
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -117,6 +118,13 @@ interface CardPreviewProps {
       third: number;
     };
   };
+  achievements?: Array<{
+    id: string;
+    achievement_type: string;
+    earned_at: Date | string;
+    is_displayed: boolean;
+    metadata?: string | null;
+  }>;
 }
 
 export function CardPreview({
@@ -140,6 +148,7 @@ export function CardPreview({
   targetUserId,
   targetUsername,
   hackathonBadges,
+  achievements,
 }: CardPreviewProps) {
   // Apply theme colors if provided
   const themeStyles = theme?.colors
@@ -228,13 +237,41 @@ export function CardPreview({
         </>
       )}
 
+      {/* User Achievements */}
+      {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
+        <>
+          <div className="text-center">
+            <h2 className="text-2xl font-medium text-devcard-heading flex items-center justify-center gap-2">
+              <Award className="h-6 w-6 text-devcard-green" />
+              Achievements
+            </h2>
+            <p className="text-sm text-devcard-text">
+              {achievements.filter(a => a.is_displayed).length} {achievements.filter(a => a.is_displayed).length === 1 ? 'Badge' : 'Badges'} Earned
+            </p>
+          </div>
+
+          {/* Achievement Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {achievements
+              .filter(a => a.is_displayed)
+              .map((achievement) => (
+                <AchievementBadge
+                  key={achievement.id}
+                  achievement={achievement as any}
+                  size="md"
+                />
+              ))}
+          </div>
+        </>
+      )}
+
       {/* Hackathon Achievements */}
       {hackathonBadges && hackathonBadges.badges.length > 0 && (
         <>
           <div className="text-center">
             <h2 className="text-2xl font-medium text-devcard-heading flex items-center justify-center gap-2">
               <Trophy className="h-6 w-6 text-devcard-green" />
-              Hackathon Achievements
+              Hackathon Wins
             </h2>
             <p className="text-sm text-devcard-text">
               {hackathonBadges.stats.total} {hackathonBadges.stats.total === 1 ? 'Win' : 'Wins'} •
