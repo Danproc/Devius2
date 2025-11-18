@@ -189,16 +189,17 @@ export async function POST(
 
 /**
  * GET /api/hackathons/[id]/submissions
- * List all submissions for a hackathon (public)
+ * List all submissions for a hackathon (public, includes vote status)
  */
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: hackathonId } = await params;
+    const session = await auth();
+    const { id: hackathonId} = await params;
 
-    // Get all submitted submissions (not drafts)
+    // Get all submitted submissions (not drafts) ordered by vote count
     const submissions = await db
       .select()
       .from(hackathon_submissions)
@@ -207,7 +208,32 @@ export async function GET(
           eq(hackathon_submissions.hackathon_id, hackathonId),
           eq(hackathon_submissions.status, 'submitted')
         )
-      );
+      )
+      .orderBy(sql`${hackathon_submissions.vote_count} DESC`);
+
+    // If user is logged in, include their vote status for each submission
+    if (session?.user?.id) {
+      const { hackathon_votes } = await import('@/db/schema/hackathon-votes');
+
+      const userVotes = await db
+        .select()
+        .from(hackathon_votes)
+        .where(
+          and(
+            eq(hackathon_votes.hackathon_id, hackathonId),
+            eq(hackathon_votes.user_id, session.user.id)
+          )
+        );
+
+      const votedSubmissionIds = new Set(userVotes.map((v) => v.submission_id));
+
+      const submissionsWithVoteStatus = submissions.map((submission) => ({
+        ...submission,
+        user_has_voted: votedSubmissionIds.has(submission.id),
+      }));
+
+      return NextResponse.json({ submissions: submissionsWithVoteStatus });
+    }
 
     return NextResponse.json({ submissions });
   } catch (error: any) {
