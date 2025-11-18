@@ -127,10 +127,10 @@ export function ProfileSection({
       {/* Achievement Icons with Tooltips */}
       {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
         <TooltipProvider>
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
+          <div className="flex flex-wrap items-center justify-center gap-1">
             {achievements
               .filter(a => a.is_displayed)
-              .slice(0, 8) // Show max 8 badges
+              .slice(0, 10) // Show max 10 badges
               .map((achievement) => {
                 const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType];
                 const rarityConfig = RARITY_CONFIG[definition.rarity];
@@ -141,8 +141,8 @@ export function ProfileSection({
                 return (
                   <Tooltip key={achievement.id}>
                     <TooltipTrigger asChild>
-                      <div className={`w-8 h-8 rounded-full ${rarityConfig.color} flex items-center justify-center cursor-help hover:scale-110 transition-transform shadow-md`}>
-                        <IconComponent className="h-4 w-4 text-white" strokeWidth={2.5} />
+                      <div className={`w-6 h-6 rounded-full border ${rarityConfig.borderColor} bg-devcard-base/50 backdrop-blur-sm flex items-center justify-center cursor-help hover:scale-110 hover:bg-devcard-base transition-all`}>
+                        <IconComponent className={`h-3 w-3 ${rarityConfig.textColor}`} strokeWidth={1.5} />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-devcard-base border-devcard-border max-w-xs">
