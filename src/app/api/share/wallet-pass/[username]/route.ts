@@ -16,6 +16,7 @@ import {
   type GooglePassResult,
 } from '@/lib/sharing/wallet-pass';
 import { getDevCardBySlug } from '@/lib/devcard';
+import { getUserBadges } from '@/lib/hackathons/queries';
 
 export async function GET(
   req: NextRequest,
@@ -103,6 +104,14 @@ export async function GET(
       );
     }
 
+    // Fetch hackathon badges
+    const badges = await getUserBadges(devcard.user_id);
+
+    // Calculate badge stats
+    const firstPlace = badges.filter((b) => b.placement === 1).length;
+    const secondPlace = badges.filter((b) => b.placement === 2).length;
+    const thirdPlace = badges.filter((b) => b.placement === 3).length;
+
     // Prepare DevCard data for wallet pass generation
     const devCardData = {
       username: devcard.url_slug,
@@ -119,6 +128,14 @@ export async function GET(
             website: (devcard.social_links as any).website || undefined,
           }
         : undefined,
+      hackathon_wins:
+        firstPlace + secondPlace + thirdPlace > 0
+          ? {
+              first: firstPlace,
+              second: secondPlace,
+              third: thirdPlace,
+            }
+          : undefined,
     };
 
     // Generate wallet pass

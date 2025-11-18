@@ -9,9 +9,10 @@ import { RepoShowcase } from './repo-showcase';
 import { ConnectedDevelopers } from './connected-developers';
 import { TopLanguages } from './top-languages';
 import { ProjectShowcase } from './project-showcase';
-import { Eye } from 'lucide-react';
+import { Eye, Trophy } from 'lucide-react';
 import { CustomProject } from '@/types/projects';
 import { GitHubStatsExtended } from '@/types/github';
+import { BadgeCard } from '@/components/hackathons/BadgeCard';
 
 // Language colors mapping
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -104,6 +105,18 @@ interface CardPreviewProps {
   };
   targetUserId?: string;
   targetUsername?: string;
+  hackathonBadges?: {
+    badges: Array<{
+      badge: any;
+      hackathon: any;
+    }>;
+    stats: {
+      total: number;
+      first: number;
+      second: number;
+      third: number;
+    };
+  };
 }
 
 export function CardPreview({
@@ -126,6 +139,7 @@ export function CardPreview({
   connections,
   targetUserId,
   targetUsername,
+  hackathonBadges,
 }: CardPreviewProps) {
   // Apply theme colors if provided
   const themeStyles = theme?.colors
@@ -211,6 +225,35 @@ export function CardPreview({
 
           {/* Project Cards */}
           <ProjectShowcase projects={customProjects} />
+        </>
+      )}
+
+      {/* Hackathon Achievements */}
+      {hackathonBadges && hackathonBadges.badges.length > 0 && (
+        <>
+          <div className="text-center">
+            <h2 className="text-2xl font-medium text-devcard-heading flex items-center justify-center gap-2">
+              <Trophy className="h-6 w-6 text-devcard-green" />
+              Hackathon Achievements
+            </h2>
+            <p className="text-sm text-devcard-text">
+              {hackathonBadges.stats.total} {hackathonBadges.stats.total === 1 ? 'Win' : 'Wins'} •
+              {hackathonBadges.stats.first > 0 && ` 🥇${hackathonBadges.stats.first}`}
+              {hackathonBadges.stats.second > 0 && ` 🥈${hackathonBadges.stats.second}`}
+              {hackathonBadges.stats.third > 0 && ` 🥉${hackathonBadges.stats.third}`}
+            </p>
+          </div>
+
+          {/* Badge Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {hackathonBadges.badges.map((item) => (
+              <BadgeCard
+                key={item.badge.id}
+                badge={item.badge}
+                hackathon={item.hackathon}
+              />
+            ))}
+          </div>
         </>
       )}
 

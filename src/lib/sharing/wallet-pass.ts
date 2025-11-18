@@ -33,6 +33,11 @@ export interface WalletPassDevCardData {
     linkedin?: string;
     website?: string;
   };
+  hackathon_wins?: {
+    first: number;
+    second: number;
+    third: number;
+  };
 }
 
 /**
@@ -248,6 +253,25 @@ export async function generateAppleWalletPass(
       label: 'Bio',
       value: devCardData.custom_bio || 'Developer profile on StackPass',
     });
+
+    // Add hackathon wins if any
+    if (devCardData.hackathon_wins) {
+      const { first, second, third } = devCardData.hackathon_wins;
+      const total = first + second + third;
+
+      if (total > 0) {
+        const parts: string[] = [];
+        if (first > 0) parts.push(`🥇${first}`);
+        if (second > 0) parts.push(`🥈${second}`);
+        if (third > 0) parts.push(`🥉${third}`);
+
+        pass.auxiliaryFields.push({
+          key: 'hackathon_wins',
+          label: 'Hackathon Wins',
+          value: parts.join(' '),
+        });
+      }
+    }
 
     // Back fields
     pass.backFields.push({
