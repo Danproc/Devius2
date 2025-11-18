@@ -85,13 +85,34 @@ export default function DashboardPage() {
   const handleRefresh = React.useCallback(async () => {
     toast.promise(
       async () => {
+        // If no devcard exists, try to create one first
+        if (!devcard) {
+          console.log('🔵 No StackPass found, attempting to create...');
+          const createResponse = await fetch('/api/cards/create', {
+            method: 'POST',
+          });
+
+          const createData = await createResponse.json();
+
+          if (!createResponse.ok) {
+            console.error('❌ Create failed:', createData);
+            throw new Error(createData.error || createData.message || 'Failed to create StackPass');
+          }
+
+          console.log('✅ StackPass created!', createData);
+
+          // Wait for creation to complete
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
         // Trigger GitHub sync to fetch latest data including comprehensive stats
         const syncResponse = await fetch('/api/github/sync', {
           method: 'POST',
         });
 
         if (!syncResponse.ok) {
-          throw new Error('Failed to sync GitHub data');
+          const syncData = await syncResponse.json();
+          throw new Error(syncData.error || syncData.message || 'Failed to sync GitHub data');
         }
 
         // Wait a moment for sync to complete
