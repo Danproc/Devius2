@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
         // For simplicity, just check membership-based achievements
         const userData = {
           user_id: user.id,
-          member_number: user.member_number,
+          member_number: (user as any).member_number || null,
           is_premium: user.is_premium || false,
-          premium_started_at: user.premium_started_at,
+          premium_started_at: (user as any).premium_started_at || null,
           created_at: user.createdAt,
         };
 

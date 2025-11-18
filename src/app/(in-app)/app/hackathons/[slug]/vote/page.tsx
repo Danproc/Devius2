@@ -76,11 +76,16 @@ export default async function VotingPage({
   const data = await response.json();
   const submissions = data.submissions || [];
 
-  const statusColor = {
+  const statusColor: Record<string, string> = {
+    draft: 'bg-gray-500',
+    upcoming: 'bg-blue-500',
+    registration: 'bg-cyan-500',
     active: 'bg-devcard-green',
     voting: 'bg-yellow-500',
     completed: 'bg-purple-500',
-  }[hackathon.status] || 'bg-gray-500';
+  };
+
+  const badgeColor = statusColor[hackathon.status] || 'bg-gray-500';
 
   return (
     <div className="min-h-screen bg-devcard-base">
@@ -89,7 +94,7 @@ export default async function VotingPage({
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-4xl font-bold text-devcard-heading">{hackathon.title}</h1>
-            <Badge className={statusColor}>{hackathon.status}</Badge>
+            <Badge className={badgeColor}>{hackathon.status}</Badge>
           </div>
           {hackathon.theme && (
             <p className="text-xl text-devcard-green font-medium">{hackathon.theme}</p>
@@ -98,7 +103,7 @@ export default async function VotingPage({
 
         {/* Voting Status */}
         {isVotingActive ? (
-          <CountdownTimer deadline={hackathon.voting_end_at} label="Voting ends in" />
+          <CountdownTimer deadline={hackathon.voting_end_at} />
         ) : now < new Date(hackathon.voting_start_at) ? (
           <Alert className="border-devcard-border/50 bg-devcard-base mb-6">
             <Clock className="h-4 w-4 text-devcard-green" />

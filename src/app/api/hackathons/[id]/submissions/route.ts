@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathons } from '@/db/schema/hackathons';
 import { users } from '@/db/schema/user';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql, desc } from 'drizzle-orm';
 import {
   isValidGitHubUrl,
   isValidDemoUrl,
@@ -221,7 +221,7 @@ export async function GET(
         .where(
           and(
             eq(hackathon_votes.hackathon_id, hackathonId),
-            eq(hackathon_votes.user_id, session.user.id)
+            eq(hackathon_votes.voter_user_id, session.user.id)
           )
         );
 

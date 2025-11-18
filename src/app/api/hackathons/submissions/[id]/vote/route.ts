@@ -114,7 +114,7 @@ export async function POST(
       .where(
         and(
           eq(hackathon_votes.submission_id, submissionId),
-          eq(hackathon_votes.user_id, session.user.id)
+          eq(hackathon_votes.voter_user_id, session.user.id)
         )
       );
 
@@ -130,7 +130,7 @@ export async function POST(
       // Create vote record
       await tx.insert(hackathon_votes).values({
         submission_id: submissionId,
-        user_id: session.user.id,
+        voter_user_id: session.user.id,
         hackathon_id: submission.hackathon_id,
       });
 
@@ -210,7 +210,7 @@ export async function DELETE(
       .where(
         and(
           eq(hackathon_votes.submission_id, submissionId),
-          eq(hackathon_votes.user_id, session.user.id)
+          eq(hackathon_votes.voter_user_id, session.user.id)
         )
       );
 

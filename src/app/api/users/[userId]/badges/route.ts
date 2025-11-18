@@ -31,10 +31,10 @@ export async function GET(
       .where(eq(hackathon_badges.user_id, userId))
       .orderBy(desc(hackathon_badges.awarded_at));
 
-    // Group by placement
-    const firstPlace = badges.filter((b) => b.badge.placement === 1);
-    const secondPlace = badges.filter((b) => b.badge.placement === 2);
-    const thirdPlace = badges.filter((b) => b.badge.placement === 3);
+    // Group by badge_type
+    const firstPlace = badges.filter((b) => b.badge.badge_type === 'gold');
+    const secondPlace = badges.filter((b) => b.badge.badge_type === 'silver');
+    const thirdPlace = badges.filter((b) => b.badge.badge_type === 'bronze');
 
     return NextResponse.json({
       badges,

@@ -108,9 +108,9 @@ export async function GET(
     const badges = await getUserBadges(devcard.user_id);
 
     // Calculate badge stats
-    const firstPlace = badges.filter((b) => b.placement === 1).length;
-    const secondPlace = badges.filter((b) => b.placement === 2).length;
-    const thirdPlace = badges.filter((b) => b.placement === 3).length;
+    const firstPlace = badges.filter((b) => b.badge.badge_type === 'gold').length;
+    const secondPlace = badges.filter((b) => b.badge.badge_type === 'silver').length;
+    const thirdPlace = badges.filter((b) => b.badge.badge_type === 'bronze').length;
 
     // Prepare DevCard data for wallet pass generation
     const devCardData = {
