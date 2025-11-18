@@ -316,3 +316,33 @@ export async function getTeamInvites(teamId: string) {
     .where(eq(hackathon_team_invites.team_id, teamId))
     .orderBy(desc(hackathon_team_invites.created_at));
 }
+
+/**
+ * Get pending team invites for a user for a specific hackathon with full details
+ */
+export async function getHackathonTeamInvites(userId: string, hackathonId: string) {
+  return db
+    .select({
+      invite: hackathon_team_invites,
+      team: hackathon_teams,
+      hackathon: hackathons,
+      inviter: {
+        id: users.id,
+        name: users.name,
+        github_username: users.github_username,
+        image: users.image,
+      },
+    })
+    .from(hackathon_team_invites)
+    .innerJoin(hackathon_teams, eq(hackathon_team_invites.team_id, hackathon_teams.id))
+    .innerJoin(hackathons, eq(hackathon_teams.hackathon_id, hackathons.id))
+    .innerJoin(users, eq(hackathon_team_invites.inviter_user_id, users.id))
+    .where(
+      and(
+        eq(hackathon_team_invites.invitee_user_id, userId),
+        eq(hackathon_teams.hackathon_id, hackathonId),
+        eq(hackathon_team_invites.status, 'pending')
+      )
+    )
+    .orderBy(desc(hackathon_team_invites.created_at));
+}

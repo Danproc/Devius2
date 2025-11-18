@@ -19,7 +19,6 @@ import { Users, Search } from 'lucide-react';
 interface RegisteredUser {
   app_user: {
     id: string;
-    username: string | null;
     github_username: string | null;
     name: string | null;
     image: string | null;
@@ -32,12 +31,12 @@ interface RegisteredUser {
 
 // Helper to safely get display name
 function getDisplayName(user: RegisteredUser['app_user']): string {
-  return user.name || user.username || user.github_username || 'Unknown User';
+  return user.name || user.github_username || 'Unknown User';
 }
 
 // Helper to safely get username for link
 function getUsername(user: RegisteredUser['app_user']): string | null {
-  return user.username || user.github_username;
+  return user.github_username;
 }
 
 // Helper to safely get initials

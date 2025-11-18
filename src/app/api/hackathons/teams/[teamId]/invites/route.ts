@@ -46,11 +46,11 @@ export async function POST(
       );
     }
 
-    // Find invitee by username
+    // Find invitee by username (github_username)
     const [invitee] = await db
       .select()
       .from(users)
-      .where(eq(users.username, username));
+      .where(eq(users.github_username, username));
 
     if (!invitee) {
       return NextResponse.json(

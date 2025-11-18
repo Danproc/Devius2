@@ -12,6 +12,7 @@ import {
   getUserRegistration,
   getRegistrationCount,
   getRegisteredUsers,
+  getHackathonTeamInvites,
 } from '@/lib/hackathons/queries';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -31,6 +32,7 @@ import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
 import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
+import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
 import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
 
 export default async function HackathonDetailPage({
@@ -71,6 +73,9 @@ export default async function HackathonDetailPage({
   const isFull = maxParticipants !== null && registrationCount >= maxParticipants;
   const canUnregister = isRegistrationActive;
 
+  // Get pending team invites for this hackathon
+  const pendingInvites = await getHackathonTeamInvites(session.user.id, hackathon.id);
+
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
   const startDate = new Date(hackathon.start_at);
@@ -110,6 +115,27 @@ export default async function HackathonDetailPage({
         {/* Submission Countdown */}
         {hackathon.status === 'active' && (
           <CountdownTimer deadline={hackathon.submission_deadline_at} />
+        )}
+
+        {/* Pending Team Invites */}
+        {pendingInvites.length > 0 && (
+          <div className="mb-6 space-y-4">
+            <h2 className="text-2xl font-bold text-devcard-heading flex items-center gap-2">
+              <Users className="h-6 w-6 text-devcard-green" />
+              Team Invitations ({pendingInvites.length})
+            </h2>
+            <div className="grid gap-4">
+              {pendingInvites.map((item) => (
+                <TeamInviteCard
+                  key={item.invite.id}
+                  invite={item.invite}
+                  team={item.team}
+                  hackathon={item.hackathon}
+                  inviter={item.inviter}
+                />
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Description */}
