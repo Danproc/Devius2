@@ -6,6 +6,7 @@ import { hackathons } from '@/db/schema/hackathons';
 import { users } from '@/db/schema/user';
 import { eq, and, sql } from 'drizzle-orm';
 import { getUserRegistration } from '@/lib/hackathons/queries';
+import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
 
 /**
  * POST /api/hackathons/[id]/teams
@@ -35,10 +36,25 @@ export async function POST(
       return NextResponse.json({ error: 'Hackathon not found' }, { status: 404 });
     }
 
-    // Check if hackathon is active
-    if (hackathon.status !== 'active') {
+    // Check if hackathon allows team formation (time-based)
+    const now = new Date();
+    const isRegistrationOpen = hackathon.registration_start_at && hackathon.registration_end_at
+      ? isRegistrationPeriodActive(new Date(hackathon.registration_start_at), new Date(hackathon.registration_end_at))
+      : false;
+    const isHackathonActive = hackathon.status === 'active';
+    const submissionDeadline = new Date(hackathon.submission_deadline_at);
+
+    if (!isRegistrationOpen && !isHackathonActive) {
       return NextResponse.json(
-        { error: 'Can only form teams during active hackathon' },
+        { error: 'Can only form teams during registration period or active hackathon' },
+        { status: 400 }
+      );
+    }
+
+    // During active phase, check submission deadline hasn't passed
+    if (isHackathonActive && now > submissionDeadline) {
+      return NextResponse.json(
+        { error: 'Cannot form teams after submission deadline' },
         { status: 400 }
       );
     }

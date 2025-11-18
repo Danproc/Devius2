@@ -5,14 +5,14 @@
 
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { getHackathonBySlug, getUserRegistration } from '@/lib/hackathons/queries';
+import { getHackathonBySlug, getUserRegistration, getUserTeam } from '@/lib/hackathons/queries';
 import { db } from '@/db';
 import { users } from '@/db/schema/user';
 import { eq } from 'drizzle-orm';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Trophy } from 'lucide-react';
+import { AlertCircle, Trophy, Users as UsersIcon, User } from 'lucide-react';
 import { SubmissionForm } from '@/components/hackathons/SubmissionForm';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -128,6 +128,9 @@ export default async function HackathonEntryPage({
     }
   }
 
+  // Check if user is on a team for this hackathon
+  const userTeam = await getUserTeam(hackathon.id, session.user.id);
+
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
 
   return (
@@ -182,10 +185,95 @@ export default async function HackathonEntryPage({
           </CardContent>
         </Card>
 
+        {/* Team Selection (if no team yet) */}
+        {!userTeam && (
+          <Card className="border-devcard-border bg-devcard-base mb-6">
+            <CardHeader>
+              <CardTitle className="text-devcard-heading">Choose Your Participation Type</CardTitle>
+              <CardDescription className="text-devcard-text">
+                Will you be working solo or forming a team?
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Solo Option */}
+                <Card className="border-devcard-border hover:border-devcard-green/50 transition-colors cursor-pointer">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <User className="h-12 w-12 text-devcard-green mx-auto mb-3" />
+                      <h3 className="font-semibold text-devcard-heading mb-2">Submit Solo</h3>
+                      <p className="text-sm text-devcard-text mb-4">
+                        Work independently on your project
+                      </p>
+                      <p className="text-xs text-devcard-text italic">
+                        Continue below to submit as a solo participant
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Team Option */}
+                <Card className="border-devcard-border hover:border-devcard-green/50 transition-colors">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <UsersIcon className="h-12 w-12 text-devcard-green mx-auto mb-3" />
+                      <h3 className="font-semibold text-devcard-heading mb-2">Form a Team</h3>
+                      <p className="text-sm text-devcard-text mb-4">
+                        Collaborate with up to 4 other participants
+                      </p>
+                      <Button
+                        asChild
+                        className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium"
+                      >
+                        <Link href={`/app/hackathons/${hackathon.slug}/team`}>
+                          Build Team
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Team Info (if on a team) */}
+        {userTeam && (
+          <Card className="border-devcard-green/30 bg-devcard-green/5 mb-6">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <UsersIcon className="h-5 w-5 text-devcard-green" />
+                  <span className="font-semibold text-devcard-heading">
+                    Submitting as Team
+                    {userTeam.team_name && `: ${userTeam.team_name}`}
+                  </span>
+                  <Badge variant="outline" className="border-devcard-green text-devcard-green">
+                    {(userTeam.members as any[]).length} members
+                  </Badge>
+                </div>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="border-devcard-border"
+                >
+                  <Link href={`/app/hackathons/${hackathon.slug}/team`}>
+                    Manage Team
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Submission Form */}
         <Card className="border-devcard-border bg-devcard-base">
           <CardContent className="pt-6">
-            <SubmissionForm hackathonId={hackathon.id} />
+            <SubmissionForm
+              hackathonId={hackathon.id}
+              teamId={userTeam?.id}
+            />
           </CardContent>
         </Card>
       </div>

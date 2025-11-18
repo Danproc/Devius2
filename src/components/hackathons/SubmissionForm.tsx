@@ -14,11 +14,12 @@ import type { HackathonSubmission } from '@/db/schema/hackathon-submissions';
 
 interface SubmissionFormProps {
   hackathonId: string;
+  teamId?: string;
   existingSubmission?: HackathonSubmission;
   onSuccess?: () => void;
 }
 
-export function SubmissionForm({ hackathonId, existingSubmission, onSuccess }: SubmissionFormProps) {
+export function SubmissionForm({ hackathonId, teamId, existingSubmission, onSuccess }: SubmissionFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [techStackInput, setTechStackInput] = useState('');
@@ -97,6 +98,7 @@ export function SubmissionForm({ hackathonId, existingSubmission, onSuccess }: S
       const payload = {
         ...formData,
         status,
+        team_id: teamId || null,
       };
 
       let response;

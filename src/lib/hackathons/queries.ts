@@ -5,6 +5,7 @@
 import { db } from '@/db';
 import { hackathons } from '@/db/schema/hackathons';
 import { hackathon_teams } from '@/db/schema/hackathon-teams';
+import { hackathon_team_invites } from '@/db/schema/hackathon-team-invites';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathon_votes } from '@/db/schema/hackathon-votes';
 import { hackathon_badges } from '@/db/schema/hackathon-badges';
@@ -267,4 +268,51 @@ export async function getRegisteredUsers(hackathonId: string) {
     .innerJoin(users, eq(hackathon_registrations.user_id, users.id))
     .where(eq(hackathon_registrations.hackathon_id, hackathonId))
     .orderBy(desc(hackathon_registrations.registered_at));
+}
+
+/**
+ * Get user's team for a hackathon
+ */
+export async function getUserTeam(hackathonId: string, userId: string) {
+  const [team] = await db
+    .select()
+    .from(hackathon_teams)
+    .where(
+      and(
+        eq(hackathon_teams.hackathon_id, hackathonId),
+        sql`${hackathon_teams.members}::jsonb @> ${JSON.stringify([{ user_id: userId }])}`
+      )
+    )
+    .limit(1);
+
+  return team;
+}
+
+/**
+ * Get pending team invites for a user
+ */
+export async function getUserTeamInvites(userId: string) {
+  return db
+    .select()
+    .from(hackathon_team_invites)
+    .innerJoin(hackathon_teams, eq(hackathon_team_invites.team_id, hackathon_teams.id))
+    .innerJoin(hackathons, eq(hackathon_teams.hackathon_id, hackathons.id))
+    .where(
+      and(
+        eq(hackathon_team_invites.invitee_user_id, userId),
+        eq(hackathon_team_invites.status, 'pending')
+      )
+    );
+}
+
+/**
+ * Get all invites sent by a team
+ */
+export async function getTeamInvites(teamId: string) {
+  return db
+    .select()
+    .from(hackathon_team_invites)
+    .innerJoin(users, eq(hackathon_team_invites.invitee_user_id, users.id))
+    .where(eq(hackathon_team_invites.team_id, teamId))
+    .orderBy(desc(hackathon_team_invites.created_at));
 }
