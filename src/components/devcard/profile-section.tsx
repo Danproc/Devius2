@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ConnectButton } from './connect-button';
 import { MapPin, Globe, Github, Instagram, Crown, Twitter, Linkedin, Briefcase } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { ACHIEVEMENT_DEFINITIONS, RARITY_CONFIG, type AchievementType } from '@/db/schema/user-achievements';
 
 interface ProfileSectionProps {
@@ -126,7 +127,7 @@ export function ProfileSection({
       {/* Achievement Icons with Tooltips */}
       {achievements && achievements.filter(a => a.is_displayed).length > 0 && (
         <TooltipProvider>
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
             {achievements
               .filter(a => a.is_displayed)
               .slice(0, 8) // Show max 8 badges
@@ -134,11 +135,14 @@ export function ProfileSection({
                 const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType];
                 const rarityConfig = RARITY_CONFIG[definition.rarity];
 
+                // Get Lucide icon component
+                const IconComponent = (LucideIcons as any)[definition.icon] || LucideIcons.Award;
+
                 return (
                   <Tooltip key={achievement.id}>
-                    <TooltipTrigger>
-                      <div className={`text-2xl cursor-help hover:scale-110 transition-transform p-1.5 rounded-lg border ${rarityConfig.borderColor} bg-gradient-to-br from-devcard-base to-transparent`}>
-                        {definition.icon}
+                    <TooltipTrigger asChild>
+                      <div className={`w-8 h-8 rounded-full ${rarityConfig.color} flex items-center justify-center cursor-help hover:scale-110 transition-transform shadow-md`}>
+                        <IconComponent className="h-4 w-4 text-white" strokeWidth={2.5} />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-devcard-base border-devcard-border max-w-xs">
