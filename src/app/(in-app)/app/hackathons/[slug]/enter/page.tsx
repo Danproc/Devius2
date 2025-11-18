@@ -96,7 +96,7 @@ export default async function HackathonEntryPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href="/app/settings">Upgrade to Pro</Link>
+              <Link href="/app/billing">Upgrade to Pro</Link>
             </Button>
           </div>
         </div>

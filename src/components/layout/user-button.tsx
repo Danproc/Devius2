@@ -20,6 +20,7 @@ import {
   Inbox,
   Edit,
   Settings,
+  Trophy,
 } from "lucide-react";
 import useSWR from "swr";
 
@@ -99,6 +100,12 @@ export function UserButton() {
           <Link href="/app/card/edit" className="cursor-pointer">
             <Edit className="mr-2 h-4 w-4" />
             Edit Card
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/hackathons" className="cursor-pointer">
+            <Trophy className="mr-2 h-4 w-4" />
+            Hackathons
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

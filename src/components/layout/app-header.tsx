@@ -2,6 +2,7 @@
 
 import { appConfig } from "@/lib/config";
 import Link from "next/link";
+import { Trophy } from "lucide-react";
 import { UserButton } from "@/components/layout/user-button";
 
 export function AppHeader() {
@@ -10,13 +11,24 @@ export function AppHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-8">
             <Link href="/app" className="flex items-center">
               <span className="text-xl font-bold">
                 <span className="text-devcard-heading">Stack</span>
                 <span className="text-devcard-green">Pass</span>
               </span>
             </Link>
+
+            {/* Navigation Links */}
+            <nav className="hidden md:flex items-center gap-6">
+              <Link
+                href="/app/hackathons"
+                className="flex items-center gap-2 text-sm text-devcard-text hover:text-devcard-green transition-colors"
+              >
+                <Trophy className="h-4 w-4" />
+                Hackathons
+              </Link>
+            </nav>
           </div>
 
           {/* User Menu */}
