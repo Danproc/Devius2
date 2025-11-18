@@ -29,6 +29,13 @@
       "when": 1763389975070,
       "tag": "0003_fearless_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763446371838,
+      "tag": "0004_jittery_earthquake",
+      "breakpoints": true
     }
   ]
 }
