@@ -51,6 +51,14 @@ export default function DashboardPage() {
     devcard ? `/api/cards/${devcard.url_slug}/connections` : null,
     fetcher
   );
+  const { data: achievementsData } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/achievements` : null,
+    fetcher
+  );
+  const { data: badgesData } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/badges` : null,
+    fetcher
+  );
 
   const shareableUrl = React.useMemo(() => {
     if (!devcard) return '';
@@ -333,6 +341,8 @@ export default function DashboardPage() {
             ranking={devcard.member_number}
             theme={devcard.theme}
             connections={connectionsData}
+            achievements={achievementsData?.achievements}
+            hackathonBadges={badgesData}
           />
         </div>
       </div>
