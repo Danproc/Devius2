@@ -7,6 +7,9 @@ import { users } from '@/db/schema/user';
 import { eq, and, isNull, count as drizzleCount, sql } from 'drizzle-orm';
 import { getUserRegistration, getRegistrationCount } from '@/lib/hackathons/queries';
 import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
+import { render } from '@react-email/components';
+import sendMail from '@/lib/email/sendMail';
+import RegistrationConfirmation from '@/emails/RegistrationConfirmation';
 
 /**
  * POST /api/hackathons/[id]/registrations
@@ -103,6 +106,28 @@ export async function POST(
           participation_type: participation_type as 'solo' | 'team',
         })
         .returning();
+
+      // Send confirmation email
+      try {
+        const [user] = await db.select().from(users).where(eq(users.id, session.user.id));
+
+        const html = await render(
+          RegistrationConfirmation({
+            userName: user.name || 'Developer',
+            hackathonTitle: hackathon.title,
+            hackathonTheme: hackathon.theme,
+            participationType: participation_type,
+            hackathonUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/app/hackathons/${hackathon.slug}`,
+            startDate: new Date(hackathon.start_at).toLocaleDateString(),
+            submissionDeadline: new Date(hackathon.submission_deadline_at).toLocaleDateString(),
+          })
+        );
+
+        await sendMail(user.email, `You're registered for ${hackathon.title}!`, html);
+      } catch (emailError) {
+        console.error('Failed to send registration email:', emailError);
+        // Don't fail the request if email fails
+      }
 
       return NextResponse.json({ registration }, { status: 201 });
     } catch (error: any) {

@@ -3,8 +3,12 @@ import { auth } from '@/auth';
 import { db } from '@/db';
 import { hackathon_teams } from '@/db/schema/hackathon-teams';
 import { hackathon_team_invites } from '@/db/schema/hackathon-team-invites';
+import { hackathons } from '@/db/schema/hackathons';
 import { users } from '@/db/schema/user';
 import { eq, and, sql } from 'drizzle-orm';
+import { render } from '@react-email/components';
+import sendMail from '@/lib/email/sendMail';
+import TeamInvite from '@/emails/TeamInvite';
 
 /**
  * POST /api/hackathons/teams/[teamId]/invites
@@ -122,7 +126,27 @@ export async function POST(
       })
       .returning();
 
-    // TODO: Send email notification to invitee
+    // Send email notification to invitee
+    try {
+      const [inviter] = await db.select().from(users).where(eq(users.id, session.user.id));
+      const [hackathon] = await db.select().from(hackathons).where(eq(hackathons.id, team.hackathon_id));
+
+      const html = await render(
+        TeamInvite({
+          inviteeName: invitee.name || invitee.github_username || 'Developer',
+          inviterName: inviter.name || inviter.github_username || 'A teammate',
+          teamName: team.team_name,
+          hackathonTitle: hackathon.title,
+          hackathonTheme: hackathon.theme,
+          acceptUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/app/hackathons/${hackathon.slug}`,
+        })
+      );
+
+      await sendMail(invitee.email, `Team invitation for ${hackathon.title}`, html);
+    } catch (emailError) {
+      console.error('Failed to send team invite email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     return NextResponse.json({ invite }, { status: 201 });
   } catch (error: any) {
