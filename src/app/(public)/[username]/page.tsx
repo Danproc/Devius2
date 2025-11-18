@@ -8,6 +8,7 @@ import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
 import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
 import { ConnectButton } from '@/components/devcard/connect-button';
+import { AchievementChecker } from '@/components/achievements/AchievementChecker';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
@@ -248,6 +249,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in relative">
+      {/* Silent Achievement Checker - checks when viewing own profile */}
+      <AchievementChecker profileUserId={devcard.user_id} />
+
       {/* Share Button - Top right corner, green and smaller */}
       <div className="fixed top-4 right-4 z-50">
         <ShareButtonWrapper
