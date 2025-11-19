@@ -73,7 +73,11 @@ export default async function UnifiedHackathonDetailPage({
   let userSubmission = null;
   let userRegistration = null;
   let pendingInvites: any[] = [];
-  let proStatus = { isPro: false, expiresAt: null, isExpired: false };
+  let proStatus: { isPro: boolean; expiresAt: Date | null; isExpired: boolean } = {
+    isPro: false,
+    expiresAt: null,
+    isExpired: false
+  };
   let registeredUsers: any[] = [];
 
   if (session?.user?.id) {
