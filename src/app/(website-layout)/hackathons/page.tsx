@@ -11,6 +11,7 @@ import { Trophy, Target, Users, Gem, ArrowRight, Calendar, DollarSign } from 'lu
 import { db } from '@/db';
 import { hackathons } from '@/db/schema/hackathons';
 import { inArray, eq } from 'drizzle-orm';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 
 export const revalidate = 600; // Revalidate every 10 minutes
 
@@ -74,12 +75,26 @@ export default async function PublicHackathonsPage() {
                 const prizes = hackathon.prizes as { first: number; second: number; third: number };
                 const totalPrize = prizes.first + prizes.second + prizes.third;
 
+                // Compute actual phase
+                const actualPhase = getHackathonPhase(
+                  hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+                  hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+                  new Date(hackathon.start_at),
+                  new Date(hackathon.submission_deadline_at),
+                  hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+                  hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+                );
+
+                const badgeColor = actualPhase === 'active' ? 'bg-devcard-green' :
+                                  actualPhase === 'registration' ? 'bg-cyan-500' :
+                                  actualPhase === 'voting' ? 'bg-yellow-500' : 'bg-blue-500';
+
                 return (
                   <Card key={hackathon.id} className="border-devcard-border bg-devcard-base hover:border-devcard-green/50 transition-colors">
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">
                         <CardTitle className="text-devcard-heading text-lg">{hackathon.title}</CardTitle>
-                        <Badge className="bg-devcard-green text-black">{hackathon.status}</Badge>
+                        <Badge className={`${badgeColor} text-black`}>{actualPhase}</Badge>
                       </div>
                       {hackathon.theme && (
                         <CardDescription className="text-devcard-green text-sm">{hackathon.theme}</CardDescription>
