@@ -12,6 +12,7 @@ import {
   isValidDescription,
   isValidTechStack,
   isBeforeDeadline,
+  getHackathonPhase,
 } from '@/lib/hackathons/validations';
 import { getUserRegistration } from '@/lib/hackathons/queries';
 
@@ -53,9 +54,19 @@ export async function POST(
       return NextResponse.json({ error: 'Hackathon not found' }, { status: 404 });
     }
 
-    if (hackathon.status !== 'active') {
+    // Check if hackathon is in active phase (date-based)
+    const actualPhase = getHackathonPhase(
+      hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+      hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+      new Date(hackathon.start_at),
+      new Date(hackathon.submission_deadline_at),
+      hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+      hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+    );
+
+    if (actualPhase !== 'active') {
       return NextResponse.json(
-        { error: 'Hackathon is not accepting submissions' },
+        { error: 'Hackathon is not currently accepting submissions' },
         { status: 400 }
       );
     }
