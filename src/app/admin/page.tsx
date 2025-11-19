@@ -98,11 +98,11 @@ export default async function AdminDashboardPage() {
             <p className="text-sm text-devcard-text">Create, edit, and monitor competitions</p>
           </a>
           <a
-            href="/super-admin/users"
+            href="/admin/hackathons/new"
             className="block p-3 rounded-lg border border-devcard-border hover:bg-devcard-border/50 transition-colors"
           >
-            <p className="font-medium text-devcard-heading">Manage Users</p>
-            <p className="text-sm text-devcard-text">View and manage user accounts</p>
+            <p className="font-medium text-devcard-heading">Create Hackathon</p>
+            <p className="text-sm text-devcard-text">Launch a new competition</p>
           </a>
         </CardContent>
       </Card>

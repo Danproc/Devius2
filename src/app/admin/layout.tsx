@@ -47,14 +47,6 @@ export default async function AdminLayout({
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
-                      <a href="/super-admin/users">
-                        <Users className="h-4 w-4" />
-                        <span>Users</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
                       <a href="/admin/settings">
                         <Settings className="h-4 w-4" />
                         <span>Settings</span>
