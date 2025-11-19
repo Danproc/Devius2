@@ -29,7 +29,7 @@ export default async function TeamBuilderPage({
 
   // Check if hackathon allows team formation (registration or active phase)
   if (hackathon.status !== 'active' && hackathon.status !== 'registration') {
-    redirect(`/app/hackathons/${hackathon.slug}`);
+    redirect(`/hackathons/${hackathon.slug}`);
   }
 
   // Get user's team (if any)

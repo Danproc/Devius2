@@ -73,7 +73,7 @@ export default async function EditSubmissionPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default async function EditSubmissionPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
