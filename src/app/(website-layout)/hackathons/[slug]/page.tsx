@@ -13,6 +13,10 @@ import { db } from '@/db';
 import { hackathons } from '@/db/schema/hackathons';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { eq, and, inArray, desc } from 'drizzle-orm';
+import { getRegistrationCount } from '@/lib/hackathons/queries';
+import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
+import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
+import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 
 export const revalidate = 600;
 
@@ -36,6 +40,18 @@ export default async function PublicHackathonDetailPage({
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
   const isCompleted = hackathon.status === 'completed';
+
+  // Check if registration is active
+  const isRegistrationActive = hackathon.registration_start_at && hackathon.registration_end_at
+    ? isRegistrationPeriodActive(
+        new Date(hackathon.registration_start_at),
+        new Date(hackathon.registration_end_at)
+      )
+    : false;
+
+  // Get registration count
+  const registrationCount = await getRegistrationCount(hackathon.id);
+  const maxParticipants = hackathon.max_participants as number | null;
 
   // Get winners if completed
   const winners = isCompleted
@@ -68,6 +84,20 @@ export default async function PublicHackathonDetailPage({
             <p className="text-xl text-devcard-green">{hackathon.theme}</p>
           )}
         </div>
+
+        {/* Registration Status & Countdown */}
+        {isRegistrationActive && hackathon.registration_end_at && (
+          <RegistrationStatus
+            registrationEndAt={hackathon.registration_end_at}
+            currentCount={registrationCount}
+            maxParticipants={maxParticipants}
+          />
+        )}
+
+        {/* Submission Countdown */}
+        {hackathon.status === 'active' && (
+          <CountdownTimer deadline={hackathon.submission_deadline_at} />
+        )}
 
         {/* CTA for Non-Completed */}
         {!isCompleted && (
