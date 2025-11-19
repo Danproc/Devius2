@@ -22,7 +22,7 @@ export function AppHeader() {
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6">
               <Link
-                href="/app/hackathons"
+                href="/hackathons"
                 className="flex items-center gap-2 text-sm text-devcard-text hover:text-devcard-green transition-colors"
               >
                 <Trophy className="h-4 w-4" />

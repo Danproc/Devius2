@@ -93,6 +93,53 @@ export function isRegistrationPeriodActive(
 }
 
 /**
+ * Get the actual current phase of a hackathon based on dates
+ * Returns computed status regardless of manual status field
+ */
+export function getHackathonPhase(
+  registrationStart: Date | null,
+  registrationEnd: Date | null,
+  startAt: Date,
+  submissionDeadline: Date,
+  votingStart: Date | null,
+  votingEnd: Date | null
+): 'upcoming' | 'registration' | 'active' | 'voting' | 'completed' {
+  const now = new Date();
+
+  // Check registration period
+  if (registrationStart && registrationEnd) {
+    if (now < registrationStart) {
+      return 'upcoming'; // Before registration opens
+    }
+    if (now >= registrationStart && now <= registrationEnd) {
+      return 'registration'; // Registration is open
+    }
+  } else {
+    // No registration period - check if before start
+    if (now < startAt) {
+      return 'upcoming';
+    }
+  }
+
+  // Check if past submission deadline
+  if (now > submissionDeadline) {
+    // Check voting period
+    if (votingStart && votingEnd) {
+      if (now >= votingStart && now <= votingEnd) {
+        return 'voting';
+      }
+      if (now > votingEnd) {
+        return 'completed';
+      }
+    }
+    return 'completed'; // Past deadline, no voting configured
+  }
+
+  // Between start and deadline (or after registration ends)
+  return 'active';
+}
+
+/**
  * Validate date order for hackathon (including registration)
  */
 export function isValidHackathonDates(

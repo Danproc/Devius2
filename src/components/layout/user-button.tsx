@@ -112,7 +112,7 @@ export function UserButton() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/app/hackathons" className="cursor-pointer">
+          <Link href="/hackathons" className="cursor-pointer">
             <Trophy className="mr-2 h-4 w-4" />
             Hackathons
           </Link>
