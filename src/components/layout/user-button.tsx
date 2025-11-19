@@ -42,8 +42,13 @@ const fetcher = async (url: string) => {
 export function UserButton() {
   const { user } = useUser();
 
-  // Check if user is admin
-  const isAdmin = user?.email && process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',').map(e => e.trim()).includes(user.email);
+  // Fetch admin status from API
+  const { data: adminData } = useSWR(
+    user?.email ? '/api/admin/check' : null,
+    fetcher
+  );
+
+  const isAdmin = adminData?.isAdmin || false;
 
   // Fetch pending connection requests
   const { data } = useSWR<RequestsResponse>(
