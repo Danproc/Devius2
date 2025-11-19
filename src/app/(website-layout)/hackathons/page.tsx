@@ -15,11 +15,11 @@ import { inArray, eq } from 'drizzle-orm';
 export const revalidate = 600; // Revalidate every 10 minutes
 
 export default async function PublicHackathonsPage() {
-  // Fetch active hackathons
+  // Fetch active hackathons (including upcoming)
   const activeHackathons = await db
     .select()
     .from(hackathons)
-    .where(inArray(hackathons.status, ['registration', 'active', 'voting']))
+    .where(inArray(hackathons.status, ['upcoming', 'registration', 'active', 'voting']))
     .orderBy(hackathons.start_at);
 
   // Fetch past hackathons
