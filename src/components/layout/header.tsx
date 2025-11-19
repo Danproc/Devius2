@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { UserButton } from "./user-button";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,7 @@ const navItems: { label: string; href: string }[] = [
 ];
 
 export function Header() {
+  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scroll, setScroll] = useState(false);
 
@@ -63,37 +66,49 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA - Show UserButton if logged in */}
         <div className="hidden items-center space-x-4 md:flex">
-          <Link
-            href="/sign-in"
-            className="text-sm font-medium text-devcard-text hover:text-devcard-green transition-colors"
-          >
-            Sign in
-          </Link>
-          <Button
-            asChild
-            className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium text-sm px-6 rounded-full"
-          >
-            <Link href="/sign-up">Get your pass</Link>
-          </Button>
+          {session ? (
+            <UserButton />
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-sm font-medium text-devcard-text hover:text-devcard-green transition-colors"
+              >
+                Sign in
+              </Link>
+              <Button
+                asChild
+                className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium text-sm px-6 rounded-full"
+              >
+                <Link href="/sign-up">Get your pass</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile CTA & Menu Button */}
         <div className="flex items-center gap-2 md:hidden">
-          <Link
-            href="/sign-in"
-            className="text-xs font-medium text-devcard-text hover:text-devcard-green transition-colors"
-          >
-            Sign in
-          </Link>
-          <Button
-            asChild
-            size="sm"
-            className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium text-xs px-3 rounded-full h-8"
-          >
-            <Link href="/sign-up">Get pass</Link>
-          </Button>
+          {session ? (
+            <UserButton />
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-xs font-medium text-devcard-text hover:text-devcard-green transition-colors"
+              >
+                Sign in
+              </Link>
+              <Button
+                asChild
+                size="sm"
+                className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium text-xs px-3 rounded-full h-8"
+              >
+                <Link href="/sign-up">Get pass</Link>
+              </Button>
+            </>
+          )}
           <button
             className="inline-flex items-center justify-center rounded-md p-2 text-devcard-text hover:bg-devcard-border/50 hover:text-devcard-green transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
