@@ -22,15 +22,15 @@ export default async function AdminLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <Sidebar>
-          <SidebarContent>
+      <div className="flex min-h-screen w-full bg-devcard-base">
+        <Sidebar className="border-r border-devcard-border bg-devcard-base">
+          <SidebarContent className="bg-devcard-base">
             <SidebarGroup>
-              <SidebarGroupLabel>Admin Dashboard</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-devcard-heading">Admin Dashboard</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
                       <a href="/admin">
                         <LayoutDashboard className="h-4 w-4" />
                         <span>Dashboard</span>
@@ -38,7 +38,7 @@ export default async function AdminLayout({
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
                       <a href="/admin/hackathons">
                         <Trophy className="h-4 w-4" />
                         <span>Hackathons</span>
@@ -46,7 +46,7 @@ export default async function AdminLayout({
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
                       <a href="/super-admin/users">
                         <Users className="h-4 w-4" />
                         <span>Users</span>
@@ -54,7 +54,7 @@ export default async function AdminLayout({
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild className="text-devcard-text hover:text-devcard-green hover:bg-devcard-border/30">
                       <a href="/admin/settings">
                         <Settings className="h-4 w-4" />
                         <span>Settings</span>
@@ -67,14 +67,14 @@ export default async function AdminLayout({
           </SidebarContent>
         </Sidebar>
 
-        <main className="flex-1">
+        <main className="flex-1 bg-devcard-base">
           <div className="border-b border-devcard-border bg-devcard-base p-4">
             <div className="flex items-center gap-4">
-              <SidebarTrigger />
+              <SidebarTrigger className="text-devcard-heading" />
               <h1 className="text-xl font-bold text-devcard-heading">Admin Panel</h1>
             </div>
           </div>
-          <div className="p-6">
+          <div className="p-6 bg-devcard-base">
             {children}
           </div>
         </main>
