@@ -33,7 +33,7 @@ import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
 import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
 import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
-import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
+import { isRegistrationPeriodActive, getHackathonPhase } from '@/lib/hackathons/validations';
 import { checkProStatus } from '@/middleware/pro-check';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sparkles } from 'lucide-react';
@@ -82,6 +82,16 @@ export default async function HackathonDetailPage({
   // Check if user is Pro
   const proStatus = await checkProStatus(session.user.id);
 
+  // Compute actual phase based on dates (not manual status field)
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    new Date(hackathon.start_at),
+    new Date(hackathon.submission_deadline_at),
+    hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+  );
+
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
   const startDate = new Date(hackathon.start_at);
@@ -119,7 +129,7 @@ export default async function HackathonDetailPage({
         )}
 
         {/* Submission Countdown */}
-        {hackathon.status === 'active' && (
+        {actualPhase === 'active' && (
           <CountdownTimer deadline={hackathon.submission_deadline_at} />
         )}
 
@@ -281,7 +291,7 @@ export default async function HackathonDetailPage({
                   </p>
                 )}
               </div>
-            ) : hackathon.status === 'active' ? (
+            ) : actualPhase === 'active' ? (
               // Active phase - show submit button (only if registered)
               <div className="text-center">
                 {userRegistration ? (
