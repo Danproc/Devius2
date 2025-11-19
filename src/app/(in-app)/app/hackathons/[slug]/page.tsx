@@ -34,6 +34,9 @@ import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
 import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
 import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
 import { isRegistrationPeriodActive } from '@/lib/hackathons/validations';
+import { checkProStatus } from '@/middleware/pro-check';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Sparkles } from 'lucide-react';
 
 export default async function HackathonDetailPage({
   params,
@@ -75,6 +78,9 @@ export default async function HackathonDetailPage({
 
   // Get pending team invites for this hackathon
   const pendingInvites = await getHackathonTeamInvites(session.user.id, hackathon.id);
+
+  // Check if user is Pro
+  const proStatus = await checkProStatus(session.user.id);
 
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
   const totalPrize = prizes.first + prizes.second + prizes.third;
@@ -136,6 +142,20 @@ export default async function HackathonDetailPage({
               ))}
             </div>
           </div>
+        )}
+
+        {/* Free User Upgrade Banner */}
+        {!proStatus.isPro && (
+          <Alert className="mb-6 border-devcard-green/30 bg-devcard-green/5">
+            <Sparkles className="h-4 w-4 text-devcard-green" />
+            <AlertDescription className="text-devcard-text">
+              <span className="font-semibold text-devcard-heading">Upgrade to Pro to participate!</span>
+              {' '}Join hackathons, compete for prizes, and earn exclusive badges.
+              <a href="/app/billing" className="ml-2 text-devcard-green hover:underline font-medium">
+                Upgrade now →
+              </a>
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* Description */}
