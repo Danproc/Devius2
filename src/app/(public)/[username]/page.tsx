@@ -8,6 +8,7 @@ import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
 import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
 import { ConnectButton } from '@/components/devcard/connect-button';
+import { AchievementChecker } from '@/components/achievements/AchievementChecker';
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
@@ -198,7 +199,7 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   // Parallel data fetching for optimal performance
   console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
-  const [cachedData, featuredRepos, connectionsData] = await Promise.all([
+  const [cachedData, featuredRepos, connectionsData, badgesData, achievementsData] = await Promise.all([
     getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
       devcard.github_username,
@@ -209,6 +210,20 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       .then(res => res.ok ? res.json() : null)
       .catch((err) => {
         console.error('Failed to fetch connections:', err);
+        return null;
+      }),
+    // Fetch hackathon badges
+    fetch(`${baseUrl}/api/users/${devcard.user_id}/badges`)
+      .then(res => res.ok ? res.json() : null)
+      .catch((err) => {
+        console.error('Failed to fetch badges:', err);
+        return null;
+      }),
+    // Fetch user achievements
+    fetch(`${baseUrl}/api/users/${devcard.user_id}/achievements`)
+      .then(res => res.ok ? res.json() : null)
+      .catch((err) => {
+        console.error('Failed to fetch achievements:', err);
         return null;
       }),
   ]);
@@ -234,6 +249,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in relative">
+      {/* Silent Achievement Checker - checks when viewing own profile */}
+      <AchievementChecker profileUserId={devcard.user_id} />
+
       {/* Share Button - Top right corner, green and smaller */}
       <div className="fixed top-4 right-4 z-50">
         <ShareButtonWrapper
@@ -268,6 +286,8 @@ export default async function PublicDevCardPage({ params }: PageProps) {
           connections={connectionsData || undefined}
           targetUserId={devcard.user_id}
           targetUsername={devcard.display_name || devcard.github_username}
+          hackathonBadges={badgesData || undefined}
+          achievements={achievementsData?.achievements || undefined}
         />
       </div>
     </main>

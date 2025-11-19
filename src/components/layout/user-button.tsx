@@ -20,6 +20,8 @@ import {
   Inbox,
   Edit,
   Settings,
+  Trophy,
+  Shield,
 } from "lucide-react";
 import useSWR from "swr";
 
@@ -39,6 +41,14 @@ const fetcher = async (url: string) => {
 
 export function UserButton() {
   const { user } = useUser();
+
+  // Fetch admin status from API
+  const { data: adminData } = useSWR(
+    user?.email ? '/api/admin/check' : null,
+    fetcher
+  );
+
+  const isAdmin = adminData?.isAdmin || false;
 
   // Fetch pending connection requests
   const { data } = useSWR<RequestsResponse>(
@@ -101,6 +111,12 @@ export function UserButton() {
             Edit Card
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/app/hackathons" className="cursor-pointer">
+            <Trophy className="mr-2 h-4 w-4" />
+            Hackathons
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/app/network" className="cursor-pointer">
@@ -125,6 +141,17 @@ export function UserButton() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        {isAdmin && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/admin" className="cursor-pointer">
+                <Shield className="mr-2 h-4 w-4" />
+                Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem asChild>
           <Link href="/app/plan" className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />

@@ -30,11 +30,13 @@ import {
 import { CardPreview } from "@/components/devcard/card-preview";
 import { CustomProjectsSection } from "@/components/devcard/custom-projects-section";
 import { devCardUpdateSchema, type DevCardUpdateInput } from "@/lib/devcard/customize";
-import { Save, Loader2, X, Plus, ArrowLeft } from "lucide-react";
+import { Save, Loader2, X, Plus, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import useSWR from "swr";
 import Link from "next/link";
 import { DevCardApiResponse } from "@/types/api-responses";
+import { ACHIEVEMENT_DEFINITIONS, RARITY_CONFIG, type AchievementType } from "@/db/schema/user-achievements";
+import * as LucideIcons from "lucide-react";
 
 // Using shared DevCardApiResponse type instead of duplicate interface
 
@@ -67,6 +69,14 @@ export default function CardEditorPage() {
   );
   const { data: connectionsData } = useSWR(
     devcard ? `/api/cards/${devcard.url_slug}/connections` : null,
+    fetcher
+  );
+  const { data: achievementsData, mutate: mutateAchievements } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/achievements` : null,
+    fetcher
+  );
+  const { data: badgesData } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/badges` : null,
     fetcher
   );
 
@@ -570,6 +580,67 @@ export default function CardEditorPage() {
                 </CardContent>
               </Card>
 
+              {/* Achievement Display Settings */}
+              {achievementsData?.achievements && achievementsData.achievements.length > 0 && (
+                <Card className="border-devcard-border bg-devcard-base">
+                  <CardHeader>
+                    <CardTitle className="text-devcard-heading">Achievement Display</CardTitle>
+                    <CardDescription className="text-devcard-text">
+                      Choose which achievements to display on your profile (max 10 shown)
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-2">
+                      {achievementsData.achievements.map((achievement: any) => {
+                        const definition = ACHIEVEMENT_DEFINITIONS[achievement.achievement_type as AchievementType];
+                        const rarityConfig = RARITY_CONFIG[definition.rarity];
+                        const IconComponent = (LucideIcons as any)[definition.icon] || LucideIcons.Award;
+
+                        return (
+                          <div
+                            key={achievement.id}
+                            className="flex items-center justify-between p-3 rounded-lg border border-devcard-border bg-devcard-base/30"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full border ${rarityConfig.borderColor} bg-devcard-base flex items-center justify-center`}>
+                                <IconComponent className={`h-4 w-4 ${rarityConfig.textColor}`} strokeWidth={1.5} />
+                              </div>
+                              <div>
+                                <p className="font-medium text-devcard-heading text-sm">{definition.name}</p>
+                                <p className="text-xs text-devcard-text">{definition.description}</p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={async () => {
+                                try {
+                                  await fetch(`/api/achievements/${achievement.id}/toggle`, {
+                                    method: 'PATCH',
+                                  });
+                                  mutateAchievements();
+                                  toast.success(achievement.is_displayed ? 'Achievement hidden' : 'Achievement shown');
+                                } catch (error) {
+                                  toast.error('Failed to toggle achievement');
+                                }
+                              }}
+                              className="text-devcard-text hover:text-devcard-heading"
+                            >
+                              {achievement.is_displayed ? (
+                                <Eye className="h-4 w-4" />
+                              ) : (
+                                <EyeOff className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Custom Projects Section */}
               <CustomProjectsSection onProjectsChange={() => mutate()} />
 
@@ -628,6 +699,8 @@ export default function CardEditorPage() {
               ranking={devcard.member_number}
               theme={devcard.theme}
               connections={connectionsData}
+              achievements={achievementsData?.achievements}
+              hackathonBadges={badgesData}
             />
           </div>
         </div>

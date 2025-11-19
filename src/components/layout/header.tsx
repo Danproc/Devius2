@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const navItems: { label: string; href: string }[] = [
   { label: "Features", href: "/#features" },
   { label: "How it works", href: "/#how-it-works" },
+  { label: "Hackathons", href: "/app/hackathons" },
   { label: "Pricing", href: "/#pricing" },
 ];
 

@@ -51,6 +51,14 @@ export default function DashboardPage() {
     devcard ? `/api/cards/${devcard.url_slug}/connections` : null,
     fetcher
   );
+  const { data: achievementsData } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/achievements` : null,
+    fetcher
+  );
+  const { data: badgesData } = useSWR(
+    devcard ? `/api/users/${devcard.user_id}/badges` : null,
+    fetcher
+  );
 
   const shareableUrl = React.useMemo(() => {
     if (!devcard) return '';
@@ -192,7 +200,7 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-devcard-heading">Your StackPass Dashboard</h1>
         <p className="text-devcard-text">
-          Your developer profile is live! Share it with the world.
+          Your developer profile is live! Share it with the world. Login on your Phone to add your StackPass to Apple Wallet!
         </p>
 
         {/* Wallet Buttons - Only on mobile */}
@@ -354,6 +362,8 @@ export default function DashboardPage() {
             ranking={devcard.member_number}
             theme={devcard.theme}
             connections={connectionsData}
+            achievements={achievementsData?.achievements}
+            hackathonBadges={badgesData}
           />
         </div>
       </div>
