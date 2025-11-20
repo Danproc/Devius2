@@ -36,12 +36,12 @@ export default async function EditSubmissionPage({
     .where(eq(hackathon_submissions.id, submissionId));
 
   if (!submission) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Check ownership
   if (submission.user_id !== session.user.id) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Get hackathon
@@ -51,7 +51,7 @@ export default async function EditSubmissionPage({
     .where(eq(hackathons.id, submission.hackathon_id));
 
   if (!hackathon) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Check if submission can be edited
