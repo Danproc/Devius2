@@ -137,17 +137,18 @@ export default async function UnifiedHackathonDetailPage({
           )}
         </div>
 
-        {/* Registration Status & Countdown */}
-        {isRegistrationActive && hackathon.registration_end_at && (
+        {/* Registration Status & Countdown - Shows during registration AND active phases */}
+        {(isRegistrationActive || actualPhase === 'active') && (
           <RegistrationStatus
-            registrationEndAt={hackathon.registration_end_at}
+            registrationEndAt={
+              isRegistrationActive
+                ? hackathon.registration_end_at!
+                : hackathon.submission_deadline_at
+            }
             currentCount={registrationCount}
             maxParticipants={maxParticipants}
+            label={isRegistrationActive ? 'Registration closes in' : 'Submission deadline in'}
           />
-        )}
-
-        {actualPhase === 'active' && (
-          <CountdownTimer deadline={hackathon.submission_deadline_at} />
         )}
 
         {/* Team Invites (Authenticated Only) */}
