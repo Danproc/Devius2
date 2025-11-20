@@ -26,7 +26,6 @@ import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
 import { isRegistrationPeriodActive, getHackathonPhase } from '@/lib/hackathons/validations';
 import { checkProStatus } from '@/middleware/pro-check';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sparkles } from 'lucide-react';
 import { eq, and, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
