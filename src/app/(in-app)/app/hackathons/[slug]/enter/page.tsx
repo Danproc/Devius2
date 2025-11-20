@@ -282,6 +282,7 @@ export default async function HackathonEntryPage({
           <CardContent className="pt-6">
             <SubmissionForm
               hackathonId={hackathon.id}
+              hackathonSlug={hackathon.slug}
               teamId={userTeam?.id}
             />
           </CardContent>

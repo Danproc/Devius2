@@ -166,6 +166,7 @@ export default async function EditSubmissionPage({
           <CardContent className="pt-6">
             <SubmissionForm
               hackathonId={hackathon.id}
+              hackathonSlug={hackathon.slug}
               existingSubmission={submission}
             />
           </CardContent>
