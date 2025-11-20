@@ -30,7 +30,7 @@ export default async function VotingPage({
   const hackathon = await getHackathonBySlug(slug);
 
   if (!hackathon) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Check if voting period is configured
@@ -46,7 +46,7 @@ export default async function VotingPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>

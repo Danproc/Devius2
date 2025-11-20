@@ -94,7 +94,7 @@ export default async function AdminHackathonsPage() {
                       size="sm"
                       className="border-devcard-border text-devcard-heading"
                     >
-                      <Link href={`/app/hackathons/${hackathon.slug}`} target="_blank">
+                      <Link href={`/hackathons/${hackathon.slug}`} target="_blank">
                         <ExternalLink className="h-4 w-4" />
                       </Link>
                     </Button>

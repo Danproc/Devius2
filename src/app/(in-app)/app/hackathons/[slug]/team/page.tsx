@@ -6,6 +6,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getHackathonBySlug, getUserTeam } from '@/lib/hackathons/queries';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TeamBuilder } from '@/components/hackathons/TeamBuilder';
@@ -24,12 +25,21 @@ export default async function TeamBuilderPage({
   const hackathon = await getHackathonBySlug(slug);
 
   if (!hackathon) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
-  // Check if hackathon allows team formation (registration or active phase)
-  if (hackathon.status !== 'active' && hackathon.status !== 'registration') {
-    redirect(`/app/hackathons/${hackathon.slug}`);
+  // Check if hackathon allows team formation (compute phase from dates)
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    new Date(hackathon.start_at),
+    new Date(hackathon.submission_deadline_at),
+    hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+  );
+
+  if (actualPhase !== 'active' && actualPhase !== 'registration') {
+    redirect(`/hackathons/${hackathon.slug}`);
   }
 
   // Get user's team (if any)

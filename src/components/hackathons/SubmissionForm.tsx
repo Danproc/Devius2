@@ -14,12 +14,13 @@ import type { HackathonSubmission } from '@/db/schema/hackathon-submissions';
 
 interface SubmissionFormProps {
   hackathonId: string;
+  hackathonSlug: string;
   teamId?: string;
   existingSubmission?: HackathonSubmission;
   onSuccess?: () => void;
 }
 
-export function SubmissionForm({ hackathonId, teamId, existingSubmission, onSuccess }: SubmissionFormProps) {
+export function SubmissionForm({ hackathonId, hackathonSlug, teamId, existingSubmission, onSuccess }: SubmissionFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [techStackInput, setTechStackInput] = useState('');
@@ -134,7 +135,7 @@ export function SubmissionForm({ hackathonId, teamId, existingSubmission, onSucc
       if (onSuccess) {
         onSuccess();
       } else {
-        router.push(`/app/hackathons/${hackathonId}`);
+        router.push(`/hackathons/${hackathonSlug}`);
         router.refresh();
       }
     } catch (error: any) {

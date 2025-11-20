@@ -6,6 +6,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getHackathonBySlug, getUserRegistration, getUserTeam } from '@/lib/hackathons/queries';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 import { db } from '@/db';
 import { users } from '@/db/schema/user';
 import { eq } from 'drizzle-orm';
@@ -31,11 +32,20 @@ export default async function HackathonEntryPage({
   const hackathon = await getHackathonBySlug(slug);
 
   if (!hackathon) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
-  // Check if hackathon is active
-  if (hackathon.status !== 'active') {
+  // Check if hackathon is in active phase
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    new Date(hackathon.start_at),
+    new Date(hackathon.submission_deadline_at),
+    hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+  );
+
+  if (actualPhase !== 'active') {
     return (
       <div className="min-h-screen bg-devcard-base">
         <div className="container mx-auto py-8 max-w-4xl">
@@ -47,7 +57,7 @@ export default async function HackathonEntryPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
@@ -70,7 +80,7 @@ export default async function HackathonEntryPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
@@ -119,7 +129,7 @@ export default async function HackathonEntryPage({
             </Alert>
             <div className="mt-6">
               <Button asChild variant="outline" className="border-devcard-border">
-                <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+                <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
               </Button>
             </div>
           </div>
@@ -225,7 +235,7 @@ export default async function HackathonEntryPage({
                         asChild
                         className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium"
                       >
-                        <Link href={`/app/hackathons/${hackathon.slug}/team`}>
+                        <Link href={`/hackathons/${hackathon.slug}/team`}>
                           Build Team
                         </Link>
                       </Button>
@@ -258,7 +268,7 @@ export default async function HackathonEntryPage({
                   size="sm"
                   className="border-devcard-border"
                 >
-                  <Link href={`/app/hackathons/${hackathon.slug}/team`}>
+                  <Link href={`/hackathons/${hackathon.slug}/team`}>
                     Manage Team
                   </Link>
                 </Button>
@@ -272,6 +282,7 @@ export default async function HackathonEntryPage({
           <CardContent className="pt-6">
             <SubmissionForm
               hackathonId={hackathon.id}
+              hackathonSlug={hackathon.slug}
               teamId={userTeam?.id}
             />
           </CardContent>

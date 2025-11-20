@@ -88,8 +88,8 @@ export default async function UnifiedHackathonDetailPage({
       checkProStatus(session.user.id),
     ]);
 
-    // Get registered users list (only for authenticated users)
-    if (isRegistrationActive) {
+    // Get registered users list (only for authenticated users, during registration/active/voting)
+    if (actualPhase === 'registration' || actualPhase === 'active' || actualPhase === 'voting') {
       registeredUsers = await getRegisteredUsers(hackathon.id);
     }
   }
@@ -339,8 +339,8 @@ export default async function UnifiedHackathonDetailPage({
           </CardContent>
         </Card>
 
-        {/* Registered Users (Authenticated Only, During Registration) */}
-        {session && isRegistrationActive && registeredUsers.length > 0 && (
+        {/* Registered Users (Authenticated Only) */}
+        {session && registeredUsers.length > 0 && (
           <div className="mb-6">
             <RegisteredUsersList users={registeredUsers} totalCount={registrationCount} />
           </div>

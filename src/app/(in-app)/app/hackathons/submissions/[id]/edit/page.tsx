@@ -36,12 +36,12 @@ export default async function EditSubmissionPage({
     .where(eq(hackathon_submissions.id, submissionId));
 
   if (!submission) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Check ownership
   if (submission.user_id !== session.user.id) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Get hackathon
@@ -51,7 +51,7 @@ export default async function EditSubmissionPage({
     .where(eq(hackathons.id, submission.hackathon_id));
 
   if (!hackathon) {
-    redirect('/app/hackathons');
+    redirect('/hackathons');
   }
 
   // Check if submission can be edited
@@ -73,7 +73,7 @@ export default async function EditSubmissionPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default async function EditSubmissionPage({
           </Alert>
           <div className="mt-6">
             <Button asChild variant="outline" className="border-devcard-border">
-              <Link href={`/app/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
+              <Link href={`/hackathons/${hackathon.slug}`}>Back to Hackathon</Link>
             </Button>
           </div>
         </div>
@@ -166,6 +166,7 @@ export default async function EditSubmissionPage({
           <CardContent className="pt-6">
             <SubmissionForm
               hackathonId={hackathon.id}
+              hackathonSlug={hackathon.slug}
               existingSubmission={submission}
             />
           </CardContent>
