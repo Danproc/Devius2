@@ -9,12 +9,14 @@ interface RegistrationStatusProps {
   registrationEndAt: Date | string;
   currentCount: number;
   maxParticipants: number | null;
+  label?: string;
 }
 
 export function RegistrationStatus({
   registrationEndAt,
   currentCount,
   maxParticipants,
+  label = 'Registration closes in',
 }: RegistrationStatusProps) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
@@ -96,7 +98,7 @@ export function RegistrationStatus({
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-devcard-green" />
             <span className="text-sm text-devcard-text">
-              Closes in{' '}
+              {label}{' '}
               <span className="font-bold text-devcard-heading">
                 {timeLeft.days > 0 && `${timeLeft.days}d `}
                 {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s

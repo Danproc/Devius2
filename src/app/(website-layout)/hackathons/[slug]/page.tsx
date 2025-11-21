@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github } from 'lucide-react';
+import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github, Sparkles, CheckCircle2 } from 'lucide-react';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
@@ -26,7 +26,6 @@ import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
 import { isRegistrationPeriodActive, getHackathonPhase } from '@/lib/hackathons/validations';
 import { checkProStatus } from '@/middleware/pro-check';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sparkles } from 'lucide-react';
 import { eq, and, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
@@ -137,17 +136,18 @@ export default async function UnifiedHackathonDetailPage({
           )}
         </div>
 
-        {/* Registration Status & Countdown */}
-        {isRegistrationActive && hackathon.registration_end_at && (
+        {/* Registration Status & Countdown - Shows during registration AND active phases */}
+        {(isRegistrationActive || actualPhase === 'active') && (
           <RegistrationStatus
-            registrationEndAt={hackathon.registration_end_at}
+            registrationEndAt={
+              isRegistrationActive
+                ? hackathon.registration_end_at!
+                : hackathon.submission_deadline_at
+            }
             currentCount={registrationCount}
             maxParticipants={maxParticipants}
+            label={isRegistrationActive ? 'Registration closes in' : 'Submission deadline in'}
           />
-        )}
-
-        {actualPhase === 'active' && (
-          <CountdownTimer deadline={hackathon.submission_deadline_at} />
         )}
 
         {/* Team Invites (Authenticated Only) */}
@@ -265,79 +265,90 @@ export default async function UnifiedHackathonDetailPage({
           </Card>
         </div>
 
-        {/* Actions - Conditional based on auth + phase */}
-        <Card className="border-devcard-green/30 bg-devcard-green/5 mb-6">
-          <CardContent className="py-4">
-            {!session ? (
-              // Not logged in - show sign up CTA
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-devcard-heading mb-2">Ready to Compete?</h3>
-                <p className="text-devcard-text mb-4">Sign up for StackPass Pro to register</p>
-                <div className="flex gap-3 justify-center">
-                  <Button asChild className="bg-devcard-green hover:bg-devcard-green/90 text-black font-semibold">
-                    <Link href="/sign-up">
-                      Sign Up
-                      <ArrowRight className="ml-2 h-4 w-4" />
+        {/* Actions - Sleek compact design */}
+        <Alert className="border-devcard-green/30 bg-devcard-green/5 mb-6">
+          {!session ? (
+            <>
+              <Sparkles className="h-4 w-4 text-devcard-green" />
+              <AlertDescription>
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div>
+                    <span className="text-sm font-semibold text-devcard-heading">Ready to compete? </span>
+                    <span className="text-sm text-devcard-text">Sign up for StackPass Pro to register</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button asChild size="sm" className="bg-devcard-green hover:bg-devcard-green/90 text-black">
+                      <Link href="/sign-up">Sign Up</Link>
+                    </Button>
+                    <Button asChild size="sm" variant="outline" className="border-devcard-border">
+                      <Link href="/sign-in">Sign In</Link>
+                    </Button>
+                  </div>
+                </div>
+              </AlertDescription>
+            </>
+          ) : userSubmission ? (
+            <>
+              <CheckCircle2 className="h-4 w-4 text-devcard-green" />
+              <AlertDescription>
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div>
+                    <span className="text-sm font-semibold text-devcard-heading">You're Entered! </span>
+                    <span className="text-sm text-devcard-text">{userSubmission.project_title}</span>
+                  </div>
+                  <Button asChild size="sm" variant="outline" className="border-devcard-border">
+                    <Link href={`/app/hackathons/submissions/${userSubmission.id}/edit`}>
+                      <Edit className="mr-2 h-3 w-3" />
+                      Edit Submission
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="border-devcard-border">
-                    <Link href="/sign-in">Sign In</Link>
-                  </Button>
                 </div>
-              </div>
-            ) : userSubmission ? (
-              // Already submitted
-              <div className="text-center">
-                <Trophy className="h-12 w-12 text-devcard-green mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-devcard-heading mb-2">You're Entered!</h3>
-                <p className="text-devcard-text mb-4">Project: {userSubmission.project_title}</p>
-                <Button asChild variant="outline" className="border-devcard-border">
-                  <Link href={`/app/hackathons/submissions/${userSubmission.id}/edit`}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit Submission
-                  </Link>
-                </Button>
-              </div>
-            ) : isRegistrationActive ? (
-              // Registration period - show registration button
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-devcard-heading mb-4">
-                  {userRegistration ? "You're Registered!" : 'Join the Competition'}
-                </h3>
-                <RegistrationButton
-                  hackathonId={hackathon.id}
-                  isRegistered={!!userRegistration}
-                  isFull={isFull}
-                  canUnregister={canUnregister}
-                />
-              </div>
-            ) : actualPhase === 'active' ? (
-              // Active phase - show submit button
-              <div className="text-center">
+              </AlertDescription>
+            </>
+          ) : isRegistrationActive ? (
+            <>
+              <Trophy className="h-4 w-4 text-devcard-green" />
+              <AlertDescription>
+                <div className="flex items-center justify-center">
+                  <RegistrationButton
+                    hackathonId={hackathon.id}
+                    isRegistered={!!userRegistration}
+                    isFull={isFull}
+                    canUnregister={canUnregister}
+                  />
+                </div>
+              </AlertDescription>
+            </>
+          ) : actualPhase === 'active' ? (
+            <>
+              <Trophy className="h-4 w-4 text-devcard-green" />
+              <AlertDescription>
                 {userRegistration ? (
-                  <>
-                    <h3 className="text-xl font-bold text-devcard-heading mb-4">Ready to compete?</h3>
-                    <Button asChild className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full" size="lg">
+                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <span className="text-sm font-semibold text-devcard-heading">Ready to submit your project?</span>
+                    <Button asChild size="sm" className="bg-devcard-green hover:bg-devcard-green/90 text-black">
                       <Link href={`/app/hackathons/${hackathon.slug}/enter`}>
                         Submit Project
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <ArrowRight className="ml-2 h-3 w-3" />
                       </Link>
                     </Button>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <h3 className="text-xl font-bold text-devcard-heading mb-4">Registration Required</h3>
-                    <p className="text-devcard-text">You must register during the registration period to participate.</p>
-                  </>
+                  <div className="text-sm text-devcard-text">
+                    <span className="font-semibold text-devcard-heading">Registration Required.</span> You must register during the registration period to participate.
+                  </div>
                 )}
-              </div>
-            ) : (
-              <div className="text-center text-devcard-text">
-                This hackathon is not currently accepting registrations or submissions.
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              </AlertDescription>
+            </>
+          ) : (
+            <>
+              <Trophy className="h-4 w-4 text-devcard-text/50" />
+              <AlertDescription>
+                <span className="text-sm text-devcard-text">This hackathon is not currently accepting registrations or submissions.</span>
+              </AlertDescription>
+            </>
+          )}
+        </Alert>
 
         {/* Registered Users (Authenticated Only) */}
         {session && registeredUsers.length > 0 && (
