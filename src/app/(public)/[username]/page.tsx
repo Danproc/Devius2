@@ -76,17 +76,12 @@ const getCachedGitHubData = cache(
 const getCachedFeaturedRepos = cache(
   unstable_cache(
     async (githubUsername: string, featuredRepoNames: string[]) => {
-      console.log('🔍 getCachedFeaturedRepos called with:', { githubUsername, featuredRepoNames });
-
       if (!featuredRepoNames || featuredRepoNames.length === 0) {
-        console.log('❌ No featured repo names provided');
         return [];
       }
 
       try {
-        console.log('🔍 Fetching public repos for', githubUsername);
-        const allRepos = await fetchPublicRepositories(githubUsername, 100); // Pass number, not object!
-        console.log('📦 Fetched', allRepos.length, 'public repos');
+        const allRepos = await fetchPublicRepositories(githubUsername, 100);
 
         const repos = allRepos
           .filter((repo) => featuredRepoNames.includes(repo.full_name))
@@ -100,8 +95,6 @@ const getCachedFeaturedRepos = cache(
             language: repo.language,
             topics: repo.topics || [],
           }));
-
-        console.log('✅ Filtered to', repos.length, 'featured repos');
 
         // Sort by the order in featured_repos array
         repos.sort((a, b) => {
@@ -190,7 +183,6 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   const baseUrl = `${protocol}://${requestHost}`;
 
   // Parallel data fetching for optimal performance
-  console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
   const [cachedData, featuredRepos, connectionsData, badgesData, achievementsData] = await Promise.all([
     getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
@@ -219,9 +211,6 @@ export default async function PublicDevCardPage({ params }: PageProps) {
         return null;
       }),
   ]);
-  console.log('📊 Cached data result:', cachedData ? 'FOUND' : 'NULL');
-  console.log('📦 Featured repos count:', featuredRepos?.length || 0);
-  console.log('🔗 Connections count:', connectionsData?.count || 0);
 
   // Build comprehensive GitHub stats object
   const githubStats = cachedData
