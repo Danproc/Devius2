@@ -3,6 +3,7 @@
  * Marketing page showing active and past hackathons (no auth required)
  */
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,8 +13,15 @@ import { db } from '@/db';
 import { hackathons } from '@/db/schema/hackathons';
 import { inArray, eq } from 'drizzle-orm';
 import { getHackathonPhase } from '@/lib/hackathons/validations';
+import { generatePageMetadata } from '@/lib/seo/metadata';
 
 export const revalidate = 600; // Revalidate every 10 minutes
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Hackathons - StackPass',
+  description: 'Join elite developers in competitive coding challenges. Win cash prizes, earn exclusive badges, and showcase your skills on your developer profile.',
+  path: '/hackathons',
+});
 
 export default async function PublicHackathonsPage() {
   // Fetch active hackathons (including upcoming)

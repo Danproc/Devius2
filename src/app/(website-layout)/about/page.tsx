@@ -1,34 +1,13 @@
 import { appConfig } from "@/lib/config";
 import { WebPageJsonLd } from "next-seo";
 import { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `About Us | ${appConfig.projectName}`,
-  description: "Learn more about our company, mission, and values.",
-  openGraph: {
-    title: `About Us | ${appConfig.projectName}`,
-    description: "Learn more about our company, mission, and values.",
-    type: "website",
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/about`,
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/images/og.png`,
-        width: 1200,
-        height: 630,
-        alt: "About Us",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `About Us | ${appConfig.projectName}`,
-    description: "Learn more about our company, mission, and values.",
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/images/og.png`],
-  },
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_APP_URL}/about`,
-  },
-};
+export const metadata: Metadata = generatePageMetadata({
+  title: `About Us - ${appConfig.projectName}`,
+  description: "Learn more about StackPass, our mission to empower developers with GitHub-powered profiles, and how we're building the future of developer networking.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
@@ -97,4 +76,4 @@ export default function AboutPage() {
       </div>
     </article>
   );
-} 
+}
