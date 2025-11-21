@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github, CheckCircle2 } from 'lucide-react';
+import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github, CheckCircle2, Sparkles } from 'lucide-react';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
