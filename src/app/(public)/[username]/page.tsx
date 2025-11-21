@@ -12,6 +12,9 @@ import { AchievementChecker } from '@/components/achievements/AchievementChecker
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
+import { generatePageMetadata } from '@/lib/seo/metadata';
+import { generatePersonSchema } from '@/lib/seo/structured-data';
+import { StructuredData } from '@/components/seo/StructuredData';
 
 interface PageProps {
   params: Promise<{
@@ -142,27 +145,16 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${devcard.display_name || devcard.github_username} - DevCard`;
-  const description =
-    devcard.custom_bio ||
-    `Check out ${devcard.display_name || devcard.github_username}'s developer profile and featured projects.`;
+  const displayName = devcard.display_name || devcard.github_username;
+  const bio = devcard.custom_bio || `Check out ${displayName}'s developer profile on StackPass.`;
 
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: [devcard.avatar_url],
-      type: 'profile',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [devcard.avatar_url],
-    },
-  };
+  return generatePageMetadata({
+    title: `${displayName} - StackPass Developer Profile`,
+    description: bio,
+    path: `/${devcard.url_slug}`,
+    ogImage: devcard.avatar_url,
+    type: 'profile',
+  });
 }
 
 export default async function PublicDevCardPage({ params }: PageProps) {
@@ -249,6 +241,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in relative">
+      {/* SEO: Person structured data */}
+      <StructuredData schema={generatePersonSchema(devcard)} />
+
       {/* Silent Achievement Checker - checks when viewing own profile */}
       <AchievementChecker profileUserId={devcard.user_id} />
 

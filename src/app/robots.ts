@@ -1,13 +1,23 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from 'next';
 
+/**
+ * Robots.txt configuration
+ * Controls search engine crawler access and references sitemap
+ */
 export default function robots(): MetadataRoute.Robots {
-  // https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
   return {
     rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/app/", "/api/", "/super-admin/"],
+      userAgent: '*',
+      allow: '/',
+      disallow: [
+        '/app/',          // Private authenticated routes
+        '/api/',          // API endpoints
+        '/admin/',        // Admin dashboard
+        '/super-admin/',  // Super admin routes
+      ],
     },
-    sitemap: `${process.env.NEXT_PUBLIC_APP_URL}/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
