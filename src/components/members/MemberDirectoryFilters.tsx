@@ -198,6 +198,6 @@ export function MemberDirectoryFilters({
           </div>
         </div>
       )}
-    </div>
+    </aside>
   );
 }
