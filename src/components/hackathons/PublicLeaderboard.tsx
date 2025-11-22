@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Trophy, Github, ExternalLink, Star } from 'lucide-react';
+import { Trophy, Github, ExternalLink, Star, Users as UsersIcon } from 'lucide-react';
 
 interface Submission {
   id: string;
@@ -22,6 +23,24 @@ interface Submission {
   vote_count: number;
   tech_stack: string[];
   status: string;
+  team_id: string | null;
+}
+
+interface User {
+  id: string;
+  name: string | null;
+  github_username: string | null;
+}
+
+interface DevCard {
+  url_slug: string;
+  display_name: string | null;
+  github_username: string;
+}
+
+interface Team {
+  name: string;
+  members: Array<{ user_id: string }>;
 }
 
 interface Score {
@@ -34,6 +53,9 @@ interface Score {
 
 interface LeaderboardEntry {
   submission: Submission;
+  user: User;
+  devcard: DevCard | null;
+  team: Team | null;
   score: Score | null;
 }
 
@@ -70,7 +92,7 @@ export function PublicLeaderboard({ entries }: PublicLeaderboardProps) {
             <TableRow className="border-devcard-border hover:bg-transparent">
               <TableHead className="text-devcard-text w-12">#</TableHead>
               <TableHead className="text-devcard-text">Project</TableHead>
-              <TableHead className="text-devcard-text text-center">Votes</TableHead>
+              <TableHead className="text-devcard-text">Creator</TableHead>
               <TableHead className="text-devcard-text text-center">Score</TableHead>
               <TableHead className="text-devcard-text">Tech Stack</TableHead>
               <TableHead className="text-devcard-text text-right">Links</TableHead>
@@ -80,6 +102,16 @@ export function PublicLeaderboard({ entries }: PublicLeaderboardProps) {
             {sortedEntries.map((entry, index) => {
               const score = entry.score;
               const placement = index + 1;
+
+              // Get creator info (team or solo user)
+              const creatorName = entry.team
+                ? entry.team.name
+                : (entry.devcard?.display_name || entry.user.name || entry.user.github_username || 'Unknown');
+              const creatorLink = entry.team
+                ? null
+                : entry.devcard?.url_slug;
+              const isTeam = !!entry.team;
+              const teamSize = entry.team ? entry.team.members.length : 1;
 
               return (
                 <TableRow
@@ -103,11 +135,28 @@ export function PublicLeaderboard({ entries }: PublicLeaderboardProps) {
                     </div>
                   </TableCell>
 
-                  {/* Votes */}
-                  <TableCell className="text-center">
-                    <div className="text-lg font-bold text-devcard-green">
-                      {entry.submission.vote_count}
-                    </div>
+                  {/* Creator (User or Team) */}
+                  <TableCell>
+                    {creatorLink ? (
+                      <Link
+                        href={`/${creatorLink}`}
+                        className="text-devcard-heading hover:text-devcard-green transition-colors font-medium"
+                      >
+                        {creatorName}
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        {isTeam && <UsersIcon className="h-3.5 w-3.5 text-devcard-green" />}
+                        <span className="font-medium text-devcard-heading">
+                          {creatorName}
+                        </span>
+                        {isTeam && (
+                          <Badge variant="outline" className="border-devcard-green/30 text-devcard-green text-xs ml-1">
+                            {teamSize} members
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                   </TableCell>
 
                   {/* Score */}

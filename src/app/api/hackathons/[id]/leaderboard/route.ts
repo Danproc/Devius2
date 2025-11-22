@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathon_scores } from '@/db/schema/hackathon-scores';
+import { hackathon_teams } from '@/db/schema/hackathon-teams';
+import { users } from '@/db/schema/user';
+import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
 
 /**
  * GET /api/hackathons/[id]/leaderboard
- * Get all submissions with their scores for a completed hackathon
+ * Get all submissions with their scores and user/team info for a completed hackathon
  */
 export async function GET(
   request: NextRequest,
@@ -15,20 +18,36 @@ export async function GET(
   try {
     const { id: hackathonId } = await params;
 
-    // Fetch all submissions
+    // Fetch all submissions with user info
     const submissions = await db
-      .select()
+      .select({
+        submission: hackathon_submissions,
+        user: users,
+        devcard: devcards,
+      })
       .from(hackathon_submissions)
+      .innerJoin(users, eq(hackathon_submissions.user_id, users.id))
+      .leftJoin(devcards, eq(users.id, devcards.user_id))
       .where(eq(hackathon_submissions.hackathon_id, hackathonId));
 
     // Fetch scores for all submissions (aggregate if multiple judges)
     const leaderboard = await Promise.all(
-      submissions.map(async (submission) => {
+      submissions.map(async (entry) => {
+        // Get team info if this is a team submission
+        let team = null;
+        if (entry.submission.team_id) {
+          const [teamData] = await db
+            .select()
+            .from(hackathon_teams)
+            .where(eq(hackathon_teams.id, entry.submission.team_id));
+          team = teamData;
+        }
+
         // Get all scores for this submission
         const scores = await db
           .select()
           .from(hackathon_scores)
-          .where(eq(hackathon_scores.submission_id, submission.id));
+          .where(eq(hackathon_scores.submission_id, entry.submission.id));
 
         // Calculate average score if multiple judges, or use single score
         let avgScore = null;
@@ -54,7 +73,10 @@ export async function GET(
         }
 
         return {
-          submission,
+          submission: entry.submission,
+          user: entry.user,
+          devcard: entry.devcard,
+          team,
           score: avgScore,
         };
       })

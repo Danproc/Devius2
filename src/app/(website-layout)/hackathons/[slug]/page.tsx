@@ -280,7 +280,8 @@ export default async function UnifiedHackathonDetailPage({
           </Card>
         </div>
 
-        {/* Actions - Sleek compact design */}
+        {/* Actions - Sleek compact design (hide during completed phase) */}
+        {!isCompleted && (
         <Alert className="border-devcard-green/30 bg-devcard-green/5 mb-6">
           {!session ? (
             <>
@@ -382,6 +383,7 @@ export default async function UnifiedHackathonDetailPage({
             </>
           )}
         </Alert>
+        )}
 
         {/* Registered Users (Authenticated Only) */}
         {session && registeredUsers.length > 0 && (
