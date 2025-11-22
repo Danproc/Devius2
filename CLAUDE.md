@@ -1,15 +1,32 @@
 # StackPass Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-11-14
+Auto-generated from all feature plans. Last updated: 2025-11-21
 
 ## Active Technologies
 
 - TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack) (001-devcard-platform)
+- SEO: Next.js Metadata API, @vercel/og, Schema.org JSON-LD (003-seo-optimization)
 
 ## Project Structure
 
 ```text
 src/
+├── app/                    # Next.js App Router pages
+│   ├── (website-layout)/   # Public pages (with SEO metadata)
+│   ├── (public)/           # Profile pages (with SEO metadata)
+│   ├── (in-app)/           # Authenticated app pages
+│   ├── sitemap.ts          # Dynamic sitemap generation
+│   ├── robots.ts           # Robots.txt configuration
+│   └── layout.tsx          # Root layout with base metadata
+├── components/
+│   └── seo/                # SEO components (StructuredData, Breadcrumbs)
+├── lib/
+│   ├── seo/                # SEO utilities (metadata, structured-data)
+│   └── config.ts
+├── db/
+│   ├── schema/
+│   └── queries/
+│       └── seo.ts          # Sitemap queries
 tests/
 ```
 
@@ -21,9 +38,20 @@ npm test && npm run lint
 
 TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack): Follow standard conventions
 
+## SEO Guidelines (003-seo-optimization)
+
+- **Metadata**: Use Next.js Metadata API with `generateMetadata()` for dynamic pages
+- **OG Images**: Generate via `/api/og/*` endpoints using @vercel/og (1200x630px)
+- **Structured Data**: JSON-LD via `<StructuredData>` component (Organization, Event, Person, BreadcrumbList)
+- **Sitemap**: Auto-generated at `/sitemap.xml`, includes hackathons, profiles, blog, docs (ISR: 1 hour)
+- **Robots.txt**: Disallow `/app/`, `/api/`, `/admin/`, `/super-admin/`
+- **Performance**: Maintain existing ISR (hackathons: 600s browse, 60s detail), use priority for above-fold images
+- **Error Pages**: Custom 404 (`not-found.tsx`) and 500 (`error.tsx`) with StackPass branding
+
 ## Recent Changes
 
 - 001-devcard-platform: Added TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack)
+- 003-seo-optimization: Added comprehensive SEO with metadata, sitemap, structured data, OG images
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

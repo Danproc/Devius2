@@ -3,6 +3,7 @@
  * Works for both authenticated and public users
  */
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
@@ -30,8 +31,38 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { eq, and, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
+import { generatePageMetadata } from '@/lib/seo/metadata';
+import { generateEventSchema } from '@/lib/seo/structured-data';
+import { StructuredData } from '@/components/seo/StructuredData';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 export const revalidate = 60; // Revalidate every minute for real-time updates
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const hackathon = await getHackathonBySlug(slug);
+
+  if (!hackathon) {
+    return {
+      title: 'Hackathon Not Found - StackPass',
+      description: 'The requested hackathon could not be found.',
+    };
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const ogImageUrl = `/api/og/hackathon?title=${encodeURIComponent(hackathon.title)}&prize=${hackathon.prizes.first}&currency=${hackathon.prizes.currency}`;
+
+  return generatePageMetadata({
+    title: `${hackathon.title} - StackPass Hackathons`,
+    description: hackathon.description,
+    path: `/hackathons/${hackathon.slug}`,
+    ogImage: `${baseUrl}${ogImageUrl}`,
+  });
+}
 
 export default async function UnifiedHackathonDetailPage({
   params,
@@ -127,11 +158,16 @@ export default async function UnifiedHackathonDetailPage({
 
   return (
     <div className="min-h-screen bg-devcard-base">
+      <StructuredData schema={generateEventSchema(hackathon)} />
       <div className="container mx-auto py-8 max-w-4xl">
-        {/* Back Link */}
-        <Link href="/hackathons" className="text-devcard-green hover:underline text-sm mb-4 inline-block">
-          ← Back to Hackathons
-        </Link>
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Hackathons', href: '/hackathons' },
+            { label: hackathon.title, href: `/hackathons/${hackathon.slug}` },
+          ]}
+        />
 
         {/* Header */}
         <div className="mb-6">

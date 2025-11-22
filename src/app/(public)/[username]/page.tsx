@@ -12,6 +12,9 @@ import { AchievementChecker } from '@/components/achievements/AchievementChecker
 import { db } from '@/db';
 import { devcards } from '@/db/schema/devcard';
 import { eq } from 'drizzle-orm';
+import { generatePageMetadata } from '@/lib/seo/metadata';
+import { generatePersonSchema } from '@/lib/seo/structured-data';
+import { StructuredData } from '@/components/seo/StructuredData';
 
 interface PageProps {
   params: Promise<{
@@ -73,17 +76,12 @@ const getCachedGitHubData = cache(
 const getCachedFeaturedRepos = cache(
   unstable_cache(
     async (githubUsername: string, featuredRepoNames: string[]) => {
-      console.log('🔍 getCachedFeaturedRepos called with:', { githubUsername, featuredRepoNames });
-
       if (!featuredRepoNames || featuredRepoNames.length === 0) {
-        console.log('❌ No featured repo names provided');
         return [];
       }
 
       try {
-        console.log('🔍 Fetching public repos for', githubUsername);
-        const allRepos = await fetchPublicRepositories(githubUsername, 100); // Pass number, not object!
-        console.log('📦 Fetched', allRepos.length, 'public repos');
+        const allRepos = await fetchPublicRepositories(githubUsername, 100);
 
         const repos = allRepos
           .filter((repo) => featuredRepoNames.includes(repo.full_name))
@@ -97,8 +95,6 @@ const getCachedFeaturedRepos = cache(
             language: repo.language,
             topics: repo.topics || [],
           }));
-
-        console.log('✅ Filtered to', repos.length, 'featured repos');
 
         // Sort by the order in featured_repos array
         repos.sort((a, b) => {
@@ -142,27 +138,16 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${devcard.display_name || devcard.github_username} - DevCard`;
-  const description =
-    devcard.custom_bio ||
-    `Check out ${devcard.display_name || devcard.github_username}'s developer profile and featured projects.`;
+  const displayName = devcard.display_name || devcard.github_username;
+  const bio = devcard.custom_bio || `Check out ${displayName}'s developer profile on StackPass.`;
 
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: [devcard.avatar_url],
-      type: 'profile',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [devcard.avatar_url],
-    },
-  };
+  return generatePageMetadata({
+    title: `${displayName} - StackPass Developer Profile`,
+    description: bio,
+    path: `/${devcard.url_slug}`,
+    ogImage: devcard.avatar_url,
+    type: 'profile',
+  });
 }
 
 export default async function PublicDevCardPage({ params }: PageProps) {
@@ -198,7 +183,6 @@ export default async function PublicDevCardPage({ params }: PageProps) {
   const baseUrl = `${protocol}://${requestHost}`;
 
   // Parallel data fetching for optimal performance
-  console.log('🔍 Fetching cached data for devcard.id:', devcard.id);
   const [cachedData, featuredRepos, connectionsData, badgesData, achievementsData] = await Promise.all([
     getCachedGitHubData(devcard.id), // Use devcard.id, not user_id!
     getCachedFeaturedRepos(
@@ -227,9 +211,6 @@ export default async function PublicDevCardPage({ params }: PageProps) {
         return null;
       }),
   ]);
-  console.log('📊 Cached data result:', cachedData ? 'FOUND' : 'NULL');
-  console.log('📦 Featured repos count:', featuredRepos?.length || 0);
-  console.log('🔗 Connections count:', connectionsData?.count || 0);
 
   // Build comprehensive GitHub stats object
   const githubStats = cachedData
@@ -249,6 +230,9 @@ export default async function PublicDevCardPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-devcard-base animate-fade-in relative">
+      {/* SEO: Person structured data */}
+      <StructuredData schema={generatePersonSchema(devcard)} />
+
       {/* Silent Achievement Checker - checks when viewing own profile */}
       <AchievementChecker profileUserId={devcard.user_id} />
 

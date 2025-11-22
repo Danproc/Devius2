@@ -119,16 +119,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { createDevCard } = await import("./lib/devcard/generate");
           try {
             console.log("🔵 Creating StackPass for", githubProfile.login);
+            console.log("🔑 Account provider:", account.provider);
+            console.log("🔑 Has access_token:", !!account.access_token);
+
+            // Wait a moment for account to be fully saved
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
             const result = await createDevCard(userId);
             console.log(`✅ StackPass created at /${result.devcard.url_slug}`);
           } catch (err: any) {
             console.error("❌ Failed to create StackPass:", err);
             console.error("Error message:", err?.message);
             console.error("Error stack:", err?.stack);
+            console.error("Error name:", err?.name);
+
             // Log detailed error for debugging
             if (err?.cause) {
               console.error("Error cause:", err.cause);
             }
+
+            // If it's a GitHub auth error, log it prominently
+            if (err?.name === 'GitHubAuthError') {
+              console.error("⚠️  GitHub token issue - user will need to retry from dashboard");
+            }
+
             // Don't block sign-in if StackPass creation fails
           }
 
