@@ -46,14 +46,15 @@ export default async function UnifiedHackathonDetailPage({
     redirect('/hackathons');
   }
 
-  // Compute actual phase
+  // Compute actual phase (status overrides date calculation if completed)
   const actualPhase = getHackathonPhase(
     hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
     hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
     new Date(hackathon.start_at),
     new Date(hackathon.submission_deadline_at),
     hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
-    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null,
+    hackathon.status
   );
 
   const isCompleted = actualPhase === 'completed';

@@ -75,14 +75,15 @@ export default async function PublicHackathonsPage() {
                 const prizes = hackathon.prizes as { first: number; second: number; third: number };
                 const totalPrize = prizes.first + prizes.second + prizes.third;
 
-                // Compute actual phase
+                // Compute actual phase (status overrides if completed)
                 const actualPhase = getHackathonPhase(
                   hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
                   hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
                   new Date(hackathon.start_at),
                   new Date(hackathon.submission_deadline_at),
                   hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
-                  hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+                  hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null,
+                  hackathon.status
                 );
 
                 const badgeColor = actualPhase === 'active' ? 'bg-devcard-green' :

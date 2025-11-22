@@ -21,14 +21,15 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
   // Calculate total duration in hours
   const durationHours = Math.round((deadline.getTime() - startDate.getTime()) / (1000 * 60 * 60));
 
-  // Compute actual phase based on dates
+  // Compute actual phase based on dates (status overrides if completed)
   const actualPhase = getHackathonPhase(
     hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
     hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
     startDate,
     deadline,
     hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
-    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null,
+    hackathon.status
   );
 
   const statusColor = {

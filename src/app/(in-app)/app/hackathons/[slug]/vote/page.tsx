@@ -62,14 +62,15 @@ export default async function VotingPage({
   const votingEnd = new Date(hackathon.voting_end_at);
   const now = new Date();
 
-  // Compute actual phase based on dates
+  // Compute actual phase based on dates (status overrides if completed)
   const actualPhase = getHackathonPhase(
     hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
     hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
     new Date(hackathon.start_at),
     new Date(hackathon.submission_deadline_at),
     new Date(hackathon.voting_start_at),
-    new Date(hackathon.voting_end_at)
+    new Date(hackathon.voting_end_at),
+    hackathon.status
   );
 
   // Fetch submissions

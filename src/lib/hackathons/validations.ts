@@ -93,8 +93,8 @@ export function isRegistrationPeriodActive(
 }
 
 /**
- * Get the actual current phase of a hackathon based on dates
- * Returns computed status regardless of manual status field
+ * Get the actual current phase of a hackathon based on dates and status
+ * If status is 'completed' (winners declared), that overrides date-based calculation
  */
 export function getHackathonPhase(
   registrationStart: Date | null,
@@ -102,8 +102,14 @@ export function getHackathonPhase(
   startAt: Date,
   submissionDeadline: Date,
   votingStart: Date | null,
-  votingEnd: Date | null
+  votingEnd: Date | null,
+  status?: 'draft' | 'upcoming' | 'registration' | 'active' | 'voting' | 'completed'
 ): 'upcoming' | 'registration' | 'active' | 'voting' | 'completed' {
+  // PRIORITY: If winners have been declared (status = 'completed'), always show completed
+  if (status === 'completed') {
+    return 'completed';
+  }
+
   const now = new Date();
 
   // Check registration period

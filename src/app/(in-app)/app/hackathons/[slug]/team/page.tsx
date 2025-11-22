@@ -28,14 +28,15 @@ export default async function TeamBuilderPage({
     redirect('/hackathons');
   }
 
-  // Check if hackathon allows team formation (compute phase from dates)
+  // Check if hackathon allows team formation (status overrides if completed)
   const actualPhase = getHackathonPhase(
     hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
     hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
     new Date(hackathon.start_at),
     new Date(hackathon.submission_deadline_at),
     hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
-    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null,
+    hackathon.status
   );
 
   if (actualPhase !== 'active' && actualPhase !== 'registration') {

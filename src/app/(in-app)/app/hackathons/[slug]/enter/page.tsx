@@ -35,14 +35,15 @@ export default async function HackathonEntryPage({
     redirect('/hackathons');
   }
 
-  // Check if hackathon is in active phase
+  // Check if hackathon is in active phase (status overrides if completed)
   const actualPhase = getHackathonPhase(
     hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
     hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
     new Date(hackathon.start_at),
     new Date(hackathon.submission_deadline_at),
     hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
-    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null,
+    hackathon.status
   );
 
   if (actualPhase !== 'active') {
