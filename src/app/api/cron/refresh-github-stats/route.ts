@@ -55,6 +55,10 @@ const handleRefreshGitHubStats = async () => {
         const repositories = await fetchPublicRepositories(devcard.github_username, 100);
         const stats = await calculateCompleteStats(user.id, profile, repositories);
 
+        // Get most starred repo and transform to expected format
+        const sortedByStars = [...repositories].sort((a, b) => b.stargazers_count - a.stargazers_count);
+        const topRepo = sortedByStars[0];
+
         // Build complete GitHub user data
         const userData: GitHubUserData = {
           profile,
@@ -62,7 +66,14 @@ const handleRefreshGitHubStats = async () => {
           stats,
           organizations: [], // Optional, skip for daily refresh to save API calls
           contributions: undefined, // Optional, expensive to fetch
-          most_starred_repo: repositories.sort((a, b) => b.stargazers_count - a.stargazers_count)[0] || null,
+          most_starred_repo: topRepo ? {
+            name: topRepo.name,
+            full_name: topRepo.full_name,
+            stars: topRepo.stargazers_count,
+            url: topRepo.html_url,
+            description: topRepo.description,
+            language: topRepo.language,
+          } : null,
           top_languages: stats.top_languages || [],
         };
 
