@@ -2,7 +2,7 @@
 
 import { appConfig } from "@/lib/config";
 import Link from "next/link";
-import { Trophy } from "lucide-react";
+import { Trophy, Users } from "lucide-react";
 import { UserButton } from "@/components/layout/user-button";
 
 export function AppHeader() {
@@ -27,6 +27,13 @@ export function AppHeader() {
               >
                 <Trophy className="h-4 w-4" />
                 Hackathons
+              </Link>
+              <Link
+                href="/app/members"
+                className="flex items-center gap-2 text-sm text-devcard-text hover:text-devcard-green transition-colors"
+              >
+                <Users className="h-4 w-4" />
+                Members
               </Link>
             </nav>
           </div>
