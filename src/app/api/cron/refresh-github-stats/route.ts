@@ -53,7 +53,7 @@ const handleRefreshGitHubStats = async () => {
         // Fetch fresh GitHub data
         const profile = await fetchGitHubProfileByToken(accessToken);
         const repositories = await fetchPublicRepositories(devcard.github_username, 100);
-        const stats = await calculateCompleteStats(repositories, profile);
+        const stats = await calculateCompleteStats(user.id, profile, repositories);
 
         // Build complete GitHub user data
         const userData: GitHubUserData = {
