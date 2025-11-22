@@ -340,6 +340,24 @@ export default async function UnifiedHackathonDetailPage({
                 )}
               </AlertDescription>
             </>
+          ) : actualPhase === 'voting' ? (
+            <>
+              <Trophy className="h-4 w-4 text-devcard-green" />
+              <AlertDescription>
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div>
+                    <span className="text-sm font-semibold text-devcard-heading">Voting is Open! </span>
+                    <span className="text-sm text-devcard-text">Cast your votes for the best projects</span>
+                  </div>
+                  <Button asChild size="sm" className="bg-devcard-green hover:bg-devcard-green/90 text-black">
+                    <Link href={`/app/hackathons/${hackathon.slug}/vote`}>
+                      Vote on Submissions
+                      <ArrowRight className="ml-2 h-3 w-3" />
+                    </Link>
+                  </Button>
+                </div>
+              </AlertDescription>
+            </>
           ) : (
             <>
               <Trophy className="h-4 w-4 text-devcard-text/50" />

@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Users, Trophy, Upload, ExternalLink } from 'lucide-react';
 import { PublishButton } from '@/components/hackathons/PublishButton';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 
 export default async function AdminHackathonsPage() {
   // Check admin authorization
@@ -69,15 +70,26 @@ export default async function AdminHackathonsPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {allHackathons.map((hackathon) => (
+          {allHackathons.map((hackathon) => {
+            // Compute actual phase based on dates
+            const actualPhase = getHackathonPhase(
+              hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+              hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+              new Date(hackathon.start_at),
+              new Date(hackathon.submission_deadline_at),
+              hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+              hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+            );
+
+            return (
             <Card key={hackathon.id} className="border-devcard-border bg-devcard-base">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <CardTitle className="text-devcard-heading">{hackathon.title}</CardTitle>
-                      <Badge className={getStatusColor(hackathon.status)}>
-                        {hackathon.status}
+                      <Badge className={getStatusColor(actualPhase)}>
+                        {actualPhase}
                       </Badge>
                     </div>
                     <CardDescription className="text-devcard-text">
@@ -85,7 +97,7 @@ export default async function AdminHackathonsPage() {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    {hackathon.status === 'draft' && (
+                    {actualPhase === 'draft' && (
                       <PublishButton hackathonId={hackathon.id} />
                     )}
                     <Button
@@ -108,7 +120,7 @@ export default async function AdminHackathonsPage() {
                         <Edit className="h-4 w-4" />
                       </Link>
                     </Button>
-                    {(hackathon.status === 'voting' || hackathon.status === 'active') && (
+                    {(actualPhase === 'active' || actualPhase === 'voting' || actualPhase === 'completed') && (
                       <Button
                         asChild
                         variant="outline"
@@ -117,7 +129,7 @@ export default async function AdminHackathonsPage() {
                       >
                         <Link href={`/admin/hackathons/${hackathon.id}/judging`}>
                           <Users className="mr-2 h-4 w-4" />
-                          Judge
+                          {actualPhase === 'voting' || actualPhase === 'completed' ? 'Judge' : 'View Submissions'}
                         </Link>
                       </Button>
                     )}
@@ -153,7 +165,8 @@ export default async function AdminHackathonsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
       </div>

@@ -8,6 +8,7 @@ import { isAdmin } from '@/middleware/admin-auth';
 import { getHackathonById } from '@/lib/hackathons/queries';
 import { JudgingTable } from '@/components/hackathons/JudgingTable';
 import { WinnerSelector } from '@/components/hackathons/WinnerSelector';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 
 export default async function JudgingPage({
   params,
@@ -26,24 +27,36 @@ export default async function JudgingPage({
     redirect('/admin/hackathons');
   }
 
-  // Fetch submissions via API (will be fetched client-side by components)
+  // Compute actual phase based on dates
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    new Date(hackathon.start_at),
+    new Date(hackathon.submission_deadline_at),
+    hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+  );
 
   return (
     <div className="min-h-screen bg-devcard-base">
       <div className="container mx-auto py-8 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-devcard-heading">Judging: {hackathon.title}</h1>
+          <h1 className="text-3xl font-bold text-devcard-heading">
+            {actualPhase === 'voting' || actualPhase === 'completed' ? 'Judging' : 'Submissions'}: {hackathon.title}
+          </h1>
           <p className="text-devcard-text mt-2">
-            Review submissions and select winners
+            {actualPhase === 'voting' || actualPhase === 'completed'
+              ? 'Review submissions and select winners'
+              : 'View all project submissions'}
           </p>
         </div>
 
         <div className="space-y-8">
-          {/* Submissions Table */}
+          {/* Submissions Table - Always show during active, voting, or completed */}
           <JudgingTable hackathonId={hackathon.id} />
 
-          {/* Winner Selection */}
-          {hackathon.status === 'voting' && (
+          {/* Winner Selection - Only show during voting or after */}
+          {(actualPhase === 'voting' || actualPhase === 'completed') && (
             <WinnerSelector hackathonId={hackathon.id} />
           )}
         </div>
