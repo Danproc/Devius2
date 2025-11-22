@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, DollarSign, Users, ArrowRight } from 'lucide-react';
 import type { Hackathon } from '@/types/hackathons';
+import { getHackathonPhase } from '@/lib/hackathons/validations';
 
 interface HackathonCardProps {
   hackathon: Hackathon;
@@ -20,6 +21,16 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
   // Calculate total duration in hours
   const durationHours = Math.round((deadline.getTime() - startDate.getTime()) / (1000 * 60 * 60));
 
+  // Compute actual phase based on dates
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    startDate,
+    deadline,
+    hackathon.voting_start_at ? new Date(hackathon.voting_start_at) : null,
+    hackathon.voting_end_at ? new Date(hackathon.voting_end_at) : null
+  );
+
   const statusColor = {
     draft: 'bg-gray-500',
     upcoming: 'bg-blue-500',
@@ -27,7 +38,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
     active: 'bg-devcard-green',
     voting: 'bg-yellow-500',
     completed: 'bg-purple-500',
-  }[hackathon.status] || 'bg-gray-500';
+  }[actualPhase] || 'bg-gray-500';
 
   return (
     <Card className="border-devcard-border bg-devcard-base hover:border-devcard-green/50 transition-all">
@@ -40,7 +51,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
             </CardDescription>
           </div>
           <Badge className={statusColor}>
-            {hackathon.status}
+            {actualPhase}
           </Badge>
         </div>
       </CardHeader>
@@ -87,7 +98,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
           </div>
         </div>
 
-        {daysRemaining > 0 && hackathon.status === 'active' && (
+        {daysRemaining > 0 && actualPhase === 'active' && (
           <div className="text-center py-2 bg-devcard-green/10 border border-devcard-green/30 rounded">
             <div className="text-2xl font-bold text-devcard-green">{daysRemaining}</div>
             <div className="text-xs text-devcard-text">days remaining</div>
