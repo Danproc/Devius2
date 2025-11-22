@@ -61,7 +61,7 @@ const handleRefreshGitHubStats = async () => {
           repositories,
           stats,
           organizations: [], // Optional, skip for daily refresh to save API calls
-          contributions: null, // Optional, expensive to fetch
+          contributions: undefined, // Optional, expensive to fetch
           most_starred_repo: repositories.sort((a, b) => b.stargazers_count - a.stargazers_count)[0] || null,
           top_languages: stats.top_languages || [],
         };
