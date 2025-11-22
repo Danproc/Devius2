@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Table,
@@ -14,7 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { Users, Search } from 'lucide-react';
+import { Users, Search, CheckCircle2, Github, ExternalLink } from 'lucide-react';
 
 interface RegisteredUser {
   app_user: {
@@ -27,6 +28,12 @@ interface RegisteredUser {
     participation_type: 'solo' | 'team';
     registered_at: Date;
   };
+  submission?: {
+    id: string;
+    project_title: string;
+    github_url: string;
+    demo_url: string | null;
+  } | null;
 }
 
 // Helper to safely get display name
@@ -94,12 +101,13 @@ export function RegisteredUsersList({ users, totalCount }: RegisteredUsersListPr
               <TableHead className="text-devcard-text">Username</TableHead>
               <TableHead className="text-devcard-text">Type</TableHead>
               <TableHead className="text-devcard-text">Registered</TableHead>
+              <TableHead className="text-devcard-text">Submission</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredUsers.length === 0 ? (
               <TableRow className="border-devcard-border">
-                <TableCell colSpan={4} className="text-center text-devcard-text py-8">
+                <TableCell colSpan={5} className="text-center text-devcard-text py-8">
                   {searchTerm ? 'No participants found matching your search' : 'No participants yet'}
                 </TableCell>
               </TableRow>
@@ -167,6 +175,42 @@ export function RegisteredUsersList({ users, totalCount }: RegisteredUsersListPr
                   </TableCell>
                   <TableCell className="text-devcard-text text-sm">
                     {new Date(item.hackathon_registrations.registered_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {item.submission ? (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-devcard-green" />
+                        <span className="text-sm font-medium text-devcard-heading">
+                          {item.submission.project_title}
+                        </span>
+                        <div className="flex gap-1 ml-2">
+                          <Button asChild size="sm" variant="ghost" className="h-7 w-7 p-0">
+                            <a
+                              href={item.submission.github_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="View GitHub Repo"
+                            >
+                              <Github className="h-3.5 w-3.5 text-devcard-green" />
+                            </a>
+                          </Button>
+                          {item.submission.demo_url && (
+                            <Button asChild size="sm" variant="ghost" className="h-7 w-7 p-0">
+                              <a
+                                href={item.submission.demo_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="View Demo"
+                              >
+                                <ExternalLink className="h-3.5 w-3.5 text-devcard-green" />
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-devcard-text/60">Not submitted</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

@@ -16,6 +16,7 @@ interface WinnerSelectorProps {
 export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [scores, setScores] = useState<Record<string, any>>({});
   const [firstPlace, setFirstPlace] = useState('');
   const [secondPlace, setSecondPlace] = useState('');
   const [thirdPlace, setThirdPlace] = useState('');
@@ -24,7 +25,28 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
   useEffect(() => {
     fetch(`/api/hackathons/${hackathonId}/judging`)
       .then(res => res.json())
-      .then(data => setSubmissions(data.submissions || []));
+      .then(async (data) => {
+        const subs = data.submissions || [];
+        setSubmissions(subs);
+
+        // Fetch scores for all submissions
+        if (subs.length > 0) {
+          const scorePromises = subs.map((item: any) =>
+            fetch(`/api/hackathons/submissions/${item.submission.id}/score`)
+              .then(res => res.json())
+              .then(data => ({ id: item.submission.id, score: data.score }))
+          );
+
+          const scoreResults = await Promise.all(scorePromises);
+          const scoresMap: Record<string, any> = {};
+          scoreResults.forEach(result => {
+            if (result.score) {
+              scoresMap[result.id] = result.score;
+            }
+          });
+          setScores(scoresMap);
+        }
+      });
   }, [hackathonId]);
 
   const handleDeclareWinners = async () => {
@@ -42,8 +64,8 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
         body: JSON.stringify({
           hackathon_id: hackathonId,
           first_place_submission_id: firstPlace,
-          second_place_submission_id: secondPlace || undefined,
-          third_place_submission_id: thirdPlace || undefined,
+          second_place_submission_id: secondPlace && secondPlace !== 'none' ? secondPlace : undefined,
+          third_place_submission_id: thirdPlace && thirdPlace !== 'none' ? thirdPlace : undefined,
         }),
       });
 
@@ -83,11 +105,14 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
                 <SelectValue placeholder="Select winner..." />
               </SelectTrigger>
               <SelectContent>
-                {submissions.map((item: any) => (
-                  <SelectItem key={item.submission.id} value={item.submission.id}>
-                    {item.submission.project_title} ({item.submission.vote_count} votes)
-                  </SelectItem>
-                ))}
+                {submissions.map((item: any) => {
+                  const score = scores[item.submission.id];
+                  return (
+                    <SelectItem key={item.submission.id} value={item.submission.id}>
+                      {item.submission.project_title} ({item.submission.vote_count} votes{score ? `, ${score.total_score}/100` : ''})
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -102,14 +127,17 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
                 <SelectValue placeholder="Select winner..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {submissions
                   .filter((item: any) => item.submission.id !== firstPlace)
-                  .map((item: any) => (
-                    <SelectItem key={item.submission.id} value={item.submission.id}>
-                      {item.submission.project_title} ({item.submission.vote_count} votes)
-                    </SelectItem>
-                  ))}
+                  .map((item: any) => {
+                    const score = scores[item.submission.id];
+                    return (
+                      <SelectItem key={item.submission.id} value={item.submission.id}>
+                        {item.submission.project_title} ({item.submission.vote_count} votes{score ? `, ${score.total_score}/100` : ''})
+                      </SelectItem>
+                    );
+                  })}
               </SelectContent>
             </Select>
           </div>
@@ -124,14 +152,17 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
                 <SelectValue placeholder="Select winner..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {submissions
                   .filter((item: any) => item.submission.id !== firstPlace && item.submission.id !== secondPlace)
-                  .map((item: any) => (
-                    <SelectItem key={item.submission.id} value={item.submission.id}>
-                      {item.submission.project_title} ({item.submission.vote_count} votes)
-                    </SelectItem>
-                  ))}
+                  .map((item: any) => {
+                    const score = scores[item.submission.id];
+                    return (
+                      <SelectItem key={item.submission.id} value={item.submission.id}>
+                        {item.submission.project_title} ({item.submission.vote_count} votes{score ? `, ${score.total_score}/100` : ''})
+                      </SelectItem>
+                    );
+                  })}
               </SelectContent>
             </Select>
           </div>

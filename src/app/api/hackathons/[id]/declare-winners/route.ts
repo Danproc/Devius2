@@ -9,6 +9,7 @@ import { hackathons } from '@/db/schema/hackathons';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathon_teams } from '@/db/schema/hackathon-teams';
 import { hackathon_badges } from '@/db/schema/hackathon-badges';
+import { user_achievements } from '@/db/schema/user-achievements';
 import { requireAdmin } from '@/middleware/admin-auth';
 import { eq } from 'drizzle-orm';
 import type { DeclareWinnersInput } from '@/types/hackathons';
@@ -87,8 +88,9 @@ export async function POST(
         }
       }
 
-      // Create badge for each team member
+      // Create badge and achievements for each team member
       for (const userId of userIds) {
+        // Award hackathon badge
         const [badge] = await db
           .insert(hackathon_badges)
           .values({
@@ -100,6 +102,30 @@ export async function POST(
           .returning();
 
         badgesCreated.push(badge);
+
+        // Award achievements
+        const achievementsToAward: Array<'hackathon_champion' | 'solo_winner' | 'team_player'> = [
+          'hackathon_champion', // First hackathon win
+        ];
+
+        // Add solo_winner or team_player based on participation type
+        if (userIds.length === 1) {
+          achievementsToAward.push('solo_winner');
+        } else {
+          achievementsToAward.push('team_player');
+        }
+
+        // Insert achievements (onConflictDoNothing prevents duplicates)
+        for (const achievementType of achievementsToAward) {
+          await db
+            .insert(user_achievements)
+            .values({
+              user_id: userId,
+              achievement_type: achievementType,
+              is_displayed: true,
+            })
+            .onConflictDoNothing();
+        }
       }
     }
 

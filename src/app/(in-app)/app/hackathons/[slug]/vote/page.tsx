@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Trophy, Clock } from 'lucide-react';
 import { SubmissionGrid } from '@/components/hackathons/SubmissionGrid';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
-import { isVotingPeriodActive } from '@/lib/hackathons/validations';
+import { isVotingPeriodActive, getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -62,12 +62,23 @@ export default async function VotingPage({
   const votingEnd = new Date(hackathon.voting_end_at);
   const now = new Date();
 
+  // Compute actual phase based on dates (status overrides if completed)
+  const actualPhase = getHackathonPhase(
+    hackathon.registration_start_at ? new Date(hackathon.registration_start_at) : null,
+    hackathon.registration_end_at ? new Date(hackathon.registration_end_at) : null,
+    new Date(hackathon.start_at),
+    new Date(hackathon.submission_deadline_at),
+    new Date(hackathon.voting_start_at),
+    new Date(hackathon.voting_end_at),
+    hackathon.status
+  );
+
   // Fetch submissions
   const response = await fetch(
     `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/hackathons/${hackathon.id}/submissions`,
     {
       headers: {
-        Cookie: `authjs.session-token=${session.user.id}`, // Pass session for vote status
+        Cookie: `authjs.session-token=${session.user.id}`,
       },
       cache: 'no-store',
     }
@@ -85,7 +96,7 @@ export default async function VotingPage({
     completed: 'bg-purple-500',
   };
 
-  const badgeColor = statusColor[hackathon.status] || 'bg-gray-500';
+  const badgeColor = statusColor[actualPhase] || 'bg-gray-500';
 
   return (
     <div className="min-h-screen bg-devcard-base">
@@ -94,7 +105,7 @@ export default async function VotingPage({
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-4xl font-bold text-devcard-heading">{hackathon.title}</h1>
-            <Badge className={badgeColor}>{hackathon.status}</Badge>
+            <Badge className={badgeColor}>{formatPhaseLabel(actualPhase)}</Badge>
           </div>
           {hackathon.theme && (
             <p className="text-xl text-devcard-green font-medium">{hackathon.theme}</p>

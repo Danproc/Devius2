@@ -263,9 +263,20 @@ export async function isHackathonFull(hackathonId: string): Promise<boolean> {
  */
 export async function getRegisteredUsers(hackathonId: string) {
   return db
-    .select()
+    .select({
+      app_user: users,
+      hackathon_registrations,
+      submission: hackathon_submissions,
+    })
     .from(hackathon_registrations)
     .innerJoin(users, eq(hackathon_registrations.user_id, users.id))
+    .leftJoin(
+      hackathon_submissions,
+      and(
+        eq(hackathon_submissions.hackathon_id, hackathonId),
+        eq(hackathon_submissions.user_id, users.id)
+      )
+    )
     .where(eq(hackathon_registrations.hackathon_id, hackathonId))
     .orderBy(desc(hackathon_registrations.registered_at));
 }
