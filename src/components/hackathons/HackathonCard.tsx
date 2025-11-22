@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, DollarSign, Users, ArrowRight } from 'lucide-react';
 import type { Hackathon } from '@/types/hackathons';
-import { getHackathonPhase } from '@/lib/hackathons/validations';
+import { getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 
 interface HackathonCardProps {
   hackathon: Hackathon;
@@ -51,7 +51,7 @@ export function HackathonCard({ hackathon }: HackathonCardProps) {
             </CardDescription>
           </div>
           <Badge className={statusColor}>
-            {actualPhase}
+            {formatPhaseLabel(actualPhase)}
           </Badge>
         </div>
       </CardHeader>

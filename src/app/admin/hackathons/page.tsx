@@ -14,7 +14,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Users, Trophy, Upload, ExternalLink } from 'lucide-react';
 import { PublishButton } from '@/components/hackathons/PublishButton';
-import { getHackathonPhase } from '@/lib/hackathons/validations';
+import { getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 
 export default async function AdminHackathonsPage() {
   // Check admin authorization
@@ -89,7 +89,7 @@ export default async function AdminHackathonsPage() {
                     <div className="flex items-center gap-3 mb-2">
                       <CardTitle className="text-devcard-heading">{hackathon.title}</CardTitle>
                       <Badge className={getStatusColor(actualPhase)}>
-                        {actualPhase}
+                        {formatPhaseLabel(actualPhase)}
                       </Badge>
                     </div>
                     <CardDescription className="text-devcard-text">

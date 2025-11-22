@@ -175,3 +175,17 @@ export function isValidHackathonDates(
 
   return { valid: true };
 }
+
+/**
+ * Format phase label for display (capitalize and use Judging instead of Voting)
+ */
+export function formatPhaseLabel(phase: 'upcoming' | 'registration' | 'active' | 'voting' | 'completed'): string {
+  const labels: Record<string, string> = {
+    'upcoming': 'Upcoming',
+    'registration': 'Registration',
+    'active': 'Active',
+    'voting': 'Judging',
+    'completed': 'Completed'
+  };
+  return labels[phase] || phase;
+}

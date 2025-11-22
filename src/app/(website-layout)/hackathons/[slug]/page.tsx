@@ -23,7 +23,7 @@ import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
 import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
 import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
-import { isRegistrationPeriodActive, getHackathonPhase } from '@/lib/hackathons/validations';
+import { isRegistrationPeriodActive, getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 import { checkProStatus } from '@/middleware/pro-check';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { eq, and, inArray } from 'drizzle-orm';
@@ -128,7 +128,7 @@ export default async function UnifiedHackathonDetailPage({
               actualPhase === 'active' ? 'bg-devcard-green' :
               actualPhase === 'registration' ? 'bg-cyan-500' : 'bg-blue-500'
             }>
-              {actualPhase}
+              {formatPhaseLabel(actualPhase)}
             </Badge>
           </div>
           {hackathon.theme && (

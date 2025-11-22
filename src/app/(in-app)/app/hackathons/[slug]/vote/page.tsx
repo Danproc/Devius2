@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Trophy, Clock } from 'lucide-react';
 import { SubmissionGrid } from '@/components/hackathons/SubmissionGrid';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
-import { isVotingPeriodActive, getHackathonPhase } from '@/lib/hackathons/validations';
+import { isVotingPeriodActive, getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -104,7 +104,7 @@ export default async function VotingPage({
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-4xl font-bold text-devcard-heading">{hackathon.title}</h1>
-            <Badge className={badgeColor}>{actualPhase}</Badge>
+            <Badge className={badgeColor}>{formatPhaseLabel(actualPhase)}</Badge>
           </div>
           {hackathon.theme && (
             <p className="text-xl text-devcard-green font-medium">{hackathon.theme}</p>
