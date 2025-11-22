@@ -22,9 +22,9 @@ export function MemberDirectoryGrid({ members, isLoading }: MemberDirectoryGridP
   // Empty state
   if (members.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground text-lg">No members found</p>
-        <p className="text-sm text-muted-foreground mt-2">
+      <div className="text-center py-16 border border-[#121824] rounded-lg bg-[#0a0f1a]">
+        <p className="text-devcard-heading text-lg font-semibold">No members found</p>
+        <p className="text-sm text-devcard-text/70 mt-2">
           Try adjusting your search or filter criteria
         </p>
       </div>

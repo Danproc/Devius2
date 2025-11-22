@@ -23,8 +23,8 @@ function MemberCardComponent({ member }: MemberCardProps) {
   const remainingTechCount = (member.tech_stack?.length || 0) - 5;
 
   return (
-    <Link href={`/${member.url_slug}`} className="block">
-      <Card className="p-4 hover:shadow-lg transition-shadow cursor-pointer h-full">
+    <Link href={`/${member.url_slug}`} className="block group">
+      <Card className="p-5 bg-[#0a0f1a] border-[#121824] hover:border-devcard-green/50 transition-all cursor-pointer h-full hover:shadow-xl hover:shadow-devcard-green/10">
         <div className="flex items-start gap-3 mb-3">
           {/* Avatar (T029: graceful fallback) */}
           <img
@@ -38,12 +38,12 @@ function MemberCardComponent({ member }: MemberCardProps) {
 
           {/* Name and username */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-lg truncate">{displayName}</h3>
-            <p className="text-sm text-muted-foreground truncate">@{member.github_username}</p>
+            <h3 className="font-semibold text-lg truncate text-devcard-heading group-hover:text-devcard-green transition-colors">{displayName}</h3>
+            <p className="text-sm text-devcard-text/70 truncate">@{member.github_username}</p>
 
             {/* Location */}
             {member.location && (
-              <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1 mt-1 text-xs text-devcard-text/60">
                 <MapPin className="w-3 h-3" />
                 <span className="truncate">{member.location}</span>
               </div>
@@ -51,14 +51,14 @@ function MemberCardComponent({ member }: MemberCardProps) {
           </div>
 
           {/* Member number */}
-          <div className="text-xs text-muted-foreground font-mono flex-shrink-0">
+          <div className="text-xs text-devcard-green/80 font-mono flex-shrink-0">
             #{member.member_number}
           </div>
         </div>
 
         {/* Bio */}
         {bioSnippet && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          <p className="text-sm text-devcard-text/80 line-clamp-2 mb-3">
             {bioSnippet}
           </p>
         )}
@@ -67,12 +67,12 @@ function MemberCardComponent({ member }: MemberCardProps) {
         {displayedTechStack.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {displayedTechStack.map((tech) => (
-              <Badge key={tech} variant="secondary" className="text-xs">
+              <Badge key={tech} className="text-xs bg-devcard-green/10 text-devcard-green border-devcard-green/20 hover:bg-devcard-green/20">
                 {tech}
               </Badge>
             ))}
             {remainingTechCount > 0 && (
-              <Badge variant="outline" className="text-xs">
+              <Badge className="text-xs bg-transparent border-devcard-green/30 text-devcard-green/70">
                 +{remainingTechCount} more
               </Badge>
             )}
@@ -80,11 +80,11 @@ function MemberCardComponent({ member }: MemberCardProps) {
         )}
 
         {/* Achievements and hackathon badges */}
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-devcard-text/70">
           {/* Achievement count */}
           {member.achievement_count > 0 && (
             <div className="flex items-center gap-1">
-              <Trophy className="w-3 h-3" />
+              <Trophy className="w-3 h-3 text-devcard-green/70" />
               <span>{member.achievement_count} achievement{member.achievement_count !== 1 ? 's' : ''}</span>
             </div>
           )}

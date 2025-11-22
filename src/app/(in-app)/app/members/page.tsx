@@ -79,14 +79,15 @@ export default function MembersPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Member Directory</h1>
-        <p className="text-muted-foreground mt-2">
-          Discover and connect with the StackPass community
-        </p>
-      </div>
+    <div className="min-h-screen bg-devcard-base">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-devcard-heading">Member Directory</h1>
+          <p className="text-devcard-text mt-2 text-lg">
+            Discover and connect with the StackPass community
+          </p>
+        </div>
 
       <div className="flex gap-6">
         {/* Filters Sidebar */}
@@ -108,9 +109,9 @@ export default function MembersPage() {
         <main className="flex-1 min-w-0">
           {/* Member count and view toggle (T022) */}
           {data && (
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-sm text-muted-foreground">
-                Showing {data.members.length} of {data.pagination.total} members
+            <div className="flex items-center justify-between mb-6">
+              <div className="text-sm text-devcard-text">
+                Showing <span className="text-devcard-green font-semibold">{data.members.length}</span> of <span className="text-devcard-green font-semibold">{data.pagination.total}</span> members
               </div>
               <ViewToggle viewMode={viewMode} onViewModeChange={handleViewChange} />
             </div>
@@ -118,15 +119,14 @@ export default function MembersPage() {
 
           {/* Error state (T028) */}
           {error && (
-            <div className="text-center py-12 border rounded-lg p-8">
-              <p className="text-destructive text-lg font-semibold">Failed to load members</p>
-              <p className="text-sm text-muted-foreground mt-2">
+            <div className="text-center py-12 border border-[#121824] rounded-lg p-8 bg-[#0a0f1a]">
+              <p className="text-red-400 text-lg font-semibold">Failed to load members</p>
+              <p className="text-sm text-devcard-text mt-2">
                 There was an error loading the member directory. Please try again.
               </p>
               <Button
                 onClick={handleRetry}
-                variant="outline"
-                className="mt-4"
+                className="mt-4 bg-devcard-green hover:bg-devcard-green/90 text-black"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Retry
@@ -157,6 +157,7 @@ export default function MembersPage() {
             </>
           )}
         </main>
+      </div>
       </div>
     </div>
   );
