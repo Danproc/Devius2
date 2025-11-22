@@ -9,7 +9,8 @@ import {
   fetchPublicRepositories,
   calculateCompleteStats,
   warmUpCache,
-  getGitHubAccessToken
+  getGitHubAccessToken,
+  getTopLanguages
 } from '@/lib/github';
 import type { GitHubUserData } from '@/types/github';
 
@@ -59,26 +60,14 @@ const handleRefreshGitHubStats = async () => {
         const sortedByStars = [...repositories].sort((a, b) => b.stargazers_count - a.stargazers_count);
         const topRepo = sortedByStars[0];
 
-        // Calculate top languages from repositories
-        const languageStats = repositories.reduce((acc: Record<string, number>, repo) => {
-          if (repo.language) {
-            acc[repo.language] = (acc[repo.language] || 0) + 1;
-          }
-          return acc;
-        }, {});
-        const topLanguages = Object.entries(languageStats)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 5)
-          .map(([name]) => name);
-
-        // Build complete GitHub user data
+        // Build complete GitHub user data (all types verified against GitHubUserData interface)
         const userData: GitHubUserData = {
-          profile,
-          repositories,
-          stats,
-          organizations: [], // Optional, skip for daily refresh to save API calls
-          contributions: undefined, // Optional, expensive to fetch
-          most_starred_repo: topRepo ? {
+          profile,                              // GitHubProfile ✓
+          repositories,                         // GitHubRepoSimplified[] ✓
+          stats,                                // GitHubStats ✓
+          organizations: [],                    // string[] (optional) ✓
+          contributions: undefined,             // GitHubContributions | undefined ✓
+          most_starred_repo: topRepo ? {       // Optional object ✓
             name: topRepo.name,
             full_name: topRepo.full_name,
             stars: topRepo.stargazers_count,
@@ -86,7 +75,7 @@ const handleRefreshGitHubStats = async () => {
             description: topRepo.description,
             language: topRepo.language,
           } : undefined,
-          top_languages: topLanguages,
+          top_languages: getTopLanguages(repositories, 5), // Array<{name, count, stars, percentage, color}> ✓
         };
 
         // Warm up cache (saves to Redis or PostgreSQL)
