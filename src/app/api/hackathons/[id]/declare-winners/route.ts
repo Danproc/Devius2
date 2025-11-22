@@ -10,9 +10,12 @@ import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
 import { hackathon_teams } from '@/db/schema/hackathon-teams';
 import { hackathon_badges } from '@/db/schema/hackathon-badges';
 import { user_achievements } from '@/db/schema/user-achievements';
+import { users } from '@/db/schema/user';
 import { requireAdmin } from '@/middleware/admin-auth';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import type { DeclareWinnersInput } from '@/types/hackathons';
+import { sendEmail } from '@/lib/email/client';
+import WinnerAnnouncement from '@/emails/WinnerAnnouncement';
 
 export async function POST(
   req: NextRequest,
@@ -102,6 +105,36 @@ export async function POST(
           .returning();
 
         badgesCreated.push(badge);
+
+        // Send winner announcement email
+        try {
+          const [user] = await db
+            .select({ email: users.email, name: users.name })
+            .from(users)
+            .where(eq(users.id, userId))
+            .limit(1);
+
+          if (user?.email) {
+            await sendEmail({
+              to: user.email,
+              subject: `🎉 Congratulations! You placed ${placement === 1 ? '1st' : placement === 2 ? '2nd' : '3rd'} in ${hackathon.title}`,
+              react: WinnerAnnouncement({
+                userName: user.name || 'Developer',
+                hackathonTitle: hackathon.title,
+                hackathonTheme: hackathon.theme,
+                placement: badgeType === 'gold' ? 'first' : badgeType === 'silver' ? 'second' : 'third',
+                prizeAmount: 0, // TODO: Get from hackathon prize pool
+                projectTitle: submission.title || 'Your Project',
+                profileUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${user.name}`,
+                galleryUrl: `${process.env.NEXT_PUBLIC_APP_URL}/hackathons/${hackathon.slug}`,
+              }),
+            });
+            console.log(`✅ Winner email sent to ${user.email}`);
+          }
+        } catch (emailError) {
+          console.error(`❌ Failed to send winner email to user ${userId}:`, emailError);
+          // Don't fail the entire operation if email fails
+        }
 
         // Award achievements
         const achievementsToAward: Array<'hackathon_champion' | 'solo_winner' | 'team_player'> = [
