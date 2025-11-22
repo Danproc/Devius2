@@ -98,7 +98,7 @@ export default async function AdminHackathonsPage() {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    {actualPhase === 'draft' && (
+                    {hackathon.status === 'draft' && (
                       <PublishButton hackathonId={hackathon.id} />
                     )}
                     <Button
