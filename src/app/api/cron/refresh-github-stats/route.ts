@@ -59,6 +59,18 @@ const handleRefreshGitHubStats = async () => {
         const sortedByStars = [...repositories].sort((a, b) => b.stargazers_count - a.stargazers_count);
         const topRepo = sortedByStars[0];
 
+        // Calculate top languages from repositories
+        const languageStats = repositories.reduce((acc: Record<string, number>, repo) => {
+          if (repo.language) {
+            acc[repo.language] = (acc[repo.language] || 0) + 1;
+          }
+          return acc;
+        }, {});
+        const topLanguages = Object.entries(languageStats)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+          .map(([name]) => name);
+
         // Build complete GitHub user data
         const userData: GitHubUserData = {
           profile,
@@ -74,7 +86,7 @@ const handleRefreshGitHubStats = async () => {
             description: topRepo.description,
             language: topRepo.language,
           } : undefined,
-          top_languages: stats.top_languages || [],
+          top_languages: topLanguages,
         };
 
         // Warm up cache (saves to Redis or PostgreSQL)
