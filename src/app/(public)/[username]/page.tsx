@@ -6,7 +6,7 @@ import { headers } from 'next/headers';
 import { getDevCardBySlug } from '@/lib/devcard';
 import { getCachedGitHubUserData, fetchPublicRepositories } from '@/lib/github';
 import { CardPreview } from '@/components/devcard/card-preview';
-import { ShareButtonWrapper } from '@/components/sharing/share-button-wrapper';
+import { ProfileActionButtons } from '@/components/profile/ProfileActionButtons';
 import { ConnectButton } from '@/components/devcard/connect-button';
 import { AchievementChecker } from '@/components/achievements/AchievementChecker';
 import { db } from '@/db';
@@ -236,16 +236,14 @@ export default async function PublicDevCardPage({ params }: PageProps) {
       {/* Silent Achievement Checker - checks when viewing own profile */}
       <AchievementChecker profileUserId={devcard.user_id} />
 
-      {/* Share Button - Top right corner, green and smaller */}
+      {/* Profile Action Buttons - Top right corner */}
       <div className="fixed top-4 right-4 z-50">
-        <ShareButtonWrapper
+        <ProfileActionButtons
           username={devcard.url_slug}
           displayName={devcard.display_name || devcard.github_username}
           customBio={devcard.custom_bio || undefined}
           avatarUrl={devcard.avatar_url}
-          variant="default"
-          size="sm"
-          className="bg-devcard-green hover:bg-devcard-green/90 text-black font-medium px-4 py-2 text-sm"
+          profileUserId={devcard.user_id}
           showWalletOptions={false}
         />
       </div>
