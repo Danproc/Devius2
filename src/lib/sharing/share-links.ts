@@ -51,7 +51,7 @@ function getDevCardURL(username: string, custom_url?: string): string {
     return custom_url;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   return `${baseUrl}/${username}`;
 }
 

@@ -8,6 +8,8 @@ import Welcome from '@/emails/Welcome';
 import ConnectionRequest from '@/emails/ConnectionRequest';
 import ConnectionAccepted from '@/emails/ConnectionAccepted';
 
+const getBaseUrl = () => process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
 /**
  * Send welcome email when user signs up
  */
@@ -23,7 +25,7 @@ export async function sendWelcomeEmail({
     subject: 'Welcome to StackPass!',
     react: Welcome({
       userName: name,
-      dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/app/dashboard`,
+      dashboardUrl: `${getBaseUrl()}/app/dashboard`,
     }),
   });
 }
@@ -47,9 +49,9 @@ export async function sendConnectionRequestEmail({
     subject: `${requesterName} wants to connect on StackPass`,
     react: ConnectionRequest({
       requesterName,
-      cardUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${requesterUsername}`,
+      cardUrl: `${getBaseUrl()}/${requesterUsername}`,
       message,
-      actionUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/app/network/requests`,
+      actionUrl: `${getBaseUrl()}/app/network/requests`,
     }),
   });
 }
@@ -71,7 +73,7 @@ export async function sendConnectionAcceptedEmail({
     subject: `${accepterName} accepted your connection request`,
     react: ConnectionAccepted({
       accepterName,
-      cardUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${accepterUsername}`,
+      cardUrl: `${getBaseUrl()}/${accepterUsername}`,
     }),
   });
 }

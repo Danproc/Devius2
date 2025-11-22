@@ -189,7 +189,7 @@ export async function generateAppleWalletPass(
       },
       barcodes: [
         {
-          message: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
+          message: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${devCardData.username}`,
           format: 'PKBarcodeFormatQR',
           messageEncoding: 'iso-8859-1',
         },
@@ -277,7 +277,7 @@ export async function generateAppleWalletPass(
     pass.backFields.push({
       key: 'profile',
       label: 'Profile URL',
-      value: `${process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev'}/${devCardData.username}`,
+      value: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${devCardData.username}`,
     });
 
     if (devCardData.social_links?.twitter) {
@@ -406,7 +406,7 @@ export async function generateGooglePayPass(
       hexBackgroundColor: '#0A0A0A',
       logo: {
         sourceUri: {
-          uri: 'https://devius.io/logo.png',
+          uri: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/logo.png`,
         },
       },
       cardTitle: {
@@ -429,11 +429,11 @@ export async function generateGooglePayPass(
       },
       barcode: {
         type: 'QR_CODE',
-        value: `https://devius.io/${devCardData.username}`,
+        value: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${devCardData.username}`,
       },
       heroImage: {
         sourceUri: {
-          uri: devCardData.avatar_url || 'https://devius.io/default-avatar.png',
+          uri: devCardData.avatar_url || `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/default-avatar.png`,
         },
       },
     };
@@ -442,7 +442,7 @@ export async function generateGooglePayPass(
     const claims = {
       iss: credentials.client_email,
       aud: 'google',
-      origins: ['https://devius.io'],
+      origins: [process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'],
       typ: 'savetowallet',
       payload: {
         genericObjects: [genericObject],

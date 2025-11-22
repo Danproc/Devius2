@@ -87,7 +87,7 @@ export const POST = withAuthRequired(async (req, context) => {
 
     if (requester[0]) {
       const requesterName = requester[0].name || 'A DevCard user';
-      const cardUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://devius.io'}/app/network/requests`;
+      const cardUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${requester[0].github_username || requester[0].id}`;
 
       // Send notifications (fire and forget, don't block response)
       notifyConnectionRequest(

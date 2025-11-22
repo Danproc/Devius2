@@ -56,7 +56,7 @@ function validateSize(size: number): number {
  * ```ts
  * const result = await generateDevCardQR('danproctor', { size: 400 });
  * // result.qr_code: "data:image/png;base64,..."
- * // result.url: "https://devius.io/danproctor"
+ * // result.url: "https://example.com/danproctor"
  * ```
  */
 export async function generateDevCardQR(
@@ -68,7 +68,7 @@ export async function generateDevCardQR(
   }
 
   // Construct DevCard URL
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const url = `${baseUrl}/${username}`;
 
   // Validate and normalize size
@@ -136,7 +136,7 @@ export async function generateQRBuffer(
     throw new Error('Username is required and must be a string');
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const url = `${baseUrl}/${username}`;
   const size = validateSize(options.size || 400);
 
@@ -189,7 +189,7 @@ export async function generateMultipleSizes(
 export function isValidDevCardURL(url: string): boolean {
   try {
     const urlObj = new URL(url);
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stackpass.dev';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const baseUrlObj = new URL(baseUrl);
 
     return (
