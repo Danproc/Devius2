@@ -42,8 +42,8 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
         body: JSON.stringify({
           hackathon_id: hackathonId,
           first_place_submission_id: firstPlace,
-          second_place_submission_id: secondPlace || undefined,
-          third_place_submission_id: thirdPlace || undefined,
+          second_place_submission_id: secondPlace && secondPlace !== 'none' ? secondPlace : undefined,
+          third_place_submission_id: thirdPlace && thirdPlace !== 'none' ? thirdPlace : undefined,
         }),
       });
 
@@ -102,7 +102,7 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
                 <SelectValue placeholder="Select winner..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {submissions
                   .filter((item: any) => item.submission.id !== firstPlace)
                   .map((item: any) => (
@@ -124,7 +124,7 @@ export function WinnerSelector({ hackathonId }: WinnerSelectorProps) {
                 <SelectValue placeholder="Select winner..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {submissions
                   .filter((item: any) => item.submission.id !== firstPlace && item.submission.id !== secondPlace)
                   .map((item: any) => (
