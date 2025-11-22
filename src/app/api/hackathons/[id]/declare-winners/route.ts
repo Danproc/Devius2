@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { db } from '@/db';
 import { hackathons } from '@/db/schema/hackathons';
 import { hackathon_submissions } from '@/db/schema/hackathon-submissions';
@@ -11,6 +12,7 @@ import { hackathon_teams } from '@/db/schema/hackathon-teams';
 import { hackathon_badges } from '@/db/schema/hackathon-badges';
 import { user_achievements } from '@/db/schema/user-achievements';
 import { users } from '@/db/schema/user';
+import { devcards } from '@/db/schema/devcard';
 import { requireAdmin } from '@/middleware/admin-auth';
 import { eq, inArray } from 'drizzle-orm';
 import type { DeclareWinnersInput } from '@/types/hackathons';
@@ -150,14 +152,21 @@ export async function POST(
 
         // Insert achievements (onConflictDoNothing prevents duplicates)
         for (const achievementType of achievementsToAward) {
-          await db
+          const result = await db
             .insert(user_achievements)
             .values({
               user_id: userId,
               achievement_type: achievementType,
               is_displayed: true,
             })
-            .onConflictDoNothing();
+            .onConflictDoNothing()
+            .returning();
+
+          if (result.length > 0) {
+            console.log(`✅ Achievement awarded: ${achievementType} to user ${userId}`);
+          } else {
+            console.log(`ℹ️ Achievement ${achievementType} already exists for user ${userId}`);
+          }
         }
       }
     }
@@ -171,10 +180,60 @@ export async function POST(
       })
       .where(eq(hackathons.id, id));
 
+    // Revalidate caches so achievements show up immediately
+    revalidateTag('devcards', 'max');
+    revalidateTag('github-stats', 'max');
+    console.log('🔄 Cache revalidated for winner profiles');
+
+    // Get all winner user IDs to revalidate their specific profile pages
+    const allWinnerUserIds = new Set<string>();
+
+    // Collect user IDs from all submissions
+    for (const submissionId of [body.first_place_submission_id, body.second_place_submission_id, body.third_place_submission_id].filter(Boolean)) {
+      const [submission] = await db
+        .select({ user_id: hackathon_submissions.user_id, team_id: hackathon_submissions.team_id })
+        .from(hackathon_submissions)
+        .where(eq(hackathon_submissions.id, submissionId!))
+        .limit(1);
+
+      if (submission) {
+        allWinnerUserIds.add(submission.user_id);
+
+        // If team submission, get all team members
+        if (submission.team_id) {
+          const [team] = await db
+            .select()
+            .from(hackathon_teams)
+            .where(eq(hackathon_teams.id, submission.team_id))
+            .limit(1);
+
+          if (team) {
+            const members = team.members as Array<{ user_id: string }>;
+            members.forEach(m => allWinnerUserIds.add(m.user_id));
+          }
+        }
+      }
+    }
+
+    // Revalidate each winner's profile page
+    for (const winnerId of allWinnerUserIds) {
+      const [userDevcard] = await db
+        .select({ url_slug: devcards.url_slug })
+        .from(devcards)
+        .where(eq(devcards.user_id, winnerId))
+        .limit(1);
+
+      if (userDevcard?.url_slug) {
+        revalidatePath(`/${userDevcard.url_slug}`);
+        console.log(`🔄 Revalidated profile: /${userDevcard.url_slug}`);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       badges_created: badgesCreated.length,
       hackathon_status: 'completed',
+      profiles_revalidated: allWinnerUserIds.size,
     });
   } catch (error: any) {
     console.error('Error declaring winners:', error);

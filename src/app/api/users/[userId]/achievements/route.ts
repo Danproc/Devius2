@@ -14,7 +14,7 @@ export async function GET(
   try {
     const { userId } = await params;
 
-    // Get displayed achievements only (user can toggle which to show)
+    // Get all achievements for the user
     const achievements = await db
       .select()
       .from(user_achievements)
@@ -23,6 +23,10 @@ export async function GET(
         user_achievements.display_order,
         desc(user_achievements.earned_at)
       );
+
+    console.log(`📊 Fetched ${achievements.length} achievements for user ${userId}:`,
+      achievements.map(a => ({ type: a.achievement_type, displayed: a.is_displayed }))
+    );
 
     return NextResponse.json({ achievements });
   } catch (error: any) {

@@ -42,7 +42,7 @@ export function BadgeCard({ badge, hackathon }: BadgeCardProps) {
   const config = placementConfig[badge.placement as 1 | 2 | 3];
 
   return (
-    <Link href={`/gallery/hackathons/${hackathon.slug}`}>
+    <Link href={`/hackathons/${hackathon.slug}`}>
       <Card className={`border-devcard-border bg-devcard-base hover:border-devcard-green transition-colors cursor-pointer ${config?.borderColor || ''}`}>
         <CardHeader>
           <div className="flex items-start justify-between gap-2 mb-2">
