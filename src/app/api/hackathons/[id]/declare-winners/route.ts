@@ -181,8 +181,8 @@ export async function POST(
       .where(eq(hackathons.id, id));
 
     // Revalidate caches so achievements show up immediately
-    revalidateTag('devcards');
-    revalidateTag('github-stats');
+    revalidateTag('devcards', 'max');
+    revalidateTag('github-stats', 'max');
     console.log('🔄 Cache revalidated for winner profiles');
 
     // Get all winner user IDs to revalidate their specific profile pages
