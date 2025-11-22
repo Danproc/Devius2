@@ -62,16 +62,16 @@ export function MemberDirectoryFilters({
   };
 
   return (
-    <div className="w-64 flex-shrink-0 space-y-6">
+    <aside className="w-64 flex-shrink-0 space-y-6 bg-[#0a0f1a] border border-[#121824] rounded-lg p-5 h-fit sticky top-24">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-lg">Filters</h2>
+        <h2 className="font-semibold text-lg text-devcard-heading">Filters</h2>
         {hasActiveFilters && (
           <Button
             variant="ghost"
             size="sm"
             onClick={handleClearAll}
-            className="h-8 px-2 text-xs"
+            className="h-8 px-2 text-xs text-devcard-green hover:text-devcard-green/80 hover:bg-devcard-green/10"
           >
             Clear all
           </Button>
@@ -80,16 +80,16 @@ export function MemberDirectoryFilters({
 
       {/* Search */}
       <div className="space-y-2">
-        <Label htmlFor="search">Search</Label>
+        <Label htmlFor="search" className="text-devcard-text">Search</Label>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-devcard-text/50" />
           <Input
             id="search"
             type="search"
             placeholder="Search by name..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9"
+            className="pl-9 bg-[#04080f] border-[#121824] text-devcard-text placeholder:text-devcard-text/40 focus:border-devcard-green focus:ring-devcard-green/20"
             aria-label="Search members by name or username"
           />
         </div>
@@ -98,11 +98,11 @@ export function MemberDirectoryFilters({
       {/* Location */}
       {filterOptions && filterOptions.locations.length > 0 && (
         <div className="space-y-2">
-          <Label>Location</Label>
+          <Label className="text-devcard-text">Location</Label>
           <select
             value={location || ''}
             onChange={(e) => onLocationChange(e.target.value || null)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-md border border-[#121824] bg-[#04080f] text-devcard-text px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-devcard-green/20 focus:border-devcard-green"
             aria-label="Filter by location"
           >
             <option value="">All locations</option>
@@ -118,8 +118,8 @@ export function MemberDirectoryFilters({
       {/* Tech Stack */}
       {filterOptions && filterOptions.technologies.length > 0 && (
         <div className="space-y-2">
-          <Label>Tech Stack</Label>
-          <div className="max-h-48 overflow-y-auto space-y-2 border rounded-md p-3">
+          <Label className="text-devcard-text">Tech Stack</Label>
+          <div className="max-h-48 overflow-y-auto space-y-2 border border-[#121824] rounded-md p-3 bg-[#04080f]">
             {filterOptions.technologies.slice(0, 30).map((tech) => (
               <div key={tech} className="flex items-center space-x-2">
                 <Checkbox
@@ -129,7 +129,7 @@ export function MemberDirectoryFilters({
                 />
                 <label
                   htmlFor={`tech-${tech}`}
-                  className="text-sm cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-devcard-text"
                 >
                   {tech}
                 </label>
@@ -141,12 +141,12 @@ export function MemberDirectoryFilters({
               {techStack.map((tech) => (
                 <span
                   key={tech}
-                  className="inline-flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded text-xs"
+                  className="inline-flex items-center gap-1 bg-devcard-green/20 text-devcard-green border border-devcard-green/30 px-2 py-1 rounded text-xs"
                 >
                   {tech}
                   <button
                     onClick={() => handleTechToggle(tech)}
-                    className="hover:text-destructive"
+                    className="hover:text-red-400 transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -159,17 +159,18 @@ export function MemberDirectoryFilters({
 
       {/* Winners Only */}
       <div className="space-y-2">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 p-3 border border-[#121824] rounded-md bg-[#04080f] hover:bg-devcard-green/5 transition-colors">
           <Checkbox
             id="winners-only"
             checked={winnersOnly}
             onCheckedChange={(checked) => onWinnersOnlyChange(checked as boolean)}
+            className="border-devcard-green/40 data-[state=checked]:bg-devcard-green data-[state=checked]:border-devcard-green"
           />
           <label
             htmlFor="winners-only"
-            className="text-sm font-medium cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-sm font-medium cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-devcard-text"
           >
-            Hackathon Winners Only
+            Hackathon Winners Only 🏆
           </label>
         </div>
       </div>
@@ -177,8 +178,8 @@ export function MemberDirectoryFilters({
       {/* Achievement Types (optional - show if available) */}
       {filterOptions && filterOptions.achievement_types.length > 0 && (
         <div className="space-y-2">
-          <Label>Achievements</Label>
-          <div className="max-h-48 overflow-y-auto space-y-2 border rounded-md p-3">
+          <Label className="text-devcard-text">Achievements</Label>
+          <div className="max-h-48 overflow-y-auto space-y-2 border border-[#121824] rounded-md p-3 bg-[#04080f]">
             {filterOptions.achievement_types.slice(0, 20).map((achievement) => (
               <div key={achievement} className="flex items-center space-x-2">
                 <Checkbox
@@ -188,7 +189,7 @@ export function MemberDirectoryFilters({
                 />
                 <label
                   htmlFor={`achievement-${achievement}`}
-                  className="text-sm cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-devcard-text"
                 >
                   {achievement.replace(/_/g, ' ')}
                 </label>
