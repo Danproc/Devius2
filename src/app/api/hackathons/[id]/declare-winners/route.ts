@@ -124,7 +124,7 @@ export async function POST(
                 hackathonTheme: hackathon.theme,
                 placement: badgeType === 'gold' ? 'first' : badgeType === 'silver' ? 'second' : 'third',
                 prizeAmount: 0, // TODO: Get from hackathon prize pool
-                projectTitle: submission.title || 'Your Project',
+                projectTitle: submission.project_title || 'Your Project',
                 profileUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${user.name}`,
                 galleryUrl: `${process.env.NEXT_PUBLIC_APP_URL}/hackathons/${hackathon.slug}`,
               }),
