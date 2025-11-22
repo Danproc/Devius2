@@ -68,7 +68,7 @@ export const PATCH = withAuthRequired(async (req, context) => {
 
         if (accepter[0]) {
           const accepterName = accepter[0].name || 'A DevCard user';
-          const cardUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://devius.io'}/app/network/connections`;
+          const cardUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${accepter[0].github_username || accepter[0].id}`;
 
           // Send notification to requester (fire and forget)
           notifyConnectionAccepted(requesterId, accepterName, cardUrl).catch(

@@ -55,7 +55,7 @@ const onUserCreate = async (newUser: {
   const html = await render(
     Welcome({
       userName: newUser.name || "User",
-      dashboardUrl: `${appConfig.projectName}/dashboard`,
+      dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/app/dashboard`,
     })
   );
   await sendMail(newUser.email!, `Welcome to ${appConfig.projectName}`, html);

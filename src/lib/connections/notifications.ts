@@ -85,7 +85,7 @@ export async function sendConnectionEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Render the React Email template
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://devius.io';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const emailHtml = await render(
       ConnectionRequestEmail({
         requesterName,

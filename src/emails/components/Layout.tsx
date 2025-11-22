@@ -75,7 +75,7 @@ export const Layout = ({ children, previewText }: LayoutProps) => {
                 style={{ color: '#1cf491' }}
                 href={`${baseUrl}`}
               >
-                stackpass.dev
+                {baseUrl?.replace('https://', '').replace('http://', '')}
               </Link>
               {" "}or reply to this email.
             </Text>
