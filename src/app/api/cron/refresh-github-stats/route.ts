@@ -73,7 +73,7 @@ const handleRefreshGitHubStats = async () => {
             url: topRepo.html_url,
             description: topRepo.description,
             language: topRepo.language,
-          } : null,
+          } : undefined,
           top_languages: stats.top_languages || [],
         };
 
