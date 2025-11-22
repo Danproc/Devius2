@@ -110,16 +110,18 @@ export default async function AdminHackathonsPage() {
                         <ExternalLink className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="border-devcard-border text-devcard-heading"
-                    >
-                      <Link href={`/admin/hackathons/${hackathon.id}/edit`}>
-                        <Edit className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    {actualPhase !== 'completed' && (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="border-devcard-border text-devcard-heading"
+                      >
+                        <Link href={`/admin/hackathons/${hackathon.id}/edit`}>
+                          <Edit className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    )}
                     {(actualPhase === 'active' || actualPhase === 'voting' || actualPhase === 'completed') && (
                       <Button
                         asChild

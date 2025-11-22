@@ -17,12 +17,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Calendar, DollarSign, Trophy, ArrowRight, Edit, ExternalLink, Github, Sparkles, CheckCircle2, Star } from 'lucide-react';
 import { CountdownTimer } from '@/components/hackathons/CountdownTimer';
 import { RegistrationButton } from '@/components/hackathons/RegistrationButton';
 import { RegistrationStatus } from '@/components/hackathons/RegistrationStatus';
 import { RegisteredUsersList } from '@/components/hackathons/RegisteredUsersList';
 import { TeamInviteCard } from '@/components/hackathons/TeamInviteCard';
+import { PublicLeaderboard } from '@/components/hackathons/PublicLeaderboard';
 import { isRegistrationPeriodActive, getHackathonPhase, formatPhaseLabel } from '@/lib/hackathons/validations';
 import { checkProStatus } from '@/middleware/pro-check';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -105,6 +106,19 @@ export default async function UnifiedHackathonDetailPage({
           )
         )
     : [];
+
+  // Get leaderboard data if completed (all submissions with scores)
+  let leaderboardData: any[] = [];
+  if (isCompleted) {
+    const response = await fetch(
+      `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/hackathons/${hackathon.id}/leaderboard`,
+      { cache: 'no-store' }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      leaderboardData = data.leaderboard || [];
+    }
+  }
 
   const canUnregister = isRegistrationActive;
   const prizes = hackathon.prizes as { first: number; second: number; third: number };
@@ -389,8 +403,12 @@ export default async function UnifiedHackathonDetailPage({
                 const prizeAmount = submission.status === 'winner_first' ? prizes.first :
                                    submission.status === 'winner_second' ? prizes.second : prizes.third;
 
+                // Find score for this submission
+                const leaderboardEntry = leaderboardData.find((entry: any) => entry.submission.id === submission.id);
+                const score = leaderboardEntry?.score;
+
                 return (
-                  <Card key={submission.id} className="border-devcard-border bg-devcard-base">
+                  <Card key={submission.id} className="border-devcard-green/50 bg-devcard-base">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -398,8 +416,17 @@ export default async function UnifiedHackathonDetailPage({
                           <p className="text-devcard-text mt-1">{submission.description}</p>
                         </div>
                         <div className="text-right ml-4">
-                          <Badge className="bg-yellow-500 text-black mb-1">{placement}</Badge>
-                          <p className="text-sm text-devcard-green font-semibold">${prizeAmount}</p>
+                          <Badge className="bg-yellow-500 text-black mb-2">{placement}</Badge>
+                          <p className="text-sm text-devcard-green font-semibold mb-1">${prizeAmount}</p>
+                          {score && (
+                            <div className="flex items-center gap-1 justify-end">
+                              <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+                              <span className="text-lg font-bold text-yellow-500">
+                                {score.total_score}
+                                <span className="text-xs text-devcard-text">/100</span>
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardHeader>
@@ -432,6 +459,13 @@ export default async function UnifiedHackathonDetailPage({
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* Full Leaderboard (Completed Hackathons - Public) */}
+        {isCompleted && leaderboardData.length > 0 && (
+          <div className="mb-8">
+            <PublicLeaderboard entries={leaderboardData} />
           </div>
         )}
       </div>
