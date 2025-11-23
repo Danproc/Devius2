@@ -41,7 +41,10 @@ export async function POST(req: NextRequest) {
     // Get Stripe price ID for the selected tier and frequency
     const priceId = await getStripePriceId(tierCode, billingFrequency);
 
+    console.log('Checkout request:', { tierCode, billingFrequency, priceId, userId });
+
     if (!priceId) {
+      console.error('No price ID found for tier:', tierCode, billingFrequency);
       return NextResponse.json(
         { error: 'Invalid tier code or pricing not configured' },
         { status: 400 }
@@ -59,14 +62,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log('Checkout session created:', checkoutSession.id);
+
     return NextResponse.json({
       sessionId: checkoutSession.id,
       url: checkoutSession.url,
     });
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      {
+        error: 'Failed to create checkout session',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
