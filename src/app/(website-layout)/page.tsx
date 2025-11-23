@@ -4,7 +4,7 @@ import { Companies } from '@/components/landing/companies';
 import { FeaturesBento } from '@/components/landing/features-bento';
 import { Process } from '@/components/landing/process';
 import { PricingSection } from '@/components/landing/pricing-section';
-import { Reviews } from '@/components/landing/reviews';
+import { UpcomingHackathon } from '@/components/landing/upcoming-hackathon';
 import { CTALamp } from '@/components/landing/cta-lamp';
 import { Suspense } from 'react';
 
@@ -30,7 +30,7 @@ export default function WebsiteHomepage() {
       <FeaturesBento />
       <Process />
       <PricingSection />
-      <Reviews />
+      <UpcomingHackathon />
       <CTALamp />
     </div>
   );
