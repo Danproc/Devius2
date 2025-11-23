@@ -4,54 +4,44 @@
 
 ## Placeholder Price IDs (Current)
 
-The following placeholder price IDs are configured in `.env.local`:
+The following placeholder price ID is configured in `.env.local`:
 
 | Tier | Frequency | Price | Placeholder ID | Real ID (TODO) |
 |------|-----------|-------|----------------|----------------|
-| Premium | Monthly | $9.00 | `price_premium_monthly_placeholder` | `[CREATE IN STRIPE]` |
-| Premium | Annual | $90.00 | `price_premium_annual_placeholder` | `[CREATE IN STRIPE]` |
-| Premium Pro | Monthly | $29.00 | `price_premium_pro_monthly_placeholder` | `[CREATE IN STRIPE]` |
-| Premium Pro | Annual | $290.00 | `price_premium_pro_annual_placeholder` | `[CREATE IN STRIPE]` |
+| Premium | Annual | $49.00/year | `price_premium_annual_placeholder` | `[CREATE IN STRIPE]` |
+
+**Note**: StackPass uses a simple pricing model - Free or Premium ($49/year). No monthly billing option.
 
 ## How to Replace with Real Stripe Price IDs
 
-### Step 1: Create Products in Stripe Dashboard
+### Step 1: Create Product in Stripe Dashboard
 
 1. Go to https://dashboard.stripe.com/products
 2. Click "Add product"
 
 **Premium Product**:
-- Name: `Premium`
-- Description: `StackPass Premium - Custom themes, analytics, priority support`
+- Name: `StackPass Premium`
+- Description: `StackPass Premium - Unlock all features: custom themes, analytics, priority support, custom domain`
 - Click "Add pricing"
-  - **Monthly**: $9.00 USD, Recurring, Monthly billing
-  - **Annual**: $90.00 USD, Recurring, Yearly billing
+  - **Annual**: $49.00 USD, Recurring, Yearly billing
 - Save product
-- **Copy the price IDs** (they look like `price_1ABcd...`)
-
-**Premium Pro Product**:
-- Name: `Premium Pro`
-- Description: `StackPass Premium Pro - All Premium features + custom domain, API access`
-- Click "Add pricing"
-  - **Monthly**: $29.00 USD, Recurring, Monthly billing
-  - **Annual**: $290.00 USD, Recurring, Yearly billing
-- Save product
-- **Copy the price IDs**
+- **Copy the annual price ID** (looks like `price_1ABcd...`)
 
 ### Step 2: Update Environment Variables
 
-Replace the placeholders in `.env.local`:
+Replace the placeholder in `.env.local`:
 
 ```bash
-STRIPE_PREMIUM_MONTHLY_PRICE_ID="price_ABC123..."  # Real ID from Stripe
-STRIPE_PREMIUM_ANNUAL_PRICE_ID="price_DEF456..."   # Real ID from Stripe
-STRIPE_PREMIUM_PRO_MONTHLY_PRICE_ID="price_GHI789..."  # Real ID from Stripe
-STRIPE_PREMIUM_PRO_ANNUAL_PRICE_ID="price_JKL012..."   # Real ID from Stripe
+STRIPE_PREMIUM_ANNUAL_PRICE_ID="price_ABC123..."  # Real annual price ID from Stripe
 ```
 
 ### Step 3: Update Database Seed
 
-After getting real price IDs, update the database seed in Phase 2 (T010) to use real Stripe price IDs.
+After getting the real price ID, run the seed script to create the Premium tier:
+
+```bash
+npx tsx scripts/seed-premium-tiers.ts
+```
 
 ### Step 4: Configure Webhook
 

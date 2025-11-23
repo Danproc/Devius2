@@ -28,7 +28,7 @@ interface PremiumTier {
 }
 
 export default function PricingPage() {
-  const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
+  const [billingInterval, setBillingInterval] = useState<BillingInterval>('annual'); // Default to annual since we only have annual pricing
   const [loading, setLoading] = useState<string | null>(null);
   const [tiers, setTiers] = useState<PremiumTier[]>([]);
   const [loadingTiers, setLoadingTiers] = useState(true);
@@ -160,32 +160,12 @@ export default function PricingPage() {
           <h1 className="text-4xl font-bold">Upgrade to Premium</h1>
         </div>
         <p className="text-xl text-muted-foreground mb-6">
-          Unlock all features and take your StackPass to the next level
+          Unlock all premium features for just $49/year
         </p>
-
-        {/* Billing Interval Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-2">
-          <span className={billingInterval === 'monthly' ? 'font-medium' : 'text-muted-foreground'}>
-            Monthly
-          </span>
-          <Toggle
-            pressed={billingInterval === 'annual'}
-            onPressedChange={(pressed) => setBillingInterval(pressed ? 'annual' : 'monthly')}
-            aria-label="Toggle billing interval"
-            className="data-[state=on]:bg-devcard-green"
-          >
-            <span className="sr-only">Switch to annual billing</span>
-          </Toggle>
-          <span className={billingInterval === 'annual' ? 'font-medium' : 'text-muted-foreground'}>
-            Annual
-          </span>
-        </div>
-        {billingInterval === 'annual' && (
-          <p className="text-sm text-green-600 font-medium">
-            <Zap className="inline h-4 w-4 mr-1" />
-            Save up to {Math.max(...tiers.map(getSavings))}% with annual billing
-          </p>
-        )}
+        <p className="text-sm text-green-600 font-medium">
+          <Zap className="inline h-4 w-4 mr-1" />
+          One simple price, billed annually
+        </p>
       </div>
 
       {/* Pricing Cards */}
@@ -213,19 +193,15 @@ export default function PricingPage() {
 
               <CardHeader>
                 <CardTitle className="text-2xl text-devcard-heading">{tier.name}</CardTitle>
-                <CardDescription>Perfect for individual developers</CardDescription>
+                <CardDescription>All features included</CardDescription>
                 <div className="mt-4">
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-devcard-heading">${getPrice(tier)}</span>
-                    <span className="text-devcard-text">
-                      /{billingInterval === 'monthly' ? 'mo' : 'yr'}
-                    </span>
+                    <span className="text-devcard-text">/year</span>
                   </div>
-                  {billingInterval === 'annual' && (
-                    <p className="text-sm text-green-600 mt-1">
-                      Save {getSavings(tier)}% compared to monthly
-                    </p>
-                  )}
+                  <p className="text-sm text-devcard-text mt-1">
+                    Billed annually · Cancel anytime
+                  </p>
                 </div>
               </CardHeader>
 

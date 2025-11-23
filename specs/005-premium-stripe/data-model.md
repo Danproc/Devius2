@@ -195,30 +195,20 @@ WHERE tier_code IS NOT NULL;
 
 **Sample Data**:
 ```sql
-INSERT INTO plans (id, tier_code, name, features, monthlyPrice, monthlyStripePriceId, yearlyPrice, yearlyStripePriceId, active) VALUES
+INSERT INTO plans (id, tier_code, name, features, hasYearlyPricing, yearlyPrice, yearlyStripePriceId, active) VALUES
   (
     gen_random_uuid(),
     'premium',
     'Premium',
-    '{"custom_themes": true, "advanced_analytics": true, "priority_support": true}',
-    900,  -- $9/month
-    'price_premium_monthly',
-    9000, -- $90/year (2 months free)
+    '{"custom_themes": true, "advanced_analytics": true, "priority_support": true, "custom_domain": true, "organization_profiles": true}',
+    true,
+    4900,  -- $49/year
     'price_premium_annual',
-    true
-  ),
-  (
-    gen_random_uuid(),
-    'premium_pro',
-    'Premium Pro',
-    '{"custom_themes": true, "advanced_analytics": true, "priority_support": true, "custom_domain": true, "api_access": true}',
-    2900,  -- $29/month
-    'price_premium_pro_monthly',
-    29000, -- $290/year (2 months free)
-    'price_premium_pro_annual',
     true
   );
 ```
+
+**Note**: StackPass uses a simple pricing model - Free or Premium ($49/year, annual billing only).
 
 ### 3. Subscription Events Table (New)
 
