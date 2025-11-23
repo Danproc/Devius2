@@ -7,7 +7,10 @@
 ## Results
 
 **Before**: 129 performance warnings + 6 security warnings
-**After**: 31 INFO-level notices (unused indexes - expected and beneficial)
+**After**: 31 INFO-level notices (unused indexes) + 1 optional auth setting
+
+**Performance Issues**: 129 → 0 ✅
+**Security Issues**: 6 → 1 (optional Supabase Auth setting)
 
 ## Optimizations Applied
 
@@ -57,6 +60,27 @@ POLICY "delete_policy" FOR DELETE...
 
 All foreign key columns now have covering indexes for improved JOIN performance.
 
+### 4. Function Security (5 functions fixed)
+
+**Issue**: Database functions had mutable search_path (security vulnerability)
+
+**Fix**: Added `SET search_path = ''` to all functions:
+- `user_owns_profile`
+- `cleanup_card_qr_codes`
+- `get_card_qr_url`
+- `card_has_qr_code`
+- `get_connection_count`
+
+This prevents schema injection attacks by forcing explicit schema qualification.
+
+## Remaining Warning (1 - Optional)
+
+**Leaked Password Protection**: Supabase Auth setting
+- Enable in: Supabase Dashboard → Authentication → Policies
+- Checks passwords against HaveIBeenPwned.org
+- Prevents use of compromised passwords
+- Optional but recommended for production
+
 ## Migrations Applied via Supabase MCP
 
 1. `optimize_rls_auth_functions_part1` - Authentication tables
@@ -74,6 +98,7 @@ All foreign key columns now have covering indexes for improved JOIN performance.
 13. `remove_overlapping_for_all_policies` - Remove FOR ALL overlaps
 14. `remove_overlapping_for_all_policies_part2` - Payment & Hackathons
 15. `fix_hackathon_submissions_duplicate_insert` - Final duplicate fix
+16. `fix_function_search_paths` - Secure database functions against schema injection
 
 ## Remaining Notices (31 - All INFO Level)
 
