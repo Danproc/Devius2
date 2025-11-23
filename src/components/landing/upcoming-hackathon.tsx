@@ -19,11 +19,11 @@ export async function UpcomingHackathon() {
   const prizes = upcomingHackathon.prizes as { first: number; second: number; third: number; currency?: string };
   const totalPrize = prizes.first + prizes.second + prizes.third;
 
-  // Calculate hackathon duration in days
-  const duration = Math.ceil(
+  // Calculate hackathon duration in hours
+  const durationHours = Math.ceil(
     (new Date(upcomingHackathon.submission_deadline_at).getTime() -
       new Date(upcomingHackathon.start_at).getTime()) /
-      (1000 * 60 * 60 * 24)
+      (1000 * 60 * 60)
   );
 
   return (
@@ -32,7 +32,7 @@ export async function UpcomingHackathon() {
       slug={upcomingHackathon.slug}
       startAt={upcomingHackathon.start_at.toISOString()}
       totalPrize={totalPrize}
-      duration={duration}
+      durationHours={durationHours}
     />
   );
 }

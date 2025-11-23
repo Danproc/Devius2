@@ -10,7 +10,7 @@ interface UpcomingHackathonClientProps {
   slug: string;
   startAt: string;
   totalPrize: number;
-  duration: number;
+  durationHours: number;
 }
 
 export function UpcomingHackathonClient({
@@ -18,7 +18,7 @@ export function UpcomingHackathonClient({
   slug,
   startAt,
   totalPrize,
-  duration,
+  durationHours,
 }: UpcomingHackathonClientProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
@@ -130,7 +130,7 @@ export function UpcomingHackathonClient({
                 <span className="text-[13px] text-devcard-heading uppercase tracking-wider">Prize Pool</span>
               </div>
               <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-devcard-base/50 border border-devcard-border">
-                <span className="text-base font-bold text-devcard-green tabular-nums">{duration}H</span>
+                <span className="text-base font-bold text-devcard-green tabular-nums">{durationHours}H</span>
                 <span className="text-[13px] text-devcard-heading uppercase tracking-wider">Hackathon</span>
               </div>
               <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-devcard-base/50 border border-devcard-border">
