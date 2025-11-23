@@ -96,7 +96,7 @@ export function PricingSection() {
             {/* Highlighted Badge */}
             <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-devcard-green text-black font-bold px-4 py-1">
               <Sparkles className="h-3 w-3 mr-1" />
-              COMING SOON
+              MOST POPULAR
             </Badge>
 
             <div className="mb-6">
@@ -122,10 +122,13 @@ export function PricingSection() {
             </ul>
 
             <Button
-              disabled
-              className="w-full bg-black/50 text-devcard-heading/30 font-medium rounded-full cursor-not-allowed"
+              asChild
+              className="w-full bg-devcard-green hover:bg-devcard-green/90 text-black font-medium rounded-full"
             >
-              Coming Soon
+              <Link href="/app/billing/plans">
+                {proPlan.cta}
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
             </Button>
           </div>
         </div>
