@@ -30,10 +30,12 @@ async function seedPremiumTiers() {
       yearlyPrice: 4900, // $49.00/year
       yearlyStripePriceId: process.env.STRIPE_PREMIUM_ANNUAL_PRICE_ID || 'price_premium_annual_placeholder',
       features: {
-        hackathon_access: true,
-        compete_for_prizes: true,
-        exclusive_badges: true,
-      },
+        custom_themes: false,
+        custom_domain: false,
+        advanced_analytics: false,
+        priority_support: true,
+        organization_profiles: false,
+      } as any, // Type assertion for features - hackathon access controlled separately
     }).onConflictDoNothing({ target: plans.tier_code });
 
     console.log('✓ Seeded Premium tier ($49/year - annual only)');
