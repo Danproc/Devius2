@@ -149,7 +149,7 @@ export default async function BillingPage() {
               </Button>
             </form>
           ) : (
-            <Link href="/billing/plans">
+            <Link href="/app/billing/plans">
               <Button>
                 <Crown className="h-4 w-4 mr-2" />
                 Upgrade to Premium

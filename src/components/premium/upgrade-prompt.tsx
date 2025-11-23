@@ -43,7 +43,7 @@ export function UpgradePrompt({
             <p className="text-sm text-muted-foreground">{description}</p>
           </div>
         </div>
-        <Link href="/billing/plans">
+        <Link href="/app/billing/plans">
           <Button size="sm" className="ml-4">
             <Crown className="h-4 w-4 mr-2" />
             Upgrade
@@ -86,7 +86,7 @@ export function UpgradePrompt({
       )}
 
       <CardFooter>
-        <Link href="/billing/plans" className="w-full">
+        <Link href="/app/billing/plans" className="w-full">
           <Button size="lg" className="w-full">
             <Crown className="h-4 w-4 mr-2" />
             Upgrade to Premium
