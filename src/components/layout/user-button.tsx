@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import useUser from "@/lib/users/useUser";
+import { useDevCard } from "@/hooks/useDevCard";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -22,6 +23,7 @@ import {
   Settings,
   Trophy,
   Shield,
+  User,
 } from "lucide-react";
 import useSWR from "swr";
 
@@ -41,6 +43,7 @@ const fetcher = async (url: string) => {
 
 export function UserButton() {
   const { user } = useUser();
+  const { devcard } = useDevCard();
 
   // Fetch admin status from API
   const { data: adminData } = useSWR(
@@ -99,6 +102,14 @@ export function UserButton() {
           </div>
         </div>
         <DropdownMenuSeparator />
+        {devcard?.url_slug && (
+          <DropdownMenuItem asChild>
+            <Link href={`/${devcard.url_slug}`} className="cursor-pointer">
+              <User className="mr-2 h-4 w-4" />
+              View Profile
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           <Link href="/app/dashboard" className="cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4" />

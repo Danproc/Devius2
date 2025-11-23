@@ -66,7 +66,7 @@ export function WalletPassButton({
     <Button
       onClick={handleDownload}
       disabled={loading}
-      className={`bg-devcard-green text-black hover:bg-devcard-green/90 font-medium rounded-full ${className}`}
+      className={`bg-devcard-green text-black hover:bg-devcard-green/90 font-medium rounded-full !h-14 sm:!h-11 py-4 ${className}`}
       size="lg"
     >
       {loading ? (
