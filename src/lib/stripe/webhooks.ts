@@ -13,10 +13,12 @@ import { updateUserPremiumStatus, getSubscriptionExpiryDate, isSubscriptionActiv
 /**
  * Handle checkout.session.completed event
  * Called when a customer completes a checkout session
+ * T017: Implement handleCheckoutCompleted to upgrade user to premium
  */
 export async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   try {
     const userId = session.metadata?.userId;
+    const tierCode = session.metadata?.tierCode;
     const customerId = session.customer as string;
     const subscriptionId = session.subscription as string;
 
@@ -28,18 +30,86 @@ export async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Se
     // Retrieve the subscription
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-    // Update user premium status
+    // Update user premium status with tier information
     await updateUserPremiumStatus(userId, {
       isPremium: isSubscriptionActive(subscription),
       subscriptionId,
       customerId,
       expiresAt: getSubscriptionExpiryDate(subscription),
+      tierCode: tierCode || null,
     });
 
-    console.log(`✅ Subscription activated for user ${userId}`);
+    console.log(`✅ Subscription activated for user ${userId}, tier: ${tierCode || 'default'}`);
+
+    // T020: Send welcome email
+    await sendPremiumWelcomeEmail(userId, tierCode || 'premium', subscription);
   } catch (error) {
     console.error('Error handling checkout.session.completed:', error);
     throw error;
+  }
+}
+
+/**
+ * Send premium welcome email
+ * T020: Trigger welcome email when user subscribes
+ */
+async function sendPremiumWelcomeEmail(userId: string, tierCode: string, subscription: Stripe.Subscription) {
+  try {
+    const [user] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!user?.email) {
+      console.error('No email found for user', userId);
+      return;
+    }
+
+    // Import email utilities
+    const { render } = await import('@react-email/components');
+    const sendMail = (await import('@/lib/email/sendMail')).default;
+    const PremiumWelcomeEmail = (await import('@/emails/PremiumWelcomeEmail')).default;
+
+    // Get tier name and features
+    const tierName = tierCode === 'premium_pro' ? 'Premium Pro' : 'Premium';
+    const features = tierCode === 'premium_pro'
+      ? ['Custom Themes', 'Advanced Analytics', 'Priority Support', 'Custom Domain', 'API Access']
+      : ['Custom Themes', 'Advanced Analytics', 'Priority Support'];
+
+    // Calculate billing details
+    const priceAmount = subscription.items.data[0]?.price?.unit_amount || 0;
+    const billingAmount = priceAmount / 100; // Convert cents to dollars
+    const billingFrequency = subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly';
+
+    const nextBillingDate = new Date(subscription.current_period_end * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const html = await render(
+      PremiumWelcomeEmail({
+        name: user.name || 'there',
+        tierName,
+        features,
+        billingAmount,
+        billingFrequency,
+        nextBillingDate,
+        dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/app/billing`,
+      })
+    );
+
+    await sendMail(
+      user.email,
+      `🎉 Welcome to ${tierName}!`,
+      html
+    );
+
+    console.log(`✅ Welcome email sent to ${user.email}`);
+  } catch (error) {
+    console.error('Error sending welcome email:', error);
+    // Don't throw - email failure shouldn't block webhook processing
   }
 }
 
@@ -63,15 +133,19 @@ export async function handleSubscriptionUpdated(subscription: Stripe.Subscriptio
       return;
     }
 
+    // Extract tier code from subscription metadata (if available)
+    const tierCode = subscription.metadata?.tierCode || user.premium_tier;
+
     // Update user premium status
     await updateUserPremiumStatus(user.id, {
       isPremium: isSubscriptionActive(subscription),
       subscriptionId: subscription.id,
       customerId,
       expiresAt: getSubscriptionExpiryDate(subscription),
+      tierCode,
     });
 
-    console.log(`✅ Subscription updated for user ${user.id}, status: ${subscription.status}`);
+    console.log(`✅ Subscription updated for user ${user.id}, status: ${subscription.status}, tier: ${tierCode}`);
   } catch (error) {
     console.error('Error handling customer.subscription.updated:', error);
     throw error;
@@ -98,11 +172,12 @@ export async function handleSubscriptionDeleted(subscription: Stripe.Subscriptio
       return;
     }
 
-    // Remove premium status
+    // Remove premium status and tier
     await db
       .update(users)
       .set({
         is_premium: false,
+        premium_tier: null,
         stripeSubscriptionId: null,
         premium_expires_at: null,
       })

@@ -30,6 +30,10 @@ export const plans = pgTable("plans", {
   codename: text("codename").unique(),
   default: boolean("default").default(false),
 
+  // Premium tier identification
+  tier_code: text("tier_code").unique(), // 'premium', 'premium_pro', etc. - maps to users.premium_tier
+  active: boolean("active").default(true).notNull(), // Controls tier visibility on pricing page
+
   requiredCouponCount: integer("requiredCouponCount").default(0), // For LTD plans: Number of coupons required to redeem the plan
 
   hasOnetimePricing: boolean("hasOnetimePricing").default(false),

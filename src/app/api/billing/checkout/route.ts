@@ -1,15 +1,19 @@
 /**
  * Checkout API Endpoint
- * T110: Create src/app/api/billing/checkout/route.ts for POST /api/billing/checkout (create Stripe checkout session)
+ * T015: Create Stripe checkout session with tier-based pricing
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { createSubscription } from '@/lib/stripe/subscriptions';
+import { getStripePriceId } from '@/lib/premium/tiers';
 import { z } from 'zod';
 
 const checkoutSchema = z.object({
-  priceId: z.string().min(1, 'Price ID is required'),
+  tierCode: z.string().min(1, 'Tier code is required'),
+  billingFrequency: z.enum(['monthly', 'annual'], {
+    errorMap: () => ({ message: 'Billing frequency must be monthly or annual' })
+  }),
 });
 
 export async function POST(req: NextRequest) {
@@ -31,14 +35,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { priceId } = validation.data;
+    const { tierCode, billingFrequency } = validation.data;
     const { id: userId, email } = session.user;
+
+    // Get Stripe price ID for the selected tier and frequency
+    const priceId = await getStripePriceId(tierCode, billingFrequency);
+
+    if (!priceId) {
+      return NextResponse.json(
+        { error: 'Invalid tier code or pricing not configured' },
+        { status: 400 }
+      );
+    }
 
     // Create Stripe checkout session
     const checkoutSession = await createSubscription({
       userId,
       priceId,
       email,
+      metadata: {
+        tierCode,
+        billingFrequency,
+      },
     });
 
     return NextResponse.json({

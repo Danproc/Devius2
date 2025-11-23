@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: StackPass Premium Billing API
+  version: 1.0.0
+  description: API endpoints for premium subscription management
+
+paths:
+  /api/billing/checkout:
+    post:
+      summary: Create Stripe checkout session
+      description: Creates a Stripe Checkout session for subscribing to a premium tier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tierCode
+                - billingFrequency
+              properties:
+                tierCode:
+                  type: string
+                  enum: [premium, premium_pro]
+                  example: premium
+                billingFrequency:
+                  type: string
+                  enum: [monthly, annual]
+                  example: monthly
+      responses:
+        '200':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Stripe Checkout URL to redirect user to
+                    example: https://checkout.stripe.com/c/pay/cs_test_...
+        '401':
+          description: Unauthorized - user not logged in
+        '400':
+          description: Bad request - invalid tier or frequency
+
+  /api/billing/portal:
+    get:
+      summary: Access Stripe Customer Portal
+      description: Redirects authenticated user to Stripe Customer Portal for managing payment methods and subscriptions
+      responses:
+        '302':
+          description: Redirect to Stripe Customer Portal
+        '401':
+          description: Unauthorized - user not logged in
+        '404':
+          description: No Stripe customer ID found
+
+  /api/pricing/tiers:
+    get:
+      summary: Fetch active premium tiers
+      description: Returns all active premium tiers with pricing and features
+      responses:
+        '200':
+          description: List of active premium tiers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tiers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: premium
+                        name:
+                          type: string
+                          example: Premium
+                        features:
+                          type: object
+                          additionalProperties:
+                            type: boolean
+                          example:
+                            custom_themes: true
+                            advanced_analytics: true
+                        pricing:
+                          type: object
+                          properties:
+                            monthly:
+                              type: object
+                              properties:
+                                amount:
+                                  type: integer
+                                  description: Price in cents
+                                  example: 900
+                                priceId:
+                                  type: string
+                                  example: price_1234567890abcdef
+                            annual:
+                              type: object
+                              properties:
+                                amount:
+                                  type: integer
+                                  description: Price in cents
+                                  example: 9000
+                                priceId:
+                                  type: string
+                                  example: price_0987654321fedcba
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: next-auth.session-token

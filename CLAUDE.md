@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2025-11-21
 ## Active Technologies
 - TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack) + React, NextAuth v5, Drizzle ORM, PostgreSQL, shadcn/ui (assumed) (004-member-directory)
 - PostgreSQL (existing database with users, devcards, achievements tables) (004-member-directory)
+- TypeScript 5.8.3, Next.js 16.0.1 (App Router with Turbopack), React 19.2.0, Node ES2017 + Stripe SDK v17.7.0, Drizzle ORM v0.38.4, NextAuth v5.0.0-beta.25, Resend v6.4.2, React Email v4.0.16, Inngest v3.34.5 (005-premium-stripe)
+- PostgreSQL via Neon serverless (@neondatabase/serverless v0.10.4), Drizzle ORM for schema managemen (005-premium-stripe)
 
 - TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack) (001-devcard-platform)
 - SEO: Next.js Metadata API, @vercel/og, Schema.org JSON-LD (003-seo-optimization)
@@ -51,10 +53,10 @@ TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack): Follow standard con
 - **Error Pages**: Custom 404 (`not-found.tsx`) and 500 (`error.tsx`) with StackPass branding
 
 ## Recent Changes
+- 005-premium-stripe: Added TypeScript 5.8.3, Next.js 16.0.1 (App Router with Turbopack), React 19.2.0, Node ES2017 + Stripe SDK v17.7.0, Drizzle ORM v0.38.4, NextAuth v5.0.0-beta.25, Resend v6.4.2, React Email v4.0.16, Inngest v3.34.5
 - 004-member-directory: Added TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack) + React, NextAuth v5, Drizzle ORM, PostgreSQL, shadcn/ui (assumed)
 
 - 001-devcard-platform: Added TypeScript 5.8 / Next.js 16.0.1 (App Router with Turbopack)
-- 003-seo-optimization: Added comprehensive SEO with metadata, sitemap, structured data, OG images
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
