@@ -96,6 +96,7 @@ const withAuthRequired = (handler: WithManagerHandler) => {
           emailVerified: users.emailVerified,
           credits: users.credits,
           is_premium: users.is_premium,
+          premium_tier: users.premium_tier,
           premium_expires_at: users.premium_expires_at,
           github_id: users.github_id,
           github_username: users.github_username,

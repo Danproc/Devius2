@@ -36,6 +36,7 @@ export const users = pgTable("app_user", {
 
   // DevCard Premium
   is_premium: boolean("is_premium").default(false).notNull(),
+  premium_tier: text("premium_tier"), // References plans.tier_code ('premium', 'premium_pro', etc.)
   premium_expires_at: timestamp("premium_expires_at", { mode: "date" }),
 
   stripeCustomerId: text("stripeCustomerId"),

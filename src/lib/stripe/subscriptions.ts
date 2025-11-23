@@ -13,6 +13,11 @@ export interface CreateSubscriptionParams {
   userId: string;
   priceId: string;
   email: string;
+  metadata?: {
+    tierCode?: string;
+    billingFrequency?: string;
+    [key: string]: string | undefined;
+  };
 }
 
 export interface SubscriptionUpdateData {
@@ -20,6 +25,7 @@ export interface SubscriptionUpdateData {
   subscriptionId: string;
   customerId: string;
   expiresAt: Date;
+  tierCode?: string | null;
 }
 
 /**
@@ -28,7 +34,7 @@ export interface SubscriptionUpdateData {
  * @returns Stripe checkout session
  */
 export async function createSubscription(params: CreateSubscriptionParams) {
-  const { userId, priceId, email } = params;
+  const { userId, priceId, email, metadata = {} } = params;
 
   try {
     // Check if user exists
@@ -69,10 +75,11 @@ export async function createSubscription(params: CreateSubscriptionParams) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/billing?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/app/billing/plans?canceled=true`,
       metadata: {
         userId,
+        ...metadata,
       },
     });
 
@@ -138,6 +145,7 @@ export async function updateUserPremiumStatus(userId: string, data: Subscription
       .update(users)
       .set({
         is_premium: data.isPremium,
+        premium_tier: data.tierCode || null,
         stripeSubscriptionId: data.subscriptionId,
         stripeCustomerId: data.customerId,
         premium_expires_at: data.expiresAt,

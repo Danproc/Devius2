@@ -10,12 +10,10 @@ import { eq } from 'drizzle-orm';
 
 export interface PremiumStatus {
   isPremium: boolean;
+  tier: string | null;
   expiresAt: Date | null;
-  features: {
-    custom_themes: boolean;
-    priority_support: boolean;
-    organization_profiles: boolean;
-  };
+  isExpiringSoon: boolean;
+  features: Record<string, boolean>;
 }
 
 /**
@@ -25,13 +23,13 @@ export interface PremiumStatus {
  */
 export async function checkPremium(userId: string): Promise<PremiumStatus> {
   try {
-    // Get user with their plan
+    // Get user with their premium tier
     const [user] = await db
       .select({
         id: users.id,
         is_premium: users.is_premium,
+        premium_tier: users.premium_tier,
         premium_expires_at: users.premium_expires_at,
-        planId: users.planId,
       })
       .from(users)
       .where(eq(users.id, userId))
@@ -41,32 +39,57 @@ export async function checkPremium(userId: string): Promise<PremiumStatus> {
       return getDefaultPremiumStatus();
     }
 
-    // Check if premium is active
-    const isPremiumActive = user.is_premium &&
-      (!user.premium_expires_at || user.premium_expires_at > new Date());
+    const now = new Date();
 
-    // Get plan features if user has a plan
-    let planFeatures = null;
-    if (user.planId) {
-      const [plan] = await db
-        .select()
+    // Check if premium is expired
+    if (user.premium_expires_at && user.premium_expires_at < now) {
+      // Auto-revoke expired premium
+      if (user.is_premium) {
+        await db
+          .update(users)
+          .set({
+            is_premium: false,
+            premium_tier: null,
+          })
+          .where(eq(users.id, userId));
+      }
+
+      return {
+        isPremium: false,
+        tier: null,
+        expiresAt: user.premium_expires_at,
+        isExpiringSoon: false,
+        features: {},
+      };
+    }
+
+    // Get tier features if user has a premium tier
+    let tierFeatures: Record<string, boolean> = {};
+    if (user.premium_tier) {
+      const [tier] = await db
+        .select({
+          features: plans.features,
+        })
         .from(plans)
-        .where(eq(plans.id, user.planId))
+        .where(eq(plans.tier_code, user.premium_tier))
         .limit(1);
 
-      if (plan?.features) {
-        planFeatures = plan.features;
+      if (tier?.features) {
+        tierFeatures = tier.features as Record<string, boolean>;
       }
     }
 
+    // Calculate if expiring soon (within 7 days)
+    const expiringSoon = user.premium_expires_at
+      ? isExpiringSoon(user.premium_expires_at)
+      : false;
+
     return {
-      isPremium: isPremiumActive,
+      isPremium: user.is_premium,
+      tier: user.premium_tier,
       expiresAt: user.premium_expires_at,
-      features: {
-        custom_themes: isPremiumActive && (planFeatures?.custom_themes ?? false),
-        priority_support: isPremiumActive && (planFeatures?.priority_support ?? false),
-        organization_profiles: isPremiumActive && (planFeatures?.organization_profiles ?? false),
-      },
+      isExpiringSoon: expiringSoon,
+      features: user.is_premium ? tierFeatures : {},
     };
   } catch (error) {
     console.error('Error checking premium status:', error);
@@ -77,26 +100,26 @@ export async function checkPremium(userId: string): Promise<PremiumStatus> {
 /**
  * Check if a user has access to a specific premium feature
  * @param userId - User ID to check
- * @param feature - Feature name to check
+ * @param feature - Feature name to check (e.g., 'custom_themes', 'priority_support')
  * @returns Boolean indicating feature access
  */
 export async function hasFeatureAccess(
   userId: string,
-  feature: keyof PremiumStatus['features']
+  feature: string
 ): Promise<boolean> {
   const status = await checkPremium(userId);
-  return status.features[feature];
+  return status.features[feature] === true;
 }
 
 /**
  * Require premium access for a feature
  * Throws an error if user doesn't have access
  * @param userId - User ID to check
- * @param feature - Optional specific feature to check
+ * @param feature - Optional specific feature to check (e.g., 'custom_themes')
  */
 export async function requirePremium(
   userId: string,
-  feature?: keyof PremiumStatus['features']
+  feature?: string
 ): Promise<void> {
   const status = await checkPremium(userId);
 
@@ -117,12 +140,10 @@ export async function requirePremium(
 function getDefaultPremiumStatus(): PremiumStatus {
   return {
     isPremium: false,
+    tier: null,
     expiresAt: null,
-    features: {
-      custom_themes: false,
-      priority_support: false,
-      organization_profiles: false,
-    },
+    isExpiringSoon: false,
+    features: {},
   };
 }
 

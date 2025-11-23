@@ -1,0 +1,185 @@
+openapi: 3.0.0
+info:
+  title: Stripe Webhooks for StackPass Premium
+  version: 1.0.0
+  description: Stripe webhook events processed by StackPass
+
+paths:
+  /api/webhooks/stripe:
+    post:
+      summary: Stripe webhook endpoint
+      description: Receives and processes Stripe webhook events
+      security:
+        - stripeSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/CheckoutSessionCompleted'
+                - $ref: '#/components/schemas/SubscriptionUpdated'
+                - $ref: '#/components/schemas/SubscriptionDeleted'
+                - $ref: '#/components/schemas/InvoicePaymentSucceeded'
+                - $ref: '#/components/schemas/InvoicePaymentFailed'
+      responses:
+        '200':
+          description: Webhook received and processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: boolean
+                    example: true
+        '400':
+          description: Invalid signature or malformed payload
+        '500':
+          description: Webhook processing failed
+
+components:
+  securitySchemes:
+    stripeSignature:
+      type: apiKey
+      in: header
+      name: Stripe-Signature
+      description: HMAC signature for webhook verification
+
+  schemas:
+    CheckoutSessionCompleted:
+      type: object
+      description: Fired when user completes Stripe Checkout
+      properties:
+        id:
+          type: string
+          example: evt_1234567890abcdef
+        type:
+          type: string
+          enum: [checkout.session.completed]
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: cs_test_1234567890abcdef
+                customer:
+                  type: string
+                  example: cus_1234567890abcdef
+                subscription:
+                  type: string
+                  example: sub_1234567890abcdef
+                metadata:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                    tierCode:
+                      type: string
+
+    SubscriptionUpdated:
+      type: object
+      description: Fired when subscription changes (upgrade/downgrade/renewal)
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [customer.subscription.updated]
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: sub_1234567890abcdef
+                customer:
+                  type: string
+                status:
+                  type: string
+                  enum: [active, past_due, canceled, unpaid]
+                current_period_end:
+                  type: integer
+                  description: Unix timestamp
+                items:
+                  type: object
+
+    SubscriptionDeleted:
+      type: object
+      description: Fired when subscription is cancelled
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [customer.subscription.deleted]
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                customer:
+                  type: string
+                status:
+                  type: string
+                  enum: [canceled]
+
+    InvoicePaymentSucceeded:
+      type: object
+      description: Fired when invoice payment succeeds (renewal)
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [invoice.payment_succeeded]
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                customer:
+                  type: string
+                subscription:
+                  type: string
+                amount_paid:
+                  type: integer
+                  description: Amount in cents
+
+    InvoicePaymentFailed:
+      type: object
+      description: Fired when invoice payment fails
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [invoice.payment_failed]
+        data:
+          type: object
+          properties:
+            object:
+              type: object
+              properties:
+                id:
+                  type: string
+                customer:
+                  type: string
+                subscription:
+                  type: string
+                attempt_count:
+                  type: integer
+                next_payment_attempt:
+                  type: integer
+                  nullable: true
