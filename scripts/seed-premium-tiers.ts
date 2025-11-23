@@ -30,11 +30,9 @@ async function seedPremiumTiers() {
       yearlyPrice: 4900, // $49.00/year
       yearlyStripePriceId: process.env.STRIPE_PREMIUM_ANNUAL_PRICE_ID || 'price_premium_annual_placeholder',
       features: {
-        custom_themes: true,
-        advanced_analytics: true,
-        priority_support: true,
-        custom_domain: true,
-        organization_profiles: true,
+        hackathon_access: true,
+        compete_for_prizes: true,
+        exclusive_badges: true,
       },
     }).onConflictDoNothing({ target: plans.tier_code });
 
