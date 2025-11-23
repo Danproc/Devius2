@@ -48,28 +48,28 @@ export async function PATCH(
 
     // Convert date strings to Date objects if needed (handle empty strings)
     const processedUpdates: any = { ...updates };
-    if (updates.registration_start_at && typeof updates.registration_start_at === 'string') {
+    if ('registration_start_at' in updates && typeof updates.registration_start_at === 'string') {
       processedUpdates.registration_start_at = updates.registration_start_at.trim()
         ? new Date(updates.registration_start_at)
         : null;
     }
-    if (updates.registration_end_at && typeof updates.registration_end_at === 'string') {
+    if ('registration_end_at' in updates && typeof updates.registration_end_at === 'string') {
       processedUpdates.registration_end_at = updates.registration_end_at.trim()
         ? new Date(updates.registration_end_at)
         : null;
     }
-    if (updates.start_at && typeof updates.start_at === 'string') {
+    if ('start_at' in updates && typeof updates.start_at === 'string') {
       processedUpdates.start_at = new Date(updates.start_at);
     }
-    if (updates.submission_deadline_at && typeof updates.submission_deadline_at === 'string') {
+    if ('submission_deadline_at' in updates && typeof updates.submission_deadline_at === 'string') {
       processedUpdates.submission_deadline_at = new Date(updates.submission_deadline_at);
     }
-    if (updates.voting_start_at && typeof updates.voting_start_at === 'string') {
+    if ('voting_start_at' in updates && typeof updates.voting_start_at === 'string') {
       processedUpdates.voting_start_at = updates.voting_start_at.trim()
         ? new Date(updates.voting_start_at)
         : null;
     }
-    if (updates.voting_end_at && typeof updates.voting_end_at === 'string') {
+    if ('voting_end_at' in updates && typeof updates.voting_end_at === 'string') {
       processedUpdates.voting_end_at = updates.voting_end_at.trim()
         ? new Date(updates.voting_end_at)
         : null;
