@@ -9,8 +9,8 @@ import DarkVeil from '@/components/ui/dark-veil';
 export function Hero() {
   return (
     <section className="relative py-20 md:py-32 flex items-center justify-center bg-devcard-base">
-      {/* Animated background - fixed to cover full viewport */}
-      <div className="fixed top-0 left-0 right-0 bottom-0 opacity-15 pointer-events-none z-0">
+      {/* Animated background - fixed with gradient fade-out */}
+      <div className="fixed top-0 left-0 right-0 bottom-0 opacity-15 pointer-events-none z-0 hero-veil-fade">
         <DarkVeil
           hueShift={140}
           noiseIntensity={0.01}
