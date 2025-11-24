@@ -39,7 +39,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 inset-x-0 h-14 w-full border-b z-[99999] select-none transition-all",
+        "sticky top-0 inset-x-0 h-14 w-full border-b z-50 select-none transition-all",
         scroll
           ? "border-devcard-border/80 bg-devcard-base/60 backdrop-blur-md"
           : "border-transparent bg-transparent"
