@@ -36,7 +36,7 @@ function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col bg-devcard-base">
       <Header />
-      <main className="flex-1 overflow-x-hidden">
+      <main className="flex-1 overflow-x-hidden -mt-14">
         {children}
       </main>
       <Footer />

@@ -22,7 +22,7 @@ export function Header() {
   const [scroll, setScroll] = useState(false);
 
   const handleScroll = () => {
-    if (window.scrollY > 8) {
+    if (window.scrollY > 50) {
       setScroll(true);
     } else {
       setScroll(false);
@@ -30,6 +30,8 @@ export function Header() {
   };
 
   useEffect(() => {
+    // Check initial scroll position
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
