@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <section className="relative py-20 md:py-32 flex items-center justify-center overflow-hidden bg-devcard-base">
       {/* Animated background */}
-      <div className="absolute inset-0 w-full h-full opacity-15 pointer-events-none">
+      <div className="absolute inset-0 opacity-15 pointer-events-none" style={{ width: '100%', height: '100%' }}>
         <DarkVeil
           hueShift={140}
           noiseIntensity={0.04}
@@ -18,7 +18,7 @@ export function Hero() {
           speed={0.4}
           scanlineFrequency={0.8}
           warpAmount={0.02}
-          resolutionScale={0.5}
+          resolutionScale={1}
         />
       </div>
 
