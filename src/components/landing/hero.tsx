@@ -8,8 +8,8 @@ import DarkVeil from '@/components/ui/dark-veil';
 
 export function Hero() {
   return (
-    <section className="relative py-20 md:py-32 flex items-center justify-center bg-devcard-base overflow-hidden">
-      {/* Simple background - just sits in the hero section */}
+    <section className="relative pt-14 py-20 md:py-32 flex items-center justify-center bg-devcard-base">
+      {/* Simple background - extends to cover full hero including header area */}
       <div className="absolute inset-0 opacity-15 pointer-events-none">
         <DarkVeil
           hueShift={140}
@@ -22,7 +22,10 @@ export function Hero() {
         />
       </div>
 
-      <div className="container relative z-10 px-4 md:px-6">
+      {/* Gradient mask at bottom to blend into next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-devcard-base pointer-events-none z-10" />
+
+      <div className="container relative z-10 px-4 md:px-6 pt-4">
         <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
           {/* Founders Badge */}
           <Badge
