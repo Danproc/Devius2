@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { UserButton } from "./user-button";
 import MaxWidthWrapper from "@/components/global/max-width-wrapper";
 import { cn } from "@/lib/utils";
+import DarkVeil from "@/components/ui/dark-veil";
 
 const navItems: { label: string; href: string }[] = [
   { label: "Features", href: "/#features" },
@@ -39,12 +40,25 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 inset-x-0 h-14 w-full border-b border-transparent z-[99999] select-none transition-all",
-        scroll && "border-devcard-border/80 bg-devcard-base/60 backdrop-blur-md"
+        "sticky top-0 inset-x-0 h-14 w-full border-b border-transparent z-[99999] select-none transition-all overflow-hidden",
+        scroll && "border-devcard-border/80 backdrop-blur-md"
       )}
       style={{ position: 'sticky' }}
     >
-      <div className="h-full mx-auto w-full max-w-full md:max-w-screen-xl px-4 md:px-12 lg:px-20 flex items-center justify-between h-14 relative">
+      {/* Animated background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <DarkVeil
+          hueShift={140}
+          noiseIntensity={0.03}
+          scanlineIntensity={0.15}
+          speed={0.3}
+          scanlineFrequency={1}
+          warpAmount={0.015}
+          resolutionScale={0.5}
+        />
+      </div>
+
+      <div className="h-full mx-auto w-full max-w-full md:max-w-screen-xl px-4 md:px-12 lg:px-20 flex items-center justify-between h-14 relative z-10">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <span className="text-xl font-bold">
