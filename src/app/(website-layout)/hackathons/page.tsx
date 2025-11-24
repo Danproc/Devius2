@@ -41,7 +41,7 @@ export default async function PublicHackathonsPage() {
   return (
     <div className="min-h-screen bg-devcard-base">
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="pt-24 md:pt-20 pb-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
           <div className="mb-6 inline-block">
             <Trophy className="h-16 w-16 text-devcard-green mx-auto mb-4" />
