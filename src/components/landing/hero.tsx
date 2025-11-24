@@ -22,6 +22,9 @@ export function Hero() {
         />
       </div>
 
+      {/* Gradient mask at bottom to blend into next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-devcard-base pointer-events-none z-10" />
+
       <div className="container relative z-10 px-4 md:px-6 pt-4">
         <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
           {/* Founders Badge */}
