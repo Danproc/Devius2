@@ -132,19 +132,29 @@ export default function DarkVeil({
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      const w = parent.clientWidth || window.innerWidth;
-      const h = parent.clientHeight || window.innerHeight;
+      // Use window dimensions directly since parent is fixed full viewport
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-      // Set canvas size explicitly
+      // Set canvas drawing buffer size (internal resolution)
+      canvas.width = w * resolutionScale;
+      canvas.height = h * resolutionScale;
+
+      // Set CSS display size
       canvas.style.width = '100%';
       canvas.style.height = '100%';
 
+      // Update renderer and shader uniforms
       renderer.setSize(w * resolutionScale, h * resolutionScale);
       program.uniforms.uResolution.value.set(w, h);
     };
 
     window.addEventListener('resize', resize);
     resize();
+
+    // Force re-resize after DOM fully painted
+    setTimeout(resize, 0);
+    setTimeout(resize, 100);
 
     const start = performance.now();
     let frame = 0;
@@ -168,5 +178,5 @@ export default function DarkVeil({
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
 
-  return <canvas ref={ref} className="absolute inset-0 w-full h-full" style={{ display: 'block' }} />;
+  return <canvas ref={ref} style={{ width: '100%', height: '100%', display: 'block', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />;
 }
