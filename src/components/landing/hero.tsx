@@ -4,10 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import DarkVeil from '@/components/ui/dark-veil';
 
 export function Hero() {
   return (
     <section className="relative py-20 md:py-32 flex items-center justify-center overflow-hidden bg-devcard-base">
+      {/* Animated background */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none">
+        <DarkVeil
+          hueShift={140}
+          noiseIntensity={0.04}
+          scanlineIntensity={0.2}
+          speed={0.4}
+          scanlineFrequency={0.8}
+          warpAmount={0.02}
+          resolutionScale={0.5}
+        />
+      </div>
 
       <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
@@ -25,9 +38,9 @@ export function Hero() {
             Your GitHub, Beautifully Networked.
           </h1>
 
-          {/* Hackathons Coming Soon */}
+          {/* Hackathon Registration Open */}
           <p className="text-sm md:text-base font-mono tracking-widest text-devcard-green uppercase">
-            HACKATHONS COMING SOON
+            HACKATHON REGISTRATION OPEN
           </p>
 
           {/* Subheading */}
