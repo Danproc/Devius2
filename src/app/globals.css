@@ -229,6 +229,22 @@
   .language-bar {
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* Hero DarkVeil gradient fade-out */
+  .hero-veil-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 1) calc(100vh - 200px),
+      rgba(0, 0, 0, 0) 100vh
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 1) calc(100vh - 200px),
+      rgba(0, 0, 0, 0) 100vh
+    );
+  }
 }
 
 /* Matrix-style glitch animation */
