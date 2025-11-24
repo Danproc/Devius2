@@ -8,7 +8,7 @@ import DarkVeil from '@/components/ui/dark-veil';
 
 export function Hero() {
   return (
-    <section className="relative pt-14 py-20 md:py-32 flex items-center justify-center bg-devcard-base">
+    <section className="relative pt-24 md:pt-14 py-20 md:py-32 flex items-center justify-center bg-devcard-base">
       {/* Simple background - extends to cover full hero including header area */}
       <div className="absolute inset-0 opacity-15 pointer-events-none">
         <DarkVeil
@@ -42,9 +42,9 @@ export function Hero() {
           </h1>
 
           {/* Hackathon Registration Open */}
-          <p className="text-sm md:text-base font-mono tracking-widest text-devcard-green uppercase">
+          <Link href="/hackathons" className="text-sm md:text-base font-mono tracking-widest text-devcard-green uppercase hover:text-devcard-green/80 transition-colors cursor-pointer">
             HACKATHON REGISTRATION OPEN
-          </p>
+          </Link>
 
           {/* Subheading */}
           <p className="text-lg md:text-xl text-devcard-heading/70 max-w-2xl leading-relaxed">
