@@ -8,9 +8,9 @@ import DarkVeil from '@/components/ui/dark-veil';
 
 export function Hero() {
   return (
-    <section className="relative -mt-14 pt-14 py-20 md:py-32 flex items-center justify-center overflow-hidden bg-devcard-base">
-      {/* Animated background */}
-      <div className="absolute inset-0 opacity-15 pointer-events-none" style={{ width: '100%', height: '100%' }}>
+    <section className="relative py-20 md:py-32 flex items-center justify-center overflow-hidden bg-devcard-base">
+      {/* Animated background - extends to viewport top */}
+      <div className="absolute left-0 right-0 bottom-0 opacity-15 pointer-events-none" style={{ top: '-3.5rem', width: '100%', height: 'calc(100% + 3.5rem)' }}>
         <DarkVeil
           hueShift={140}
           noiseIntensity={0.01}
@@ -22,7 +22,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="container relative z-10 px-4 md:px-6 mt-14">
+      <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
           {/* Founders Badge */}
           <Badge
