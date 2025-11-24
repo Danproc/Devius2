@@ -5,43 +5,22 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import DarkVeil from '@/components/ui/dark-veil';
-import { useEffect, useState } from 'react';
 
 export function Hero() {
-  const [showBackground, setShowBackground] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Hide background when scrolled past 80% of viewport height
-      const heroHeight = window.innerHeight;
-      const scrolled = window.scrollY;
-      setShowBackground(scrolled < heroHeight * 0.8);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <section className="relative py-20 md:py-32 flex items-center justify-center bg-devcard-base min-h-screen">
-      {/* Animated background - only shown when in hero viewport */}
-      {showBackground && (
-        <div className="fixed top-0 left-0 right-0 h-screen opacity-15 pointer-events-none z-0">
-          {/* Gradient overlay to fade bottom */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-devcard-base" />
-          <DarkVeil
-            hueShift={140}
-            noiseIntensity={0.01}
-            scanlineIntensity={0}
-            speed={0.4}
-            scanlineFrequency={0}
-            warpAmount={0.02}
-            resolutionScale={1}
-          />
-        </div>
-      )}
+    <section className="relative py-20 md:py-32 flex items-center justify-center bg-devcard-base overflow-hidden">
+      {/* Simple background - just sits in the hero section */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none">
+        <DarkVeil
+          hueShift={140}
+          noiseIntensity={0.01}
+          scanlineIntensity={0}
+          speed={0.4}
+          scanlineFrequency={0}
+          warpAmount={0.02}
+          resolutionScale={1}
+        />
+      </div>
 
       <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8 max-w-4xl mx-auto">
