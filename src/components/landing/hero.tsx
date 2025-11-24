@@ -8,7 +8,7 @@ import DarkVeil from '@/components/ui/dark-veil';
 
 export function Hero() {
   return (
-    <section className="relative pt-24 md:pt-20 py-20 md:py-32 flex items-center justify-center bg-devcard-base">
+    <section className="relative pt-24 md:pt-32 py-20 md:py-32 flex items-center justify-center bg-devcard-base">
       {/* Simple background - extends to cover full hero including header area */}
       <div className="absolute inset-0 opacity-15 pointer-events-none">
         <DarkVeil
