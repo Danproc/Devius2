@@ -98,6 +98,7 @@ const withAuthRequired = (handler: WithManagerHandler) => {
           is_premium: users.is_premium,
           premium_tier: users.premium_tier,
           premium_expires_at: users.premium_expires_at,
+          premium_source: users.premium_source,
           github_id: users.github_id,
           github_username: users.github_username,
         })

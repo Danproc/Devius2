@@ -7,6 +7,8 @@ import { db } from '@/db';
 import { users } from '@/db/schema/user';
 import { plans } from '@/db/schema/plans';
 import { eq } from 'drizzle-orm';
+import { getActiveGrant } from '@/lib/promotions/grant-service';
+import { getUserSubscription, isSubscriptionActive } from '@/lib/stripe/subscriptions';
 
 export interface PremiumStatus {
   isPremium: boolean;
@@ -14,22 +16,28 @@ export interface PremiumStatus {
   expiresAt: Date | null;
   isExpiringSoon: boolean;
   features: Record<string, boolean>;
+  source: 'stripe' | 'promotional' | 'ltd' | null; // NEW: Source of premium access
+  promotionType?: string; // NEW: Type of promotion if source is promotional
 }
 
 /**
  * Check if a user has premium access
+ * Priority system: Stripe > Promotional > LTD > No access
  * @param userId - User ID to check
  * @returns Premium status object
  */
 export async function checkPremium(userId: string): Promise<PremiumStatus> {
   try {
-    // Get user with their premium tier
+    // Get user with all premium-related fields
     const [user] = await db
       .select({
         id: users.id,
         is_premium: users.is_premium,
         premium_tier: users.premium_tier,
         premium_expires_at: users.premium_expires_at,
+        premium_source: users.premium_source,
+        stripeSubscriptionId: users.stripeSubscriptionId,
+        planId: users.planId,
       })
       .from(users)
       .where(eq(users.id, userId))
@@ -39,62 +47,131 @@ export async function checkPremium(userId: string): Promise<PremiumStatus> {
       return getDefaultPremiumStatus();
     }
 
-    const now = new Date();
-
-    // Check if premium is expired
-    if (user.premium_expires_at && user.premium_expires_at < now) {
-      // Auto-revoke expired premium
-      if (user.is_premium) {
-        await db
-          .update(users)
-          .set({
-            is_premium: false,
-            premium_tier: null,
-          })
-          .where(eq(users.id, userId));
+    // Priority 1: Stripe subscription (paying customers get highest priority)
+    if (user.stripeSubscriptionId) {
+      try {
+        const subscription = await getUserSubscription(userId);
+        if (subscription && isSubscriptionActive(subscription)) {
+          const tierFeatures = await getTierFeatures(user.premium_tier);
+          return {
+            isPremium: true,
+            tier: user.premium_tier,
+            expiresAt: user.premium_expires_at,
+            isExpiringSoon: isExpiringSoon(user.premium_expires_at),
+            features: tierFeatures,
+            source: 'stripe',
+          };
+        }
+      } catch (error) {
+        console.error('Error checking Stripe subscription:', error);
+        // Fall through to check other sources
       }
-
-      return {
-        isPremium: false,
-        tier: null,
-        expiresAt: user.premium_expires_at,
-        isExpiringSoon: false,
-        features: {},
-      };
     }
 
-    // Get tier features if user has a premium tier
-    let tierFeatures: Record<string, boolean> = {};
-    if (user.premium_tier) {
-      const [tier] = await db
+    // Priority 2: Promotional grant (time-limited free access)
+    const activeGrant = await getActiveGrant(userId);
+    if (activeGrant && activeGrant.status === 'active') {
+      const now = new Date();
+      if (activeGrant.expires_at > now) {
+        const tierFeatures = await getTierFeatures(activeGrant.granted_tier);
+        return {
+          isPremium: true,
+          tier: activeGrant.granted_tier,
+          expiresAt: activeGrant.expires_at,
+          isExpiringSoon: isExpiringSoon(activeGrant.expires_at),
+          features: tierFeatures,
+          source: 'promotional',
+          promotionType: activeGrant.promotion_type,
+        };
+      } else {
+        // Grant expired - will be cleaned up by expireGrants() job
+        // But revoke access now
+        await revokeExpiredPromotionalAccess(userId);
+      }
+    }
+
+    // Priority 3: LTD plan (coupon-based permanent access)
+    if (user.planId) {
+      const [plan] = await db
         .select({
+          tier_code: plans.tier_code,
           features: plans.features,
         })
         .from(plans)
-        .where(eq(plans.tier_code, user.premium_tier))
+        .where(eq(plans.id, user.planId))
         .limit(1);
 
-      if (tier?.features) {
-        tierFeatures = tier.features as Record<string, boolean>;
+      if (plan) {
+        return {
+          isPremium: true,
+          tier: plan.tier_code,
+          expiresAt: null, // LTD plans never expire
+          isExpiringSoon: false,
+          features: (plan.features as Record<string, boolean>) || {},
+          source: 'ltd',
+        };
       }
     }
 
-    // Calculate if expiring soon (within 7 days)
-    const expiringSoon = user.premium_expires_at
-      ? isExpiringSoon(user.premium_expires_at)
-      : false;
+    // No premium access - check if we need to revoke
+    const now = new Date();
+    if (user.premium_expires_at && user.premium_expires_at < now && user.is_premium) {
+      await db
+        .update(users)
+        .set({
+          is_premium: false,
+          premium_tier: null,
+          premium_source: null,
+        })
+        .where(eq(users.id, userId));
+    }
 
     return {
-      isPremium: user.is_premium,
-      tier: user.premium_tier,
+      isPremium: false,
+      tier: null,
       expiresAt: user.premium_expires_at,
-      isExpiringSoon: expiringSoon,
-      features: user.is_premium ? tierFeatures : {},
+      isExpiringSoon: false,
+      features: {},
+      source: null,
     };
   } catch (error) {
     console.error('Error checking premium status:', error);
     return getDefaultPremiumStatus();
   }
+}
+
+/**
+ * Get tier features by tier code
+ * @param tierCode - Tier code (e.g., 'premium', 'premium_pro')
+ * @returns Feature map
+ */
+async function getTierFeatures(tierCode: string | null): Promise<Record<string, boolean>> {
+  if (!tierCode) return {};
+
+  const [tier] = await db
+    .select({
+      features: plans.features,
+    })
+    .from(plans)
+    .where(eq(plans.tier_code, tierCode))
+    .limit(1);
+
+  return (tier?.features as Record<string, boolean>) || {};
+}
+
+/**
+ * Revoke expired promotional access
+ * @param userId - User ID
+ */
+async function revokeExpiredPromotionalAccess(userId: string): Promise<void> {
+  await db
+    .update(users)
+    .set({
+      is_premium: false,
+      premium_tier: null,
+      premium_source: null,
+    })
+    .where(eq(users.id, userId));
 }
 
 /**
@@ -144,6 +221,7 @@ function getDefaultPremiumStatus(): PremiumStatus {
     expiresAt: null,
     isExpiringSoon: false,
     features: {},
+    source: null,
   };
 }
 

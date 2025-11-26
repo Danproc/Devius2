@@ -4,6 +4,8 @@ import { syncGitHubData } from "./sync-github-data";
 import { dailyGitHubSync } from "./daily-github-sync";
 // Premium subscription functions (T123)
 import { checkSubscriptionExpiry } from "./check-subscription-expiry";
+// Promotional grants functions
+import { checkPromotionalExpiry } from "./check-promotional-expiry";
 
 export type InngestEvents = {
   // TIP: Add your events here, where key is the event name and value is the event data format
@@ -28,4 +30,6 @@ export const functions = [
   dailyGitHubSync,
   // Premium subscription functions (T123)
   checkSubscriptionExpiry,
+  // Promotional grants functions
+  checkPromotionalExpiry,
 ];

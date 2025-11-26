@@ -119,8 +119,8 @@ export const ACHIEVEMENT_DEFINITIONS = {
   },
   pioneer: {
     name: 'Pioneer',
-    description: 'One of the first 100 StackPass members',
-    icon: 'Rocket',
+    description: 'Founding Member - One of the first 100 to join StackPass (awarded 1 year free premium)',
+    icon: 'Crown',
     rarity: 'mythic',
     category: 'membership',
   },

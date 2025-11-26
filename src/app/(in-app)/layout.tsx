@@ -2,6 +2,7 @@
 
 import { Footer } from "@/components/layout/footer";
 import { AppHeader } from "@/components/layout/app-header";
+import { FoundingMemberModal } from "@/components/promotions/FoundingMemberModal";
 import React from "react";
 import useUser from "@/lib/users/useUser";
 
@@ -91,6 +92,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <AppHeader />
       <div className="grow p-4 sm:p-2 max-w-7xl mx-auto w-full">{children}</div>
       <Footer />
+      <FoundingMemberModal />
     </div>
   );
 }
