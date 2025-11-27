@@ -26,17 +26,27 @@ export function FoundingMemberModal() {
     const viewCount = parseInt(localStorage.getItem('founding-member-modal-views') || '0');
     const maxViews = 3;
 
-    fetch('/api/promotions/founding-status')
-      .then((res) => res.json())
-      .then((data: FoundingStatus) => {
-        setStatus(data);
+    // Check if user already has premium (don't show modal to premium users)
+    Promise.all([
+      fetch('/api/promotions/founding-status').then(res => res.json()),
+      fetch('/api/auth/session').then(res => res.json())
+    ])
+      .then(([statusData, sessionData]) => {
+        setStatus(statusData);
         setLoading(false);
+
+        // Check if user has premium
+        const userHasPremium = sessionData?.user?.is_premium === true;
 
         // Show modal if:
         // 1. User has seen it less than 3 times
         // 2. Promotion is still active
         // 3. There are spots remaining
-        const shouldShow = viewCount < maxViews && data.isActive && data.remaining > 0;
+        // 4. User does NOT already have premium
+        const shouldShow = viewCount < maxViews &&
+                          statusData.isActive &&
+                          statusData.remaining > 0 &&
+                          !userHasPremium;
 
         if (shouldShow) {
           setTimeout(() => {
