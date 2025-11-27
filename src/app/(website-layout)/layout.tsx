@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import React from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { FoundingMemberModalProvider } from "@/components/promotions/FoundingMemberModalProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -40,6 +41,7 @@ function WebsiteLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
+      <FoundingMemberModalProvider />
     </div>
   );
 }

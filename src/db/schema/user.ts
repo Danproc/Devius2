@@ -38,6 +38,7 @@ export const users = pgTable("app_user", {
   is_premium: boolean("is_premium").default(false).notNull(),
   premium_tier: text("premium_tier"), // References plans.tier_code ('premium', 'premium_pro', etc.)
   premium_expires_at: timestamp("premium_expires_at", { mode: "date" }),
+  premium_source: text("premium_source", { enum: ['stripe', 'promotional', 'ltd'] }), // Source of premium access
 
   stripeCustomerId: text("stripeCustomerId"),
   stripeSubscriptionId: text("stripeSubscriptionId"),
